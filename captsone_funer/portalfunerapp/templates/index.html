@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Funerarias</title>
+</head>
+<body>
+    <div class="container">
+    <h1>Funerarias</h1>
+    <ul>
+        {% for fune in funerarias %}
+            <li>
+                <strong>Nombre:</strong> {{ fune.nombre }}<br>
+                <strong>Dirección:</strong> {{ fune.direccion }}<br>
+                <strong>Teléfono:</strong> {{ fune.telefono }}<br>
+                <strong>Email:</strong> {{ fune.email }}
+            </li>
+            {% empty %}
+            <li>No hay funerarias registradas</li>
+        {% endfor %}
+
+        <h1>Cementerios</h1>
+        <!-- cementerios -->
+        {% for cem in cementerio %}
+            <li>
+                <strong>Nombre:</strong> {{ cem.nombre }}<br>
+                <strong>Dirección:</strong> {{ cem.direccion }}<br>
+                <strong>Teléfono:</strong> {{ cem.telefono }}<br>
+            </li>
+            {% empty %}
+            <li>No hay cementerio registrado</li>
+        {% endfor %}
+    </ul>
+</div>
+</body>
+</html>
