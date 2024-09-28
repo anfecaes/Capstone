@@ -1,0 +1,1060 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AsaPeace</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'icomoon/icomoon.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/vendor.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+
+	<header id="header">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-2">
+					<div class="main-logo">
+						<a href="index.html"><img src="{% static 'images/main-logo.png' %}" alt="logo"></a>
+					</div>
+				</div>
+
+				<div class="col-md-10">
+					<nav id="navbar">
+						<div class="main-menu stellarnav">
+							<ul class="menu-list">
+								<li class="menu-item active"><a href="#home">INICIO </a></li>
+								<li class="menu-item has-sub">
+									<a href="#pages" class="nav-link">CATEGORIAS</a>
+									<ul>
+										<li class="active"><a href="index.html">XXX</a></li>
+										<li><a href="about.html">XXX</a></li>
+										<li><a href="styles.html">XXX</a></li>
+										<li><a href="blog.html">XXX</a></li>
+										<li><a href="single-post.html">XXX</a></li>
+										<li><a href="shop.html">XXX</a></li>
+										<li><a href="single-product.html">XXX</a></li>
+										<li><a href="contact.html">XXX</a></li>
+										<li><a href="thank-you.html">XXX</a></li>
+									</ul>
+								</li>
+								<li class="menu-item"><a href="#featured-books" class="nav-link">MARKETPLACE</a></li>
+								<li class="menu-item"><a href="#popular-books" class="nav-link">SERVICIOS</a></li>
+								<li class="menu-item"><a href="#special-offer" class="nav-link">MASCOTAS</a></li>
+								<li class="menu-item"><a href="#latest-blog" class="nav-link">DONATIVOS</a></li>
+								<li class="menu-item"><a href="#download-app" class="nav-link">SOBRE NOSOTROS</a></li>
+								<li class="menu-item">
+								</li>
+							</ul>
+
+							<div class="hamburger">
+								<span class="bar"></span>
+								<span class="bar"></span>
+								<span class="bar"></span>
+							</div>
+						</div>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<section id="billboard">
+
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+
+					<button class="prev slick-arrow">
+						<i class="icon icon-arrow-left"></i>
+					</button>
+
+					<div class="main-slider pattern-overlay">
+						<div class="slider-item">
+							<div class="banner-content">
+								<h2 class="banner-title">Deje todo en nuestras manos</h2>
+								<p>¡Despídase de su ser querido y deje todo en nuestras manos!
+									Te ayudamos a elegir el plan que mejor se adapte a tus necesidades y presupuesto.
+								</p>
+								<div class="btn-wrap">
+									<a href="#" class="btn btn-outline-accent btn-accent-arrow">Leer más<i
+											class="icon icon-ns-arrow-right"></i></a>
+								</div>
+							</div><!--banner-content-->
+							<img src="{% static 'images/funeraria-principal.jpg' %}" alt="banner" class="banner-image">
+						</div><!--slider-item-->
+					
+						<div class="slider-item">
+							<div class="banner-content">
+								<h2 class="banner-title">Despide a tu compañer@ de vida</h2>
+								<p>Te ayudamos a dar una despedida a tu regalón o regalona del hogar.</p>
+								<div class="btn-wrap">
+									<a href="#" class="btn btn-outline-accent btn-accent-arrow">Leer más<i
+											class="icon icon-ns-arrow-right"></i></a>
+								</div>
+							</div><!--banner-content-->
+							<img src="{% static 'images/funeraria-animal.jpg' %}" alt="banner" class="banner-image">
+						</div><!--slider-item-->
+					</div><!--slider-->
+					
+
+					<button class="next slick-arrow">
+						<i class="icon icon-arrow-right"></i>
+					</button>
+
+				</div>
+			</div>
+		</div>
+
+	</section>
+
+	<section id="featured-books" data-aos="fade-up" class="py-5 my-5">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+
+					<div class="section-header align-center">
+						<h2 class="section-title">MARKETPLACE</h2>
+					</div>
+
+					<div class="product-list" data-aos="fade-up">
+						<div class="row">
+
+							<div class="col-md-3">
+								<div class="product-item">
+									<figure class="product-style">
+										<img src="{% static 'images/urna-azul.png' %}" alt="Books" class="product-item">
+										<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER PUBLICACIÓN</button>
+									</figure>
+									<figcaption>
+										<h3>Urna cenizas adulto</h3>
+										<span>Cerámica y vidrio</span>
+										<div class="item-price">$ 12.990</div>
+									</figcaption>
+								</div>
+							</div>
+
+							<div class="col-md-3">
+								<div class="product-item">
+									<figure class="product-style">
+										<img src="{% static 'images/funeraria-marco.png' %}" alt="Books" class="product-item">
+										<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER PUBLICACIÓN</button>
+									</figure>
+									<figcaption>
+										<h3>Marco De Foto Negro 20X25</h3>
+										<span>MDF - Vidrio</span>
+										<div class="item-price">$ 1.990</div>
+									</figcaption>
+								</div>
+							</div>
+
+							<div class="col-md-3">
+								<div class="product-item">
+									<figure class="product-style">
+										<img src="{% static 'images/ataud.png' %}" alt="Books" class="product-item">
+										<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER PUBLICACIÓN</button>
+									</figure>
+									<figcaption>
+										<h3>Ataúd</h3>
+										<span>Madera</span>
+										<div class="item-price">$ 159.990</div>
+									</figcaption>
+								</div>
+							</div>
+
+							<div class="col-md-3">
+								<div class="product-item">
+									<figure class="product-style">
+										<img src="{% static 'images/funeraria-flores.png' %}" alt="Books" class="product-item">
+										<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER PUBLICACIÓN</button>
+									</figure>
+									<figcaption>
+										<h3>RAMO DE ROSAS BLANCAS</h3>
+										<span>12 VARAS</span>
+										<div class="item-price">$ 22.990</div>
+									</figcaption>
+								</div>
+							</div>
+
+						</div><!--ft-books-slider-->
+					</div><!--grid-->
+
+
+				</div><!--inner-content-->
+			</div>
+
+			<div class="row">
+				<div class="col-md-12">
+
+					<div class="btn-wrap align-right">
+						<a href="#" class="btn-accent-arrow">Ver todos los productos	<i
+								class="icon icon-ns-arrow-right"></i></a>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="best-selling" class="leaf-pattern-overlay">
+		<div class="corner-pattern-overlay"></div>
+		<div class="container">
+			<div class="row justify-content-center">
+
+				<div class="col-md-8">
+
+					<div class="row">
+
+						<div class="col-md-6">
+							<figure class="products-thumb">
+								<img src="{% static 'images/funeraria-robot.png' %}" alt="book" class="single-image">
+							</figure>
+						</div>
+
+						<div class="col-md-6">
+							<div class="product-entry">
+								<h2 class="section-title divider">¡PRUEBA NUESTRO CHATBOT CON INTELIGENCIA ARTIFICAL!</h2>
+
+								<div class="products-content">
+									<!--<div class="author-name">By Timbur Hood</div>-->
+									<h3 class="item-title">Conoce a tu nuevo amigo</h3>
+									<p>Te damos ayuda y asistencia legal y a su vez te orientamos para que consigas la experiencia más grata en este proceso</p>
+									<!--<div class="item-price">$ 45.00</div>-->
+									<div class="btn-wrap">
+										<a href="#" class="btn-accent-arrow">probar ahora<i
+												class="icon icon-ns-arrow-right"></i></a>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+					</div>
+					<!-- / row -->
+
+				</div>
+
+			</div>
+		</div>
+	</section>
+
+	<section id="popular-books" class="bookshelf py-5 my-5">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+
+					<div class="section-header align-center">
+						<!-- <div class="title">
+							<span>Some quality items</span>
+						</div> -->
+						<h2 class="section-title">SERVICIOS</h2>
+					</div>
+
+					<ul class="tabs">
+						<li data-tab-target="#all-genre" class="active tab">Todos</li>
+						<li data-tab-target="#business" class="tab">Plan económico</li>
+						<li data-tab-target="#technology" class="tab">Cremación</li>
+						<li data-tab-target="#romantic" class="tab">Velatorio</li>
+						<li data-tab-target="#adventure" class="tab">Embalsamiento</li>
+						<li data-tab-target="#fictional" class="tab">Plan avanzado</li>
+					</ul>
+
+					<div class="tab-content">
+						<div id="all-genre" data-tab-content class="active">
+							<div class="row">
+
+								<div class="row">
+									{% for fune in funerarias %}
+										<div class="col-md-3">
+											<div class="product-item">
+												<figure class="product-style">
+													<!-- Puedes ajustar la imagen de acuerdo a tus datos o mantener una imagen estática -->
+													<img src="{% static 'images\logo-funeraria-martinez.jpg' %}" alt="{{ fune.nombre }}" class="product-item">
+													<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+												</figure>
+												<figcaption>
+													<!-- Datos de la funeraria -->
+													<h3>{{ fune.nombre }}</h3>
+													<span>{{ fune.direccion }}</span>
+													<div class="item-price">{{ fune.telefono }}</div>
+													<div class="item-price">{{ fune.email }}</div>
+												</figcaption>
+											</div>
+										</div>
+									{% empty %}
+										<p>No hay funerarias registradas.</p>
+									{% endfor %}
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item2.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item3.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item4.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+							</div>
+							<div class="row">
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item5.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item6.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item7.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item8.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+							</div>
+
+						</div>
+						<div id="business" data-tab-content>
+							<div class="row">
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item2.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item4.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item6.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item8.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+						<div id="technology" data-tab-content>
+							<div class="row">
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item1.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item3.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item5.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item7.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div id="romantic" data-tab-content>
+							<div class="row">
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item1.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item3.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item5.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item7.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div id="adventure" data-tab-content>
+							<div class="row">
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item5.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item7.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div id="fictional" data-tab-content>
+							<div class="row">
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item5.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+
+								<div class="col-md-3">
+									<div class="product-item">
+										<figure class="product-style">
+											<img src="{% static 'images/tab-item7.jpg' %}" alt="FOTO" class="product-item">
+											<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+										</figure>
+										<figcaption>
+											<h3>XXX</h3>
+											<span>XXX</span>
+											<div class="item-price">$ XXX</div>
+										</figcaption>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+				</div><!--inner-tabs-->
+
+			</div>
+		</div>
+	</section>
+
+	<section id="quotation" class="align-center pb-5 mb-5">
+		<div class="inner-content">
+			<h2 class="section-title divider">2 Corintios: 5, 1, 6-10</h2>
+			<blockquote data-aos="fade-up">
+				<q>“Tenemos un edificio de Dios, eterno en el cielo.”</q>
+				<div class="author-name">Biblia</div>
+			</blockquote>
+		</div>
+	</section>
+
+	<section id="special-offer" class="bookshelf pb-5 mb-5">
+
+		<div class="section-header align-center">
+			<div class="title">
+				<span>Ellos también merecen una despedida.</span>
+			</div>
+			<h2 class="section-title">MASCOTAS</h2>
+		</div>
+
+		<div class="container">
+			<div class="row">
+				<div class="inner-content">
+					<div class="product-list" data-aos="fade-up">
+						<div class="grid product-grid">
+							<div class="product-item">
+								<figure class="product-style">
+									<img src="{% static 'images/product-item5.jpg' %}" alt="FOTO" class="product-item">
+									<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+								</figure>
+								<figcaption>
+									<h3>XXX</h3>
+									<span>XXX</span>
+									<div class="item-price">
+										<span class="prev-price">$ XXX</span>$ XXX
+									</div>
+								</div>
+							</figcaption>
+
+							<div class="product-item">
+								<figure class="product-style">
+									<img src="{% static 'images/product-item6.jpg' %}" alt="FOTO" class="product-item">
+									<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+								</figure>
+								<figcaption>
+									<h3>XXX</h3>
+									<span>XXX</span>
+									<div class="item-price">
+										<span class="prev-price">$ XXX</span>$ XXX
+									</div>
+								</div>
+							</figcaption>
+
+							<div class="product-item">
+								<figure class="product-style">
+									<img src="{% static 'images/product-item7.jpg' %}" alt="FOTO" class="product-item">
+									<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+								</figure>
+								<figcaption>
+									<h3>XXX</h3>
+									<span>XXX</span>
+									<div class="item-price">
+										<span class="prev-price">$ XXX</span>$ XXX
+									</div>
+								</div>
+							</figcaption>
+
+							<div class="product-item">
+								<figure class="product-style">
+									<img src="{% static 'images/product-item8.jpg' %}" alt="FOTO" class="product-item">
+									<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+								</figure>
+								<figcaption>
+									<h3>XXX</h3>
+									<span>XXX</span>
+									<div class="item-price">
+										<span class="prev-price">$ XXX</span>$ XXX
+									</div>
+								</div>
+							</figcaption>
+
+							<div class="product-item">
+								<figure class="product-style">
+									<img src="{% static 'images/product-item2.jpg' %}" alt="FOTO" class="product-item">
+									<button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+								</figure>
+								<figcaption>
+									<h3>XXX</h3>
+									<span>XXX</span>
+									<div class="item-price">$ XXX</div>
+								</figcaption>
+							</div>
+						</div><!--grid-->
+					</div>
+				</div><!--inner-content-->
+			</div>
+		</div>
+	</section>
+
+	<section id="subscribe">
+		<div class="container">
+			<div class="row justify-content-center">
+
+				<div class="col-md-8">
+					<div class="row">
+
+						<div class="col-md-6">
+
+							<div class="title-element">
+								<h2 class="section-title divider">Campañas de ayuda funeraria</h2>
+							</div>
+
+						</div>
+						<div class="col-md-6">
+
+							<div class="subscribe-content" data-aos="fade-up">
+								<p>Para aquellas personas que no pueden despedir a un ser querido por falta de recursos. <br>
+									¡Te enviamos toda la información a tu correo!</p>
+								<form id="form">
+									<input type="text" name="email" placeholder="Ingresa tu email aquí">
+									<button class="btn-subscribe">
+										<span>enviar</span>
+										<i class="icon icon-send"></i>
+									</button>
+								</form>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</section>
+
+	<section id="latest-blog" class="py-5 my-5">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+
+					<div class="section-header align-center">
+						<div class="title">
+							<span>Ayudemos a quienes más lo necesitan.</span>
+						</div>
+						<h2 class="section-title">DONATIVOS</h2>
+					</div>
+
+					<div class="row">
+
+						<div class="col-md-4">
+
+							<article class="column" data-aos="fade-up">
+
+								<figure>
+									<a href="#" class="image-hvr-effect">
+										<img src="{% static 'images/post-img1.jpg' %}" alt="POST DE DONATIVOS" class="post-image">
+									</a>
+								</figure>
+
+								<div class="post-item">
+									<div class="meta-date">Fecha</div>
+									<h3><a href="#">XXX</a></h3>
+
+									<div class="links-element">
+										<div class="categories">XXX</div>
+										<div class="social-links">
+										</div>
+									</div><!--links-element-->
+
+								</div>
+							</article>
+
+						</div>
+						<div class="col-md-4">
+
+							<article class="column" data-aos="fade-up" data-aos-delay="200">
+								<figure>
+									<a href="#" class="image-hvr-effect">
+										<img src="{% static 'images/post-img2.jpg' %}" alt="POST DE DONATIVOS" class="post-image">
+									</a>
+								</figure>
+								<div class="post-item">
+									<div class="meta-date">Fecha</div>
+									<h3><a href="#">XXX</a></h3>
+
+									<div class="links-element">
+										<div class="categories">XXX</div>
+										<div class="social-links">
+										</div>
+									</div><!--links-element-->
+
+								</div>
+							</article>
+
+						</div>
+						<div class="col-md-4">
+
+							<article class="column" data-aos="fade-up" data-aos-delay="400">
+								<figure>
+									<a href="#" class="image-hvr-effect">
+										<img src="{% static 'images/post-img3.jpg' %}" alt="POST DE DONATIVOS" class="post-image">
+									</a>
+								</figure>
+								<div class="post-item">
+									<div class="meta-date">Fecha</div>
+									<h3><a href="#">XXX</a></h3>
+
+									<div class="links-element">
+										<div class="categories">XXX</div>
+									</div><!--links-element-->
+
+								</div>
+							</article>
+
+						</div>
+
+					</div>
+
+					<div class="row">
+
+						<div class="btn-wrap align-center">
+							<a href="#" class="btn btn-outline-accent btn-accent-arrow" tabindex="0">Leer todos los artículos<i
+									class="icon icon-ns-arrow-right"></i></a>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="download-app" class="leaf-pattern-overlay">
+		<div class="corner-pattern-overlay"></div>
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-8">
+					<div class="row">
+
+						<div class="col-md-5">
+							<figure>
+								<img src="{% static 'images/device.png' %}" alt="Imagen que nos represente" class="single-image">
+							</figure>
+						</div>
+
+						<div class="col-md-7">
+							<div class="app-info">
+								<h2 class="section-title divider">SOBRE NOSOTROS</h2>
+								<p>bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla.</p>
+								<div class="google-app">
+									<img src="{% static 'images/funeraria-logo.png' %}" alt="google play">
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<footer id="footer">
+		<div class="container">
+			<div class="row">
+
+				<div class="col-md-4">
+
+					<div class="footer-item">
+						<div class="company-brand">
+							<img src="{% static 'images/main-logo.png' %}" alt="logo" class="footer-logo">
+							<p> bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+								bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla.
+							</p>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="col-md-2">
+
+					<div class="footer-menu">
+						<h5>Nosotros</h5>
+						<ul class="menu-list">
+							<li class="menu-item">
+								<a href="#">Nuestra vision</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Articulos </a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Compañías</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Servicios</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Donativos</a>
+							</li>
+						</ul>
+					</div>
+
+				</div>
+				<div class="col-md-2">
+
+					<div class="footer-menu">
+						<h5>Descubre</h5>
+						<ul class="menu-list">
+							<li class="menu-item">
+								<a href="#">Inicio</a>
+							</li>
+							<li class="menu-item">
+								<a href="#"></a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Funerarias</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Sujetos</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Busqueda</a>
+							</li>
+						</ul>
+					</div>
+
+				</div>
+				<div class="col-md-2">
+
+					<div class="footer-menu">
+						<h5>Mi cuenta</h5>
+						<ul class="menu-list">
+							<li class="menu-item">
+								<a href="#">Ingresar</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Ver</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Yo</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Realizar orden</a>
+							</li>
+						</ul>
+					</div>
+
+				</div>
+				<div class="col-md-2">
+
+					<div class="footer-menu">
+						<h5>Help</h5>
+						<ul class="menu-list">
+							<li class="menu-item">
+								<a href="#">Ayuda</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Reportar un problema</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Sugerir edición</a>
+							</li>
+							<li class="menu-item">
+								<a href="#">Contactanos</a>
+							</li>
+						</ul>
+					</div>
+
+				</div>
+
+			</div>
+			<!-- / row -->
+
+		</div>
+	</footer>
+
+	<div id="footer-bottom">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+
+					<div class="copyright">
+						<div class="row">
+
+							<div class="col-md-6">
+								<p>© 2024 todos los derechos son reservados.</p>
+							</div>
+						</div>
+					</div><!--grid-->
+
+				</div><!--footer-bottom-content-->
+			</div>
+		</div>
+	</div>
+
+	<script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+		crossorigin="anonymous"></script>
+	<script src="{% static 'js/plugins.js' %}"></script>
+	<script src="{% static 'js/script.js' %}"></script>
+
+</body>
+
+</html>
