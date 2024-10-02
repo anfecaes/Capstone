@@ -82,6 +82,7 @@ class Cementerio(models.Model):
     nombre = models.CharField(max_length=255)
     direccion = models.TextField(blank=True, null=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)
+    imagen = models.BinaryField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -178,6 +179,7 @@ class Funeraria(models.Model):
     direccion = models.TextField(blank=True, null=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)
     email = models.CharField(unique=True, max_length=255, blank=True, null=True)
+    imagen = models.BinaryField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -218,29 +220,6 @@ class Pago(models.Model):
     class Meta:
         managed = False
         db_table = 'pago'
-
-
-class PortalfunerappCementerio(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    nombre = models.CharField(max_length=255)
-    direccion = models.TextField()
-    telefono = models.CharField(max_length=20)
-
-    class Meta:
-        managed = False
-        db_table = 'portalfunerapp_cementerio'
-
-
-class PortalfunerappFuneraria(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    nombre = models.CharField(max_length=255)
-    servicio = models.TextField()
-    descripcion = models.TextField()
-    imagen = models.CharField(max_length=100)
-
-    class Meta:
-        managed = False
-        db_table = 'portalfunerapp_funeraria'
 
 
 class Proveedor(models.Model):
@@ -290,3 +269,17 @@ class Serviciofunerario(models.Model):
     class Meta:
         managed = False
         db_table = 'serviciofunerario'
+
+
+
+class ServiciosMascotas(models.Model):
+    id_servi_mascota = models.AutoField(primary_key=True)  # Cambiado a AutoField
+    nombre = models.CharField(blank=True, null=True)
+    direccion = models.TextField(blank=True, null=True)
+    telefono = models.CharField(blank=True, null=True)
+    email = models.CharField(blank=True, null=True)
+    imagen = models.BinaryField(blank=True, null=True)
+
+    class Meta:
+        managed = True  # Asegúrate de que esto sea correcto
+        db_table = 'servicios_mascotas'

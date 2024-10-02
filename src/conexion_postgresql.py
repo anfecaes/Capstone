@@ -6,7 +6,7 @@ try:
         user='postgres',
         password='guts_2015',
         database='ASApeace',
-        port='5433'
+        port='5432'
     )
 
     print("conexion exitosa")
