@@ -1,0 +1,9 @@
+{% if form %}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Crear Homenaje</button>
+  </form>
+{% else %}
+  <p>No se ha encontrado el formulario.</p>
+{% endif %}

@@ -58,7 +58,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.getenv('DB_NAME', 'ASApeace'),
         'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'admin123'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'guts_2015'),
         'HOST': 'localhost',
         'PORT': '5432',
     }

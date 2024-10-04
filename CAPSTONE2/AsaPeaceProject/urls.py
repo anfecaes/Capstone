@@ -7,4 +7,6 @@ urlpatterns = [
     path('', views.homepage, name='homepage'),
     path('ask', views.ask, name='ask'),  
     path('ubicacion/', views.encontrar_funeraria_cercana, name='ubicacion'),  # Nueva ruta
+    path('crear-homenaje/', views.crear_homenaje, name='crear_homenaje'),  #homenajes
+
 ]

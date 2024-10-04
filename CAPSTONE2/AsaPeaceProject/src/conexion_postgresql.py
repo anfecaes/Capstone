@@ -4,7 +4,7 @@ try:
     connetion=psycopg2.connect(
         host='localhost',
         user='postgres',
-        password='admin123',
+        password='guts_2015',
         database='ASApeace',
         port='5432'
     )
