@@ -8,7 +8,7 @@ from geopy.distance import great_circle
 from xhtml2pdf import pisa  # Importa xhtml2pdf para generar PDFs
 
 # Asegúrate de que tu clave API de OpenAI esté configurada correctamente
-openai.api_key = 'sk-21wt4qXy2s5A0GeKO2eaAMqLGspJYEHOMkHGsN8Kq6T3BlbkFJ9-0Nq8gklx147Q_rACJzHSnZirJo0MMtugciMPmhQA'
+openai.api_key = 'poner api'
 
 def homepage(request):
     return render(request, 'main/index.html')
