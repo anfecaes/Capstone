@@ -1,21 +1,30 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import openai
 import json
 from .models import Funeraria  # Asegúrate de tener un modelo para las funerarias
 from geopy.distance import great_circle
+from xhtml2pdf import pisa  # Importa xhtml2pdf para generar PDFs
 
 # Asegúrate de que tu clave API de OpenAI esté configurada correctamente
-openai.api_key = 'PONER API ACÁ'
+openai.api_key = 'sk-21wt4qXy2s5A0GeKO2eaAMqLGspJYEHOMkHGsN8Kq6T3BlbkFJ9-0Nq8gklx147Q_rACJzHSnZirJo0MMtugciMPmhQA'
 
 def homepage(request):
-    return render(request, 'main/index.html')  # Asegúrate de que la ruta sea correcta
+    return render(request, 'main/index.html')
+
+def mascotas(request):
+    return render(request, 'main/mascotas.html')  # Asegúrate de que la ruta sea correcta
 
 @csrf_exempt
 def ask(request):
     if request.method == 'POST':
         user_message = json.loads(request.body).get('message')
+
+        # Verificar si el usuario quiere generar un PDF
+        if "pdf" in user_message.lower() or "generar pdf" in user_message.lower() or "crea pdf" in user_message.lower():
+            bot_message = "Aquí tienes tu PDF: <a href='/generar_pdf/' download>Descargar PDF</a>"
+            return JsonResponse({'message': bot_message})
 
         # Crear un prompt que incluya contexto
         prompt = (
@@ -78,3 +87,34 @@ def encontrar_funeraria_cercana(request):
             return JsonResponse({'error': 'No se encontraron funerarias cercanas.'}, status=404)
 
     return JsonResponse({'error': 'Método no permitido.'}, status=405)
+
+# Nueva vista para generar el PDF
+@csrf_exempt
+def generar_pdf(request):
+    if request.method == 'GET':
+        # Renderizar el HTML
+        template_path = 'main/solicitud_pdf.html'
+        context = {
+            # Puedes agregar datos dinámicos aquí
+            'nombre_cliente': 'Juan Pérez',
+            'tipo_servicio': 'Servicio A',
+            'fecha_servicio': '2024-10-10',
+            'ubicacion': 'Santiago, Chile',
+            'notas': 'Este es un comentario adicional.',
+        }
+        
+        # Generar PDF
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="solicitud.pdf"'
+        
+        # Renderizar el template en HTML
+        html = render(request, template_path, context).content.decode('utf-8')
+        pisa_status = pisa.CreatePDF(html, dest=response)
+
+        # Verificar si hubo errores al generar el PDF
+        if pisa_status.err:
+            return HttpResponse('Error al generar el PDF', status=400)
+
+        return response
+
+    return HttpResponse('Método no permitido.', status=405)

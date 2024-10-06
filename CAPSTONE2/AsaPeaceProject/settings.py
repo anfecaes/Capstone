@@ -55,12 +55,8 @@ WSGI_APPLICATION = 'AsaPeaceProject.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('DB_NAME', 'ASApeace'),
-        'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'admin123'),
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',  # Motor de la base de datos
+        'NAME': BASE_DIR / "db.sqlite3",         # Archivo de la base de datos SQLite
     }
 }
 

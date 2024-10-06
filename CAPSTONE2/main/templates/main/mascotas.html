@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AsaPeace - Mascotas</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/aos.css' %}">
+    <link rel="stylesheet" href="{% static 'css/chocolat.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav ul li {
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav ul li a.active {
+            border-bottom: 2px solid white;
+        }
+        #hero {
+            background: url('{% static "images/hero-background.jpg" %}') no-repeat center center/cover;
+            height: 300px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        #hero h1 {
+            font-size: 2.5em;
+            margin: 0;
+        }
+        #services, #gallery {
+            padding: 50px;
+            text-align: center;
+        }
+        #gallery img {
+            width: 100px;
+            height: auto;
+            margin: 10px;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+        #gallery img:hover {
+            transform: scale(1.1);
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>AsaPeace - Mascotas</h1>
+    <nav>
+        <ul>
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Acerca de</a></li>
+            <li><a href="#">Servicios</a></li>
+            <li><a href="#">Galería</a></li>
+            <li><a href="#">Contacto</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div id="hero">
+    <h1>Honrando a Nuestros Amigos Peludos</h1>
+    <p>Recuerdos que perduran, amor que nunca muere.</p>
+</div>
+
+<section id="services">
+    <h2>Nuestros Servicios</h2>
+    <p>Ofrecemos servicios de homenaje para tus mascotas, incluyendo:</p>
+    <ul>
+        <li>Servicios funerarios personalizados</li>
+        <li>Conmemoraciones</li>
+        <li>Asesoramiento en el duelo</li>
+    </ul>
+</section>
+
+<section id="gallery">
+    <h2>Galería de Recuerdos</h2>
+    <div>
+        <img src="{% static 'images/funeraria-animal.jpg' %}" alt="Mascota 1">
+        <img src="{% static 'images/funeraria-animal.jpg' %}" alt="Mascota 2">
+        <img src="{% static 'images/funeraria-animal.jpg' %}" alt="Mascota 3">
+        <img src="{% static 'images/funeraria-animal.jpg' %}" alt="Mascota 4">
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2024 AsaPeace - Todos los derechos reservados.</p>
+</footer>
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/scripts.js' %}"></script>
+<script src="{% static 'js/aos.js' %}"></script>
+<script src="{% static 'js/chocolat.js' %}"></script>
+</body>
+</html>
