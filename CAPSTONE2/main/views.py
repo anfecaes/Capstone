@@ -8,7 +8,7 @@ from geopy.distance import great_circle
 from xhtml2pdf import pisa  # Importa xhtml2pdf para generar PDFs
 
 # Asegúrate de que tu clave API de OpenAI esté configurada correctamente
-openai.api_key = 'poner api'
+openai.api_key = 'sk-O9sWoqxgcMdmfAkNGaxsUkHuQUbjoXyrU4vg0xjfFrT3BlbkFJj8hcIwvbjq_G_hPL71QtQDXkjqeFBWA9C1f237-YQA'
 
 def homepage(request):
     return render(request, 'main/index.html')
@@ -19,12 +19,7 @@ def mascotas(request):
 @csrf_exempt
 def ask(request):
     if request.method == 'POST':
-        user_message = json.loads(request.body).get('message')
-
-        # Verificar si el usuario quiere generar un PDF
-        if "pdf" in user_message.lower() or "generar pdf" in user_message.lower() or "crea pdf" in user_message.lower():
-            bot_message = "Aquí tienes tu PDF: <a href='/generar_pdf/' download>Descargar PDF</a>"
-            return JsonResponse({'message': bot_message})
+        user_message = json.loads(request.body).get('message').strip()
 
         # Crear un prompt que incluya contexto
         prompt = (
@@ -38,18 +33,80 @@ def ask(request):
             f"El usuario pregunta: {user_message} "
         )
 
-        # Si el mensaje del usuario pregunta por la ubicación
-        if "ubicación" in user_message.lower() or "sabes mi ubicación" in user_message.lower():
-            bot_message = "Lo siento, como asistente virtual no tengo acceso a tu ubicación. Por favor, comparte tu ubicación para ayudarte mejor."
+        # Comprobar si el usuario cancela el proceso
+        if user_message.lower() == "cancelar":
+            request.session.flush()  # Limpiar la sesión
+            bot_message = "Has cancelado el proceso de generación del PDF. ¿En qué más puedo ayudarte?"
+            return JsonResponse({'message': bot_message})
+
+        # Comprobar si el usuario quiere volver a la pregunta anterior
+        if user_message.lower() == "volver":
+            step = request.session.get('step')
+            if step == 'notas':
+                request.session['step'] = 'ubicacion'
+                bot_message = "Por favor, ¿cuál es la ubicación? "
+            elif step == 'ubicacion':
+                request.session['step'] = 'fecha_servicio'
+                bot_message = "¿Cuál es la fecha del servicio? "
+            elif step == 'fecha_servicio':
+                request.session['step'] = 'tipo_servicio'
+                bot_message = "¿Qué tipo de servicio deseas? "
+            elif step == 'tipo_servicio':
+                request.session['step'] = 'nombre'
+                bot_message = "¿Cuál es tu nombre? "
+            else:
+                bot_message = "No hay preguntas anteriores para volver."
+            return JsonResponse({'message': bot_message})
+
+        # Verificar si el usuario quiere generar un PDF
+        if "pdf" in user_message.lower() or "generar pdf" in user_message.lower() or "crea pdf" in user_message.lower():
+            bot_message = (
+                "Entiendo que necesitas un documento. Primero, permíteme hacerte algunas preguntas para recopilar la información necesaria. "
+                "¿Cuál es tu nombre? "
+            )
+            request.session['step'] = 'nombre'
+            return JsonResponse({'message': bot_message})
+
+        # Si el chatbot está en medio del flujo de preguntas para el PDF
+        step = request.session.get('step')
+
+        if step == 'nombre':
+            request.session['nombre_cliente'] = user_message
+            bot_message = (
+                "Gracias. ¿Qué tipo de servicio deseas? "
+            )
+            request.session['step'] = 'tipo_servicio'
+        elif step == 'tipo_servicio':
+            request.session['tipo_servicio'] = user_message
+            bot_message = (
+                "Perfecto. ¿Cuál es la fecha del servicio? "
+            )
+            request.session['step'] = 'fecha_servicio'
+        elif step == 'fecha_servicio':
+            request.session['fecha_servicio'] = user_message
+            bot_message = (
+                "¿Dónde será el servicio? (ubicación) "
+            )
+            request.session['step'] = 'ubicacion'
+        elif step == 'ubicacion':
+            request.session['ubicacion'] = user_message
+            bot_message = (
+                "¿Tienes alguna nota adicional que agregar? "
+            )
+            request.session['step'] = 'notas'
+        elif step == 'notas':
+            request.session['notas'] = user_message
+            bot_message = "Gracias. Ahora procederé a generar el PDF. Puedes descargarlo <a href='/generar_pdf/' download>Descargar PDF</a>."
+            request.session['step'] = 'finalizado'
         else:
-            # Llamada a la API de OpenAI
+            # Llamada a la API de OpenAI para respuesta normal
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=250
+                messages=[{"role": "user", "content": user_message}],
+                max_tokens=150
             )
             bot_message = response['choices'][0]['message']['content'].strip()
-
+        
         return JsonResponse({'message': bot_message})
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
@@ -92,18 +149,17 @@ def encontrar_funeraria_cercana(request):
 @csrf_exempt
 def generar_pdf(request):
     if request.method == 'GET':
-        # Renderizar el HTML
-        template_path = 'main/solicitud_pdf.html'
+        # Usar los datos proporcionados por el usuario
         context = {
-            # Puedes agregar datos dinámicos aquí
-            'nombre_cliente': 'Juan Pérez',
-            'tipo_servicio': 'Servicio A',
-            'fecha_servicio': '2024-10-10',
-            'ubicacion': 'Santiago, Chile',
-            'notas': 'Este es un comentario adicional.',
+            'nombre_cliente': request.session.get('nombre_cliente', 'No proporcionado'),
+            'tipo_servicio': request.session.get('tipo_servicio', 'No proporcionado'),
+            'fecha_servicio': request.session.get('fecha_servicio', 'No proporcionado'),
+            'ubicacion': request.session.get('ubicacion', 'No proporcionado'),
+            'notas': request.session.get('notas', 'No proporcionado'),
         }
         
-        # Generar PDF
+        # Renderizar el HTML
+        template_path = 'main/solicitud_pdf.html'
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="solicitud.pdf"'
         

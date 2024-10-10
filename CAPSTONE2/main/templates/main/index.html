@@ -1079,12 +1079,16 @@
 <div class="chat-bubble" id="chatBubble">💬</div>
 
 <!-- Ventana del chat -->
-<div class="chat-window" id="chatWindow">
+<div class="chat-window" id="chatWindow" style="display: none;">
     <div class="header">ASABOT</div>
     <div class="messages" id="chatMessages"></div>
     <div class="input-box">
         <input type="text" id="userMessage" placeholder="Escribe tu mensaje...">
-        <button onclick="sendMessage()">Enviar</button>
+        <button id="sendButton">Enviar</button> <!-- Actualizado con ID -->
+    </div>
+    <div class="button-container">
+		<button id="cancel_button">Cancelar</button>
+		<button id="back_button">Volver</button>
     </div>
 </div>
 

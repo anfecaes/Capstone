@@ -3,8 +3,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatWindow = document.getElementById('chatWindow');
     const chatMessages = document.getElementById('chatMessages');
     const userMessageInput = document.getElementById('userMessage');
+    const sendButton = document.getElementById('sendButton');
+    const back_elementbutton = document.getElementById("back_button");
+    const cancel_elementbutton = document.getElementById("cancel_button");
+    const send_elementbutton = document.getElementById("sendButton");
 
-    // Mostrar/ocultar la ventana de chat al hacer clic en la burbuja
     chatBubble.addEventListener('click', () => {
         if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
             chatWindow.style.display = 'flex';
@@ -17,93 +20,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Función para obtener la ubicación del usuario
-    function obtenerUbicacion() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const latitud = position.coords.latitude;
-                    const longitud = position.coords.longitude;
+    function sendMessage(message) {
+        if (!message) return;
 
-                    // Enviar la ubicación al servidor
-                    encontrarFunerariaCercana(latitud, longitud);
-                },
-                () => {
-                    chatMessages.innerHTML += `<div class="bot-message"><strong>ASABOT:</strong> No se pudo obtener tu ubicación. ¿En qué más puedo ayudarte?</div>`;
-                }
-            );
-        } else {
-            chatMessages.innerHTML += `<div class="bot-message"><strong>ASABOT:</strong> Tu navegador no soporta la geolocalización. ¿En qué más puedo ayudarte?</div>`;
-        }
-    }
-
-    // Función para encontrar la funeraria más cercana
-    function encontrarFunerariaCercana(latitud, longitud) {
-        fetch('ubicacion/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken'),  // Manejo del CSRF
-            },
-            body: JSON.stringify({
-                latitud: latitud,
-                longitud: longitud,
-            }),
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.error) {
-                chatMessages.innerHTML += `<div class="bot-message"><strong>ASABOT:</strong> ${data.error}</div>`;
-            } else {
-                chatMessages.innerHTML += `<div class="bot-message"><strong>ASABOT:</strong> La funeraria más cercana es ${data.nombre}, ubicada en ${data.direccion}.</div>`;
+        chatMessages.innerHTML += `<div class="user-message"><strong>Tú:</strong> ${message}</div>`;
+        if ((userMessageInput.value).includes("pdf"))
+            {
+                document.getElementsByClassName("button-container")[0].style.display="block";
             }
-            chatMessages.scrollTop = chatMessages.scrollHeight;  // Desplazar hacia abajo
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            chatMessages.innerHTML += `<div class="bot-message"><strong>ASABOT:</strong> Hubo un problema al buscar la funeraria cercana.</div>`;
-        });
-    }
-
-    // Función para enviar el mensaje y hacer la petición a la API de OpenAI
-    function sendMessage() {
-        const userMessage = userMessageInput.value;
-
-        if (userMessage.trim() === '') return;
-
-        chatMessages.innerHTML += `<div class="user-message"><strong>Tú:</strong> ${userMessage}</div>`;
         userMessageInput.value = '';
 
-        // Mostrar el indicador de que el bot está escribiendo
         const typingIndicator = document.createElement('div');
         typingIndicator.className = 'typing-indicator';
         typingIndicator.textContent = 'ASABOT está escribiendo...';
         chatMessages.appendChild(typingIndicator);
-        chatMessages.scrollTop = chatMessages.scrollHeight;  // Desplazar hacia abajo
+        chatMessages.scrollTop = chatMessages.scrollHeight;
 
-        // Comprobar si el mensaje incluye "ubicación" para obtener la ubicación del usuario
-        if (userMessage.toLowerCase().includes('ubicación')) {
-            obtenerUbicacion();
-            chatMessages.removeChild(typingIndicator); // Remover el indicador de escritura
-            return; // Salir de la función para evitar llamar a la API de OpenAI
-        }
-
-        // Hacer la llamada a la API de OpenAI
         fetch('ask', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
             },
-            body: JSON.stringify({ message: userMessage })
+            body: JSON.stringify({ message: message })
         })
         .then(response => response.json())
         .then(data => {
-            // Remover el indicador de escritura
             chatMessages.removeChild(typingIndicator);
-
-            // Mostrar la respuesta del bot
             chatMessages.innerHTML += `<div class="bot-message"><strong>ASABOT:</strong> ${data.message}</div>`;
-            chatMessages.scrollTop = chatMessages.scrollHeight;  // Desplazar hacia abajo
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         })
         .catch(error => {
             console.error('Error:', error);
@@ -112,21 +57,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Enviar mensaje al presionar Enter
+    cancel_elementbutton.onclick = function() {
+        sendMessage("cancelar");
+    };
+    
+    back_elementbutton.onclick = function() {
+        sendMessage("volver");
+    };
+    
+    send_elementbutton.onclick = function() {
+        sendMessage(userMessageInput.value);
+    };
+
     userMessageInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
-            sendMessage();
+            sendMessage(userMessageInput.value);
         }
     });
 
-    // Función para obtener el token CSRF
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
             const cookies = document.cookie.split(';');
             for (let i = 0; i < cookies.length; i++) {
                 const cookie = cookies[i].trim();
-                // Comprueba si esta cookie contiene el nombre que estamos buscando
                 if (cookie.substring(0, name.length + 1) === (name + '=')) {
                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                     break;
