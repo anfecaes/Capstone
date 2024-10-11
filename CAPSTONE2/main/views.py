@@ -6,9 +6,10 @@ import json
 from .models import Funeraria  # Asegúrate de tener un modelo para las funerarias
 from geopy.distance import great_circle
 from xhtml2pdf import pisa  # Importa xhtml2pdf para generar PDFs
+import requests
 
 # Asegúrate de que tu clave API de OpenAI esté configurada correctamente
-openai.api_key = 'sk-O9sWoqxgcMdmfAkNGaxsUkHuQUbjoXyrU4vg0xjfFrT3BlbkFJj8hcIwvbjq_G_hPL71QtQDXkjqeFBWA9C1f237-YQA'
+openai.api_key = 'poner api aqui'
 
 def homepage(request):
     return render(request, 'main/index.html')
@@ -42,18 +43,42 @@ def ask(request):
         # Comprobar si el usuario quiere volver a la pregunta anterior
         if user_message.lower() == "volver":
             step = request.session.get('step')
-            if step == 'notas':
-                request.session['step'] = 'ubicacion'
-                bot_message = "Por favor, ¿cuál es la ubicación? "
-            elif step == 'ubicacion':
-                request.session['step'] = 'fecha_servicio'
-                bot_message = "¿Cuál es la fecha del servicio? "
-            elif step == 'fecha_servicio':
-                request.session['step'] = 'tipo_servicio'
-                bot_message = "¿Qué tipo de servicio deseas? "
-            elif step == 'tipo_servicio':
-                request.session['step'] = 'nombre'
-                bot_message = "¿Cuál es tu nombre? "
+            previous_steps = {
+                'notas': 'opcion_cremacion_sepultura',
+                'opcion_cremacion_sepultura': 'donacion',
+                'donacion': 'certificado_defuncion',
+                'certificado_defuncion': 'ubicacion',
+                'ubicacion': 'fecha_servicio',
+                'fecha_servicio': 'tipo_servicio',
+                'tipo_servicio': 'nombre',
+            }
+
+            if step in previous_steps:
+                request.session['step'] = previous_steps[step]
+                step = request.session['step']
+
+                if step == 'nombre':
+                    bot_message = "¿Cuál es tu nombre?"
+                elif step == 'tipo_servicio':
+                    bot_message = "¿Qué tipo de servicio deseas?"
+                elif step == 'fecha_servicio':
+                    bot_message = "¿Cuál es la fecha del servicio?"
+                elif step == 'ubicacion':
+                    bot_message = "¿Dónde será el servicio? (ubicación)"
+                elif step == 'certificado_defuncion':
+                    bot_message = (
+                        "¿Ya tiene el certificado de defunción entregado por el médico de defunción para el fallecido? "
+                        "¿Ya inscribió el certificado de defunción en el Registro Civil? Responde 'sí' o 'no'."
+                    )
+                elif step == 'donacion':
+                    bot_message = (
+                        "Según la Ley N° 19.451, las personas mayores de 18 años son donantes automáticos. "
+                        "¿Estás de acuerdo con esto? Responde 'sí' o 'no'."
+                    )
+                elif step == 'opcion_cremacion_sepultura':
+                    bot_message = "¿Deseas optar por cremación o sepultura?"
+                elif step == 'notas':
+                    bot_message = "¿Tienes alguna nota adicional que agregar?"
             else:
                 bot_message = "No hay preguntas anteriores para volver."
             return JsonResponse({'message': bot_message})
@@ -72,28 +97,86 @@ def ask(request):
 
         if step == 'nombre':
             request.session['nombre_cliente'] = user_message
-            bot_message = (
-                "Gracias. ¿Qué tipo de servicio deseas? "
-            )
+            bot_message = "Gracias. ¿Qué tipo de servicio deseas? "
             request.session['step'] = 'tipo_servicio'
         elif step == 'tipo_servicio':
             request.session['tipo_servicio'] = user_message
-            bot_message = (
-                "Perfecto. ¿Cuál es la fecha del servicio? "
-            )
+            bot_message = "Perfecto. ¿Cuál es la fecha del servicio? "
             request.session['step'] = 'fecha_servicio'
         elif step == 'fecha_servicio':
             request.session['fecha_servicio'] = user_message
-            bot_message = (
-                "¿Dónde será el servicio? (ubicación) "
-            )
+            bot_message = "¿Dónde será el servicio? (ubicación) "
             request.session['step'] = 'ubicacion'
         elif step == 'ubicacion':
             request.session['ubicacion'] = user_message
             bot_message = (
-                "¿Tienes alguna nota adicional que agregar? "
+                "¿Ya tiene el certificado de defunción entregado por el médico de defunción para el fallecido? "
+                "¿Ya inscribió el certificado de defunción en el Registro Civil? Responde 'sí' o 'no'."
             )
-            request.session['step'] = 'notas'
+            request.session['step'] = 'certificado_defuncion'
+        elif step == 'certificado_defuncion':
+            if user_message.lower() == "no":
+                bot_message = (
+                    "Debes de llevar este documento impreso a la oficina del Registro Civil. "
+                    "Es importante que lo hagas. Puedes ir a la sección de defunción en el siguiente enlace: "
+                    "<a href='https://www.registrocivil.cl/' target='_blank'>Registro Civil</a> para obtener tu certificado."
+                )
+                request.session['step'] = 'finalizado'
+            else:
+                bot_message = (
+                    "Ten en cuenta que las deudas de una persona fallecida pueden pasar a sus herederos legales. "
+                    "Para evitarlo, puedes renunciar a la herencia o aceptarla con 'beneficio de inventario', "
+                    "lo que limita tu responsabilidad a los bienes heredados. En algunos casos, las deudas pueden estar "
+                    "cubiertas por un seguro de desgravamen, que cancela el saldo en caso de fallecimiento del titular. "
+                    "Por favor, escribe 'ok' o 'continuar' para seguir con la siguiente pregunta."
+                )
+                request.session['step'] = 'esperando_confirmacion_deudas'  # Cambiamos el paso
+        elif step == 'esperando_confirmacion_deudas':
+            if user_message.lower() in ["ok", "continuar"]:
+                bot_message = (
+                    "Según la Ley N° 19.451, las personas mayores de 18 años son donantes automáticos. "
+                    "¿Estás de acuerdo con esto? Responde 'sí' o 'no'."
+                )
+                request.session['step'] = 'donacion'
+            else:
+                bot_message = "Por favor, escribe 'ok' o 'continuar' para seguir."
+        elif step == 'donacion':
+            affirmative_responses = ["sí", "si", "sí", "sì", "ye", "yes", "yup", "por supuesto", "claro"]
+            if any(resp in user_message.lower() for resp in affirmative_responses):
+                bot_message = "Gracias por tu respuesta. ¿Deseas optar por cremación o sepultura? "
+                request.session['step'] = 'opcion_cremacion_sepultura'
+            elif user_message.lower() == 'no':
+                bot_message = (
+                    "De acuerdo con la Ley N° 19.451, las personas mayores de 18 años "
+                    "son donantes automáticos. Sin embargo, si no estás de acuerdo, "
+                    "debes informarlo en el Registro Nacional de No Donantes, o asegurarte de "
+                    "que tu familiar haya dejado un testamento o expresión clara de su deseo de no donar. "
+                    "¿Deseas optar por cremación o sepultura?"
+                )
+                request.session['step'] = 'opcion_cremacion_sepultura'
+            else:
+                bot_message = "Lo siento, no entendí tu respuesta. Por favor responde con 'sí' o 'no'."
+        elif step == 'opcion_cremacion_sepultura':
+            cremation_responses = ["cremación", "crema", "cremar", "incineración", "cremacion"]
+            burial_responses = ["sepultura", "tumba", "entierro", "inhumación", "inhumacion"]
+
+            if any(resp in user_message.lower() for resp in burial_responses):
+                bot_message = (
+                    "Okey, si no tienes dinero para la sepultura, puedes solicitar una entrevista con el asistente social de la municipalidad "
+                    "para evaluar si puedes optar a una sepultura gratuita. "
+                    "¿Tienes alguna nota adicional que agregar?"
+                )
+                request.session['step'] = 'notas'
+            elif any(resp in user_message.lower() for resp in cremation_responses):
+                bot_message = (
+                    "Para la cremación, necesitas: "
+                    "1. Autorización previa del Director General del Servicio Nacional de Salud o su delegado. "
+                    "2. Existencia de una declaración escrita hecha previamente por el difunto en una Notaría o una solicitud del cónyuge sobreviviente o de la mayoría de los hijos que autoricen la cremación ante notario. "
+                    "¿Tienes alguna nota adicional que agregar?"
+                )
+                request.session['step'] = 'notas'
+            else:
+                bot_message = "Lo siento, no entendí tu respuesta. Por favor responde con 'cremación' o 'sepultura'."
         elif step == 'notas':
             request.session['notas'] = user_message
             bot_message = "Gracias. Ahora procederé a generar el PDF. Puedes descargarlo <a href='/generar_pdf/' download>Descargar PDF</a>."
@@ -106,7 +189,7 @@ def ask(request):
                 max_tokens=150
             )
             bot_message = response['choices'][0]['message']['content'].strip()
-        
+
         return JsonResponse({'message': bot_message})
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
