@@ -2209,8 +2209,8 @@ span.prev-price {
 
 /*----- Latest Blog Section
 --------------------------------------------------------------*/
-#latest-blog {
-}
+/* #latest-blog {
+} */
 
 #latest-blog article.column {
   margin-bottom: 60px;
@@ -2611,3 +2611,240 @@ body {
   font-style: italic;
   color: #888; /* Color gris claro */
 }
+
+
+/* login */
+/* Estilos para la sección de login */
+#login-section {
+  background-color: #f9f9f9;
+  padding: 80px 0;
+}
+
+.section-header {
+  margin-bottom: 30px;
+}
+
+.section-header h2 {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+}
+
+.login-form {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-form .form-group {
+  margin-bottom: 20px;
+}
+
+.login-form button.btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.login-form button.btn:hover {
+  background-color: #0056b3;
+  color: #fff;
+}
+
+.login-form .form-text {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.login-form a.text-muted {
+  font-size: 14px;
+}
+
+.login-form a.text-muted:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.card {
+  border: none;
+}
+
+ /* Estilo para la información del usuario */
+ .user-info {
+  margin-right: auto;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-info strong {
+  color: #007bff;
+}
+
+/* Ícono de saludo */
+.user-info span::before {
+  content: "👋";
+  margin-right: 5px;
+}
+
+/* registro */
+/* Estilos para la sección de registro */
+#register-section {
+  background-color: #f9f9f9;
+  padding: 80px 0;
+}
+
+.section-header {
+  margin-bottom: 30px;
+}
+
+.section-header h2 {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+}
+
+.register-form {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.register-form .form-group {
+  margin-bottom: 20px;
+}
+
+.register-form button.btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.register-form button.btn:hover {
+  background-color: #0056b3;
+  color: #fff;
+}
+
+.register-form .form-text {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.register-form a.text-muted {
+  font-size: 14px;
+}
+
+.register-form a.text-muted:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.card {
+  border: none;
+}
+
+/* logout */
+.logout-link {
+  color: #888; /* Color más tenue para que no resalte demasiado */
+  font-size: 0.9em; /* Tamaño de texto un poco más pequeño */
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.logout-link:hover {
+  color: #f00; /* Color rojo en hover para indicar acción */
+}
+
+.logout-link i {
+  margin-right: 5px; /* Espacio entre el icono y el texto */
+}
+
+
+/* Historial de Homenajes */
+#historial-homenajes-section {
+  background-color: #f9f9f9;
+  padding: 50px 0;
+}
+
+#historial-homenajes-section .section-title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+#historial-homenajes-section .section-header p {
+  font-size: 1rem;
+  color: #7f8c8d;
+  margin-bottom: 30px;
+}
+
+#historial-homenajes-section .table {
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#historial-homenajes-section .table th {
+  background-color: #34495e;
+  color: #ecf0f1;
+  text-align: center;
+  padding: 15px;
+}
+
+#historial-homenajes-section .table td {
+  text-align: center;
+  padding: 15px;
+  vertical-align: middle;
+  font-size: 1rem;
+  color: #2c3e50;
+}
+
+#historial-homenajes-section .btn {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border-radius: 50px;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+#historial-homenajes-section .btn-outline-primary {
+  color: #3498db;
+  border-color: #3498db;
+}
+
+#historial-homenajes-section .btn-outline-primary:hover {
+  background-color: #3498db;
+  color: #fff;
+}
+
+#historial-homenajes-section .btn-secondary {
+  background-color: #7f8c8d;
+  color: #fff;
+  border: none;
+}
+
+#historial-homenajes-section .btn-secondary:hover {
+  background-color: #95a5a6;
+  color: #fff;
+}
+
+/* Mensaje cuando no hay homenajes */
+#historial-homenajes-section .alert {
+  font-size: 1.1rem;
+  color: #34495e;
+  background-color: #ecf0f1;
+  border-color: #bdc3c7;
+}
+

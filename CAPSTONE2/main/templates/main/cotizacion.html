@@ -1,0 +1,96 @@
+{% extends 'main/index.html' %}
+{% load static %}
+{% block title %}Cotización de Servicios Funerarios{% endblock %}
+
+{% block content %}
+<section class="cotizacion-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="text-center mb-4">Cotización de Servicios Funerarios</h2>
+                
+                <!-- Mensaje de Advertencia -->
+                <div class="alert alert-warning text-center" role="alert">
+                    <strong>Nota:</strong> Esta es una simulación que aproxima los valores para estimar los montos necesarios.
+                    Los servicios específicos ofrecidos por funerarias y cementerios pueden variar.
+                </div>
+
+                <form method="POST" class="form-cotizacion card p-4 shadow-lg">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ form.tipo_servicio.label_tag }}
+                        {{ form.tipo_servicio }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.ubicacion.label_tag }}
+                        {{ form.ubicacion }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.servicios_adicionales.label_tag }}
+                        <pre>{{ form.servicios_adicionales }}</pre>  <!-- Imprimir contenido -->
+                    </div>
+                    <div class="form-group">
+                        {{ form.beneficio.label_tag }}
+                        {{ form.beneficio }}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block mt-3">Calcular Cotización</button>
+                </form>
+                
+                
+
+                {% if total is not None %}
+                <div class="resultado-cotizacion mt-4 alert alert-info">
+                    <h4>Resultado</h4>
+                    <p>El costo total estimado es: <strong>{{ total }} CLP</strong></p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+<style>
+    .cotizacion-section {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-cotizacion .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-cotizacion select, 
+    .form-cotizacion input[type="checkbox"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+    }
+
+    button {
+        background-color: #007bff;
+        border: none;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+        color: #856404;
+        font-size: 0.9rem;
+    }
+
+    .resultado-cotizacion {
+        font-size: 1rem;
+    }
+</style>
