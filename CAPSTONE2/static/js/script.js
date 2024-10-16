@@ -141,7 +141,73 @@
 })(jQuery);
 
 
+// login
 
+function validateForm() {
+  const username = document.querySelector('input[name="username"]');
+  const password = document.querySelector('input[name="password"]');
+  
+  if (!username || !password) {
+      alert("Error al seleccionar los campos del formulario.");
+      return false;
+  }
+  
+  if (username.value.trim() === "") {
+      alert("Por favor, ingresa tu nombre de usuario.");
+      username.focus();
+      return false;
+  }
+
+  if (password.value.trim() === "") {
+      alert("Por favor, ingresa tu contraseña.");
+      password.focus();
+      return false;
+  }
+
+  return true; // Validación exitosa
+}
+
+// registro
+
+function validateRegisterForm() {
+  const username = document.querySelector('input[name="username"]');
+  const rut = document.querySelector('input[name="rut"]');
+  const email = document.querySelector('input[name="email"]');
+  const password1 = document.querySelector('input[name="password1"]');
+  const password2 = document.querySelector('input[name="password2"]');
+
+  if (username.value.trim() === "") {
+      alert("Por favor, ingresa un nombre de usuario.");
+      username.focus();
+      return false;
+  }
+
+  if (rut.value.trim() === "") {
+      alert("Por favor, ingresa tu rut.");
+      rut.focus();
+      return false;
+  }
+
+  if (email.value.trim() === "") {
+      alert("Por favor, ingresa tu correo electrónico.");
+      email.focus();
+      return false;
+  }
+
+  if (password1.value.trim() === "") {
+      alert("Por favor, ingresa una contraseña.");
+      password1.focus();
+      return false;
+  }
+
+  if (password1.value !== password2.value) {
+      alert("Las contraseñas no coinciden.");
+      password2.focus();
+      return false;
+  }
+
+  return true; // Validación exitosa
+}
 
 
 

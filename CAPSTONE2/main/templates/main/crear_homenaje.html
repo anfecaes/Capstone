@@ -1,9 +1,105 @@
-{% if form %}
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Crear Homenaje</button>
-  </form>
-{% else %}
-  <p>No se ha encontrado el formulario.</p>
-{% endif %}
+{% extends 'main/index.html' %}
+
+{% block content %}
+<section id="crear-homenaje-section" class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="section-header text-center mb-4">
+                    <h2 class="section-title text-primary display-4">Crear Homenaje</h2>
+                    <p class="text-muted">Llena los detalles para conmemorar a tu ser querido.</p>
+                </div>
+                <div class="homenaje-form card shadow-lg p-4">
+                    <form method="post" enctype="multipart/form-data" id="homenajeForm">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary btn-block btn-lg">
+                            Crear Homenaje <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mensaje de confirmación -->
+<div id="confirmMessage" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-success">¡Homenaje Creado!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Tu homenaje ha sido creado exitosamente.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('homenajeForm');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();  // Evitamos el envío por ahora
+            const modal = new bootstrap.Modal(document.getElementById('confirmMessage'));
+            modal.show();
+        });
+    });
+
+    // Efecto al cargar la página
+    window.onload = function () {
+        const section = document.getElementById('crear-homenaje-section');
+        section.style.opacity = 0;
+        section.style.transition = 'opacity 1.5s ease-in-out';
+        setTimeout(() => section.style.opacity = 1, 100);
+    };
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .section-title {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 10px;
+        animation: fadeInDown 1s;
+    }
+
+    .homenaje-form {
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}

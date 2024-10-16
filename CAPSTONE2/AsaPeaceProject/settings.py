@@ -37,7 +37,7 @@ ROOT_URLCONF = 'AsaPeaceProject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'asapeaceweb' / 'templates'],  # Ruta a la carpeta de plantillas
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Ruta a la carpeta de plantillas
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -56,7 +56,7 @@ WSGI_APPLICATION = 'AsaPeaceProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('DB_NAME', 'ASApeace'),
+        'NAME': os.getenv('DB_NAME', 'asapeace'),
         'USER': os.getenv('DB_USER', 'postgres'),
         'PASSWORD': os.getenv('DB_PASSWORD', 'guts_2015'),
         'HOST': 'localhost',
@@ -90,3 +90,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']
 
 APPEND_SLASH = False
+
+# configuración de usarios portal
+# desactivar auth_user_model cuando se vaya a trabajar con admin
+AUTH_USER_MODEL = 'main.Usuario'  
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'tu-email@gmail.com'
+# EMAIL_HOST_PASSWORD = 'tu-contraseña'
+# DEFAULT_FROM_EMAIL = 'tu-email@gmail.com'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

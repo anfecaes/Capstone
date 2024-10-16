@@ -6,7 +6,12 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.utils.text import slugify
+from django.urls import reverse
 
+from django.conf import settings
+# from uuid import uuid4
 
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
@@ -76,6 +81,29 @@ class AuthUserUserPermissions(models.Model):
         db_table = 'auth_user_user_permissions'
         unique_together = (('user', 'permission'),)
 
+# Modelo para los usuarios del portal
+class Usuario(AbstractUser):
+    rut = models.CharField(max_length=12, unique=True)  # RUT único para cada usuario
+    telefono = models.CharField(max_length=15)
+    edad = models.PositiveIntegerField(null=True, blank=True)
+    email = models.EmailField(unique=True)
+
+    # Agregar related_name para evitar conflictos
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='usuario_set',  # Cambia el related_name para evitar conflicto
+        blank=True,
+        help_text='The groups this user belongs to.'
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='usuario_permission_set',  # Cambia el related_name para evitar conflicto
+        blank=True,
+        help_text='Specific permissions for this user.'
+    )
+
+    def __str__(self):
+        return self.username
 
 class Cementerio(models.Model):
     id_cementerio = models.AutoField(primary_key=True)
@@ -85,22 +113,8 @@ class Cementerio(models.Model):
     imagen = models.BinaryField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'cementerio'
-
-
-class Cliente(models.Model):
-    id_cliente = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=255)
-    apellidos = models.CharField(max_length=255)
-    email = models.CharField(unique=True, max_length=255)
-    telefono = models.CharField(max_length=20, blank=True, null=True)
-    direccion = models.TextField(blank=True, null=True)
-    fecha_registro = models.DateField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'cliente'
 
 
 class DjangoAdminLog(models.Model):
@@ -148,143 +162,62 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
-class Empleado(models.Model):
-    id_empleado = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=255, blank=True, null=True)
-    cargo = models.CharField(max_length=100, blank=True, null=True)
-    salario = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    fecha_contratacion = models.DateField(blank=True, null=True)
-    id_funeraria = models.ForeignKey('Funeraria', models.DO_NOTHING, db_column='id_funeraria', blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'empleado'
-
-
-class Factura(models.Model):
-    id_factura = models.AutoField(primary_key=True)
-    id_cliente = models.ForeignKey(Cliente, models.DO_NOTHING, db_column='id_cliente', blank=True, null=True)
-    id_servicio = models.ForeignKey('Serviciofunerario', models.DO_NOTHING, db_column='id_servicio', blank=True, null=True)
-    fecha_emision = models.DateField(blank=True, null=True)
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-
-    class Meta:
-        managed = False
-        db_table = 'factura'
-
-
 class Funeraria(models.Model):
-    id_funeraria = models.AutoField(primary_key=True, default=1)
+    id_funeraria = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=255)
     direccion = models.TextField(blank=True, null=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)
     email = models.CharField(unique=True, max_length=255, blank=True, null=True)
     imagen = models.BinaryField(blank=True, null=True)
+    
+    # Nuevo campo para almacenar un enlace (link)
+    link = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = True
         db_table = 'funeraria'
-        
-
-
-
-class Funerariaproveedor(models.Model):
-    id_funeraria = models.OneToOneField(Funeraria, models.DO_NOTHING, db_column='id_funeraria', primary_key=True)  # The composite primary key (id_funeraria, id_proveedor) found, that is not supported. The first column is selected.
-    id_proveedor = models.ForeignKey('Proveedor', models.DO_NOTHING, db_column='id_proveedor')
-    fecha_contrato = models.DateField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'funerariaproveedor'
-        unique_together = (('id_funeraria', 'id_proveedor'),)
-
-
-class Homenaje(models.Model):
-    nombre_persona = models.CharField(max_length=255)
-    mensaje_homenaje = models.TextField()
-    imagen_persona = models.ImageField(upload_to='homenajes/', null=True, blank=True)  # Subida de imagen
-    condolencias = models.PositiveIntegerField(default=0)  # Contador de condolencias
 
     def __str__(self):
-        return self.nombre_persona
+        return self.nombre
 
-class Mascota(models.Model):
-    id_mascota = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=255)
-    tipo = models.CharField(max_length=50, blank=True, null=True)
-    raza = models.CharField(max_length=100, blank=True, null=True)
-    fecha_nacimiento = models.DateField(blank=True, null=True)
-    id_cliente = models.ForeignKey(Cliente, models.DO_NOTHING, db_column='id_cliente', blank=True, null=True)
+class Homenaje(models.Model):
+    autor = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    titulo = models.CharField(max_length=255)
+    mensaje = models.TextField()
+    fecha_publicacion = models.DateTimeField(auto_now_add=True)
+    es_para_mascota = models.BooleanField(default=False)
+    invitados = models.ManyToManyField(Usuario, related_name='invitados', blank=True)
+    imagen = models.ImageField(upload_to='homenajes/imagenes/', null=True, blank=True)
+    video = models.FileField(upload_to='homenajes/videos/', null=True, blank=True)
+    slug = models.SlugField(unique=True, blank=True)
+    velas = models.PositiveIntegerField(default=0)  # Reacción de velas
+    palomas = models.PositiveIntegerField(default=0)  # Reacción de palomas
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.titulo)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('ver_homenaje', kwargs={'slug': self.slug})  # Devuelve la URL basada en el slug
+
+    def __str__(self):
+        return self.titulo
     class Meta:
-        managed = False
-        db_table = 'mascota'
+        managed = True
+        db_table = 'main_homenaje'
 
+class Condolencia(models.Model):
+    homenaje = models.ForeignKey(Homenaje, related_name='condolencias', on_delete=models.CASCADE)
+    autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    mensaje = models.TextField()
+    fecha_publicacion = models.DateTimeField(auto_now_add=True)
 
-class Pago(models.Model):
-    id_pago = models.AutoField(primary_key=True)
-    id_factura = models.ForeignKey(Factura, models.DO_NOTHING, db_column='id_factura', blank=True, null=True)
-    fecha_pago = models.DateField(blank=True, null=True)
-    monto = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    metodo_pago = models.CharField(max_length=50, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'pago'
-
-
-class Proveedor(models.Model):
-    id_proveedor = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=255, blank=True, null=True)
-    servicio = models.CharField(max_length=255, blank=True, null=True)
-    telefono = models.CharField(max_length=20, blank=True, null=True)
-    email = models.CharField(max_length=255, blank=True, null=True)
-    direccion = models.TextField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'proveedor'
-
-
-class Sepultura(models.Model):
-    id_sepultura = models.AutoField(primary_key=True)
-    numero_sepultura = models.CharField(max_length=50, blank=True, null=True)
-    id_cementerio = models.ForeignKey(Cementerio, models.DO_NOTHING, db_column='id_cementerio', blank=True, null=True)
-    disponible = models.BooleanField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'sepultura'
-
-
-class Sepulturamascota(models.Model):
-    id_sepultura_mascota = models.AutoField(primary_key=True)
-    id_mascota = models.ForeignKey(Mascota, models.DO_NOTHING, db_column='id_mascota', blank=True, null=True)
-    id_sepultura = models.ForeignKey(Sepultura, models.DO_NOTHING, db_column='id_sepultura', blank=True, null=True)
-    fecha_inhumacion = models.DateField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'sepulturamascota'
-
-
-class Serviciofunerario(models.Model):
-    id_servicio = models.AutoField(primary_key=True)
-    tipo_servicio = models.CharField(max_length=100, blank=True, null=True)
-    descripcion = models.TextField(blank=True, null=True)
-    precio = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    id_funeraria = models.ForeignKey(Funeraria, models.DO_NOTHING, db_column='id_funeraria', blank=True, null=True)
-    fecha_servicio = models.DateField(blank=True, null=True)
-    id_cliente = models.ForeignKey(Cliente, models.DO_NOTHING, db_column='id_cliente', blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'serviciofunerario'
-
-
+    def __str__(self):
+        return f"{self.autor.username} - {self.mensaje[:30]}"
 
 class ServiciosMascotas(models.Model):
-    id_servi_mascota = models.AutoField(primary_key=True)  # Cambiado a AutoField
+    id_servi_mascota = models.AutoField(primary_key=True)
     nombre = models.CharField(blank=True, null=True)
     direccion = models.TextField(blank=True, null=True)
     telefono = models.CharField(blank=True, null=True)
@@ -292,5 +225,49 @@ class ServiciosMascotas(models.Model):
     imagen = models.BinaryField(blank=True, null=True)
 
     class Meta:
-        managed = True  # Asegúrate de que esto sea correcto
+        managed = True
         db_table = 'servicios_mascotas'
+
+# implementación de la calculadora
+class TipoServicio(models.Model):
+    tipo = models.CharField(max_length=50)
+    precio_base = models.IntegerField()
+
+    def __str__(self):
+        return self.tipo
+
+class ServicioAdicional(models.Model):
+    nombre = models.CharField(max_length=100)
+    precio = models.IntegerField()
+
+    def __str__(self):
+        return self.nombre
+
+class Ubicacion(models.Model):
+    region = models.CharField(max_length=100)
+    factor_precio = models.FloatField()
+
+    def __str__(self):
+        return self.region
+
+class Beneficio(models.Model):
+    tipo = models.CharField(max_length=100)
+    monto = models.IntegerField()
+
+    def __str__(self):
+        return self.tipo
+
+class ProductoAdicional(models.Model):
+    nombre = models.CharField(max_length=100)
+    precio = models.IntegerField()
+
+    def __str__(self):
+        return self.nombre
+
+class ImpuestoDescuento(models.Model):
+    descripcion = models.CharField(max_length=100)
+    tipo = models.CharField(max_length=50, choices=[('IVA', 'IVA'), ('descuento', 'Descuento')])
+    valor = models.FloatField()
+
+    def __str__(self):
+        return self.descripcion

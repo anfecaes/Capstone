@@ -6,6 +6,8 @@ from PIL import Image
 import base64
 from .models import ServiciosMascotas, Funeraria, Cementerio
 
+
+
 # Formulario personalizado para ServiciosMascotas
 class ServiciosMascotasAdminForm(forms.ModelForm):
     imagen_upload = forms.ImageField(required=False, label="Cargar imagen")  # Campo de imagen
@@ -33,7 +35,7 @@ class FunerariaAdminForm(forms.ModelForm):
 
     class Meta:
         model = Funeraria
-        fields = ['nombre', 'direccion', 'telefono', 'email', 'imagen_upload']
+        fields = ['nombre', 'direccion', 'telefono', 'email', 'link', 'imagen_upload']
 
     def save(self, commit=True):
         instance = super(FunerariaAdminForm, self).save(commit=False)
@@ -74,6 +76,7 @@ class CementerioAdminForm(forms.ModelForm):
 class ServiciosMascotasAdmin(admin.ModelAdmin):
     form = ServiciosMascotasAdminForm
     list_display = ('id_servi_mascota', 'nombre', 'direccion', 'telefono', 'email', 'imagen_tag')
+    list_editable = ('nombre', 'direccion', 'telefono', 'email')  # Campos editables directamente desde la lista
     search_fields = ('nombre', 'direccion', 'telefono', 'email')
 
     def imagen_tag(self, obj):
@@ -87,7 +90,8 @@ class ServiciosMascotasAdmin(admin.ModelAdmin):
 @admin.register(Funeraria)
 class FunerariaAdmin(admin.ModelAdmin):
     form = FunerariaAdminForm
-    list_display = ('id_funeraria', 'nombre', 'direccion', 'telefono', 'email', 'imagen_tag')
+    list_display = ('id_funeraria', 'nombre', 'direccion', 'telefono', 'email', 'link', 'imagen_tag')
+    list_editable = ('nombre', 'direccion', 'telefono', 'email')  # Campos editables directamente desde la lista
     search_fields = ('nombre', 'direccion', 'telefono', 'email')
 
     def imagen_tag(self, obj):
@@ -102,6 +106,7 @@ class FunerariaAdmin(admin.ModelAdmin):
 class CementerioAdmin(admin.ModelAdmin):
     form = CementerioAdminForm
     list_display = ('id_cementerio', 'nombre', 'direccion', 'telefono', 'imagen_tag')
+    list_editable = ('nombre', 'direccion', 'telefono')  # Campos editables directamente desde la lista
     search_fields = ('nombre', 'direccion', 'telefono')
 
     def imagen_tag(self, obj):
@@ -110,3 +115,8 @@ class CementerioAdmin(admin.ModelAdmin):
             return format_html('<img src="data:image/png;base64,{}" width="50" height="50" />'.format(image_base64))
         return "No image"
     imagen_tag.short_description = 'Imagen'
+
+
+
+
+
