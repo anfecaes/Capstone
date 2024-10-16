@@ -1,0 +1,167 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block content %}
+<section id="homenaje-section" class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="homenaje-header text-center mb-4">
+                    <h2 class="section-title">{{ homenaje.titulo }}</h2>
+                    <p class="text-muted">
+                        Publicado por: <strong>{{ homenaje.autor.username }}</strong> 
+                        el {{ homenaje.fecha_publicacion|date:"d M Y" }}
+                    </p>
+                </div>
+
+                <div class="homenaje-content card shadow-lg p-5 rounded-lg">
+                    <p class="homenaje-message">{{ homenaje.mensaje }}</p>
+
+                    {% if homenaje.imagen %}
+                    <div class="homenaje-image text-center mb-4">
+                        <img src="{{ homenaje.imagen.url }}" 
+                             alt="Imagen del homenaje" 
+                             class="img-fluid rounded shadow" 
+                             style="max-height: 300px; object-fit: cover;">
+                    </div>
+                    {% endif %}
+
+                    {% if homenaje.video %}
+                    <div class="homenaje-video text-center mb-4">
+                        <video controls class="rounded shadow-lg w-100">
+                            <source src="{{ homenaje.video.url }}" type="video/mp4">
+                            Tu navegador no soporta la reproducción de video.
+                        </video>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Sección de Reacciones -->
+                <div class="reacciones mt-5 text-center">
+                    <form method="POST" class="d-inline-block">
+                        {% csrf_token %}
+                        <button name="vela" class="btn btn-light rounded-pill shadow-sm p-2">
+                            <img src="{% static 'images/vela.jpg' %}" alt="Vela" width="30">
+                            <span class="ml-2">{{ homenaje.velas }}</span>
+                        </button>
+                    </form>
+
+                    <form method="POST" class="d-inline-block">
+                        {% csrf_token %}
+                        <button name="paloma" class="btn btn-light rounded-pill shadow-sm p-2">
+                            <img src="{% static 'images/paloma.jpg' %}" alt="Paloma" width="30">
+                            <span class="ml-2">{{ homenaje.palomas }}</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Sección de Condolencias -->
+                <div class="condolencias mt-5">
+                    <h3 class="mb-3 text-primary">Condolencias</h3>
+                    <ul class="list-group">
+                        {% for condolencia in homenaje.condolencias.all %}
+                        <li class="list-group-item rounded shadow-sm mb-2">
+                            <strong>{{ condolencia.autor.username }}:</strong> {{ condolencia.mensaje }}
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-center text-muted">Aún no hay condolencias.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Formulario para Condolencias -->
+                <div class="mt-4">
+                    <form method="POST" class="mt-4">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" name="condolencia" class="btn btn-primary mt-2">Enviar Condolencia</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{%endblock%}
+{% block extra_css %}
+<style>
+    /* Estilo para el título */
+    .section-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #2c3e50;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Estilo del mensaje de homenaje */
+    .homenaje-message {
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.2rem;
+        line-height: 1.8;
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+
+    /* Botones de reacciones */
+    .reacciones button {
+        background-color: #ffffff;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .reacciones button:hover {
+        background-color: #e9ecef;
+        transform: scale(1.1);
+    }
+
+    /* Listado de condolencias */
+    .list-group-item {
+        font-family: 'Roboto', sans-serif;
+        font-size: 1rem;
+    }
+
+    /* Estilo del formulario */
+    form input, form textarea {
+        border-radius: 10px;
+        border: 1px solid #ced4da;
+        padding: 10px;
+    }
+
+    form input:focus, form textarea:focus {
+        border-color: #007bff;
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    /* Efecto de fade-in al cargar la página */
+    #homenaje-section {
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Efecto de fade-in en la sección al cargar la página
+    document.addEventListener('DOMContentLoaded', function () {
+        const section = document.getElementById('homenaje-section');
+        section.style.opacity = 1;
+    });
+</script>
+{% endblock %}

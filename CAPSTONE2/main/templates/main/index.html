@@ -1,0 +1,386 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AsaPeace</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+    <!-- Estilos personalizados -->
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'icomoon/icomoon.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/vendor.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+    <!-- Scripts -->
+    <script src="{% static 'js/ubicacion.js' %}"></script>
+    <script src="{% static 'js/asabot.js' %}"></script>
+</head>
+
+<body>
+
+    <header id="header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="main-logo">
+                        <a href="{% url 'homepage' %}">
+                            <img src="{% static 'images/main-logo.png' %}" alt="logo">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-10">
+                    <nav id="navbar">
+                        <div class="main-menu stellarnav">
+                            <ul class="menu-list">
+                                {%if user.is_authenticated%}
+                                <li class="menu-item user-info">
+                                    <span> Hola, <strong>{{ user.username }}</strong></span>  <!-- Nombre del usuario con ícono -->
+                                </li>
+                                {%endif%}
+                                <li class="menu-item"><a href="{% url 'homepage' %}">INICIO</a></li>
+                                
+                                {% if user.is_authenticated %}
+                                
+                                    <li class="menu-item"><a href="{% url 'crear_homenaje' %}">CREAR HOMENAJE</a></li>
+                                    <li class="menu-item"><a href="{% url 'historial_homenajes' %}">MI HISTORIAL</a></li>
+                                    <li class="menu-item"><a href="{% url 'cotizacion' %}">COTIZA</a></li>
+                                    
+                                    {% if homenajes %}
+                                        <li class="menu-item dropdown">
+                                            <a class="dropdown-toggle" href="#" role="button" id="dropdownInvitaciones" data-bs-toggle="dropdown" aria-expanded="false">
+                                                INVITACIONES
+                                            </a>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownInvitaciones">
+                                                {% for homenaje in homenajes %}
+                                                    <li>
+                                                        <a class="dropdown-item" href="{% url 'homenaje_compartido' slug=homenaje.slug %}">
+                                                            {{ homenaje.titulo }}
+                                                        </a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                    
+                                {% endif %}
+
+
+                            
+                                
+                                <li class="menu-item"><a href="#popular-books" class="nav-link">SERVICIOS</a></li>
+                                <li class="menu-item"><a href="#popular-books" class="nav-link">MASCOTAS</a></li>
+                                <li class="menu-item"><a href="#download-app" class="nav-link">SOBRE NOSOTROS</a></li>
+                                
+                                {% if user.is_authenticated %}
+                                <li class="menu-item">
+                                    <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-link nav-link logout-link">
+                                            <i class="icon icon-logout"></i> Cerrar Sesión
+                                        </button>
+                                    </form>
+                                </li>
+                                {% else %}
+                                    <li class="menu-item"><a href="{% url 'registro' %}" class="nav-link">REGÍSTRATE</a></li>
+                                    <li class="menu-item"><a href="{% url 'login' %}" class="nav-link">INICIAR SESIÓN</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sección dinámica que será reemplazada por templates hijos -->
+    <main>
+        {% block content %}
+        <!-- Aquí va el contenido específico de cada página hija -->
+        
+        
+            <!-- Sección del mapa y ubicación solo para usuarios autenticados -->
+            <section id="best-selling" class="leaf-pattern-overlay">
+                <div class="corner-pattern-overlay"></div>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h2 class="section-title divider">¡PRUEBA NUESTRO CHATBOT CON INTELIGENCIA ARTIFICIAL!</h2>
+                                    <h3 class="item-title">Conoce a tu nuevo amigo</h3>
+                                    <p>Te damos ayuda y asistencia legal, y a su vez te orientamos para que consigas la experiencia más grata en este proceso.</p>
+					{% if user.is_authenticated %}
+                                    <!-- Aquí es donde añadimos el mapa -->
+                                    <div id="map" style="height: 400px; width: 100%;"></div>
+                                    
+                                    <!-- Botón para obtener la ubicación -->
+                                    <div class="btn-wrap">
+                                        <button onclick="obtenerUbicacion()" class="btn-accent-arrow">
+                                            Obtener mi ubicación
+                                            <i class="icon icon-ns-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Incluir Leaflet CSS y JS en el head -->
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+            <script>
+                // Inicializar la función de geolocalización al cargar la página
+                window.onload = function() {
+                    obtenerUbicacion();
+                };
+            </script>
+			{% endif %}
+            <!-- Sección de funerarias solo para usuarios autenticados -->
+            <section id="popular-books" class="bookshelf py-5 my-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="section-header align-center">
+                                <h2 class="section-title">SERVICIOS</h2>
+                            </div>
+
+                            <ul class="tabs">
+                                <li data-tab-target="#all-genre" class="active tab">Funerarias</li>
+                                <li data-tab-target="#business" class="tab">Cementerios</li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div id="all-genre" data-tab-content class="active">
+                                    <div class="row">
+                                        <!-- Iterar sobre las funerarias -->
+                                        {% for fune in funerarias %}
+                                            <div class="col-md-3">
+                                                <div class="product-item">
+                                                    <figure class="product-style">
+                                                        {% if fune.imagen_base64 %}
+                                                            <img src="data:image/png;base64,{{ fune.imagen_base64 }}" alt="{{ fune.nombre }}" class="product-item">
+                                                        {% else %}
+                                                            <img src="{% static 'images/logo-funeraria-martinez.jpg' %}" alt="{{ fune.nombre }}" class="product-item">
+                                                        {% endif %}
+                                                        <button 
+                                                            type="button" 
+                                                            class="btn btn-primary add-to-cart" 
+                                                            data-url="{{ funeraria.link }}">
+                                                            VER
+                                                        </button>
+                                                    </figure>
+                                                    <figcaption>
+                                                        <h3>{{ fune.nombre }}</h3>
+                                                        <span>{{ fune.direccion }}</span>
+                                                        <div class="item-price">{{ fune.telefono }}</div>
+                                                        <div class="item-price">{{ fune.email }}</div>
+                                                    </figcaption>
+                                                </div>
+                                            </div>
+                                        {% empty %}
+                                            <p>No hay funerarias registradas.</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <div id="business" data-tab-content>
+                                    <div class="row">
+                                        <!-- Iterar sobre los cementerios -->
+                                        {% for cemente in cementerios %}
+                                            <div class="col-md-3">
+                                                <div class="product-item">
+                                                    <figure class="product-style">
+                                                        {% if cemente.imagen_base64 %}
+                                                            <img src="data:image/png;base64,{{ cemente.imagen_base64 }}" alt="{{ cemente.nombre }}" class="product-item">
+                                                        {% else %}
+                                                            <img src="{% static 'images/logo-funeraria-martinez.jpg' %}" alt="{{ cemente.nombre }}" class="product-item">
+                                                        {% endif %}
+                                                        <button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+                                                    </figure>
+                                                    <figcaption>
+                                                        <h3>{{ cemente.nombre }}</h3>
+                                                        <span>{{ cemente.direccion }}</span>
+                                                        <div class="item-price">{{ cemente.telefono }}</div>
+                                                        <div class="item-price">{{ cemente.email }}</div>
+                                                    </figcaption>
+                                                </div>
+                                            </div>
+                                        {% empty %}
+                                            <p>No hay cementerios registrados.</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div><!--inner-tabs-->
+                    </div>
+                </div>
+            </section>
+        
+        
+        {% endblock %}
+    </main>
+
+	<section id="download-app" class="leaf-pattern-overlay">
+		<div class="corner-pattern-overlay"></div>
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-8">
+					<div class="row">
+
+						<div class="col-md-5">
+							<figure>
+								<img src="{% static 'images\sobre_nosotros.jpg' %}" alt="Imagen que nos represente" class="single-image">
+							</figure>
+						</div>
+
+						<div class="col-md-7">
+							<div class="app-info">
+								<h2 class="section-title divider">SOBRE NOSOTROS</h2>
+								<p>Somos un portal web dedicado a ofrecer un marketplace de servicios funerarios, facilitando la conexión entre usuarios y funerarias. Nuestro objetivo es simplificar y acompañar a nuestros clientes en momentos difíciles. Contamos con un chatbot especializado para resolver inquietudes y guiar en los trámites necesarios. Además, ofrecemos un apartado dedicado a servicios para mascotas, brindando soluciones integrales para todas las necesidades.</p>
+								<div class="google-app">
+									<img src="{% static 'images/funeraria-logo.png' %}" alt="google play">
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+    <footer id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="footer-item">
+                        <div class="company-brand">
+                            <img src="{% static 'images/main-logo.png' %}" alt="logo" class="footer-logo">
+                            <p>Estamos aquí para acompañarte en cada paso, brindando apoyo y respeto en los momentos más difíciles.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="footer-menu">
+                        <h5>Nosotros</h5>
+                        <ul class="menu-list">
+                            <li><a href="#">Nuestra Visión</a></li>
+                            <li><a href="#">Artículos</a></li>
+                            <li><a href="#">Compañías</a></li>
+                            <li><a href="#">Servicios</a></li>
+                            <li><a href="#">Donativos</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="footer-menu">
+                        <h5>Descubre</h5>
+                        <ul class="menu-list">
+                            <li><a href="#">Inicio</a></li>
+                            <li><a href="#">Funerarias</a></li>
+                            <li><a href="#">Cementerios</a></li>
+                            <li><a href="#">Búsqueda</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="footer-menu">
+                        <h5>Mi Cuenta</h5>
+                        <ul class="menu-list">
+                            <li><a href="{% url 'login' %}">Ingresar</a></li>
+                            <li><a href="#">Ver</a></li>
+                            <li><a href="#">Realizar Orden</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="footer-menu">
+                        <h5>Ayuda</h5>
+                        <ul class="menu-list">
+                            <li><a href="#">Ayuda</a></li>
+                            <li><a href="#">Reportar un problema</a></li>
+                            <li><a href="#">Contactarnos</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="footer-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="copyright">
+                        <p>© 2024 todos los derechos son reservados.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+    <!-- Scripts -->
+    <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+        
+    <script src="{% static 'js/plugins.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        // Captura el evento del botón y redirige al link guardado
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function () {
+                const url = this.getAttribute('data-url');  // Obtener el link del atributo data-url
+                if (url) {
+                    window.open(url, '_blank');  // Abrir el enlace en una nueva pestaña
+                } else {
+                    alert('No hay un enlace disponible para esta funeraria.');
+                }
+            });
+        });
+    </script>
+    <!-- Burbuja del chatbot -->
+    <div class="chat-bubble" id="chatBubble">💬</div>
+
+    <!-- Ventana del chat -->
+    <div class="chat-window" id="chatWindow">
+        <div class="header">ASABOT</div>
+        <div class="messages" id="chatMessages"></div>
+        <div class="input-box">
+            <input type="text" id="userMessage" placeholder="Escribe tu mensaje...">
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+
+</body>
+
+</html>
