@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const back_elementbutton = document.getElementById("back_button");
     const cancel_elementbutton = document.getElementById("cancel_button");
     const send_elementbutton = document.getElementById("sendButton");
+    const buttonContainer = document.getElementsByClassName("button-container")[0];
 
     chatBubble.addEventListener('click', () => {
         if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
@@ -24,10 +25,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!message) return;
 
         chatMessages.innerHTML += `<div class="user-message"><strong>Tú:</strong> ${message}</div>`;
-        if ((userMessageInput.value).includes("pdf"))
-            {
-                document.getElementsByClassName("button-container")[0].style.display="block";
-            }
+        if ((userMessageInput.value).includes("pdf") || (userMessageInput.value).includes("pregunta")) {
+            document.getElementsByClassName("button-container")[0].style.display="block";
+            chatWindow.style.height = '650px';  // Expande el chat
+            chatMessages.style.height = '500px'; // Expande el área de mensajes
+        }
         userMessageInput.value = '';
 
         const typingIndicator = document.createElement('div');
@@ -59,6 +61,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     cancel_elementbutton.onclick = function() {
         sendMessage("cancelar");
+        chatWindow.style.height = '400px';  // Vuelve a la altura normal
+        chatMessages.style.height = '300px'; // Vuelve a la altura normal de mensajes
+        buttonContainer.style.display = "none"; // Oculta los botones
     };
     
     back_elementbutton.onclick = function() {

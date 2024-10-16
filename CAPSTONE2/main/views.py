@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import openai
@@ -7,15 +7,40 @@ from .models import Funeraria  # Asegúrate de tener un modelo para las funerari
 from geopy.distance import great_circle
 from xhtml2pdf import pisa  # Importa xhtml2pdf para generar PDFs
 import requests
+from .models import Mascota
+from .forms import MascotaForm  # Asegúrate de importar tu formulario
+from django.contrib import messages  # Para mostrar mensajes de éxito
 
 # Asegúrate de que tu clave API de OpenAI esté configurada correctamente
-openai.api_key = 'poner api aqui'
+openai.api_key = 'sk-BSh4SZ8ofi0WdABDJae1leDsVuXCLHEal91v7OtznrT3BlbkFJe_tu6WtWprhwE96WIinS9J53EzSokUiCI9Fw06zncA'
 
 def homepage(request):
     return render(request, 'main/index.html')
 
 def mascotas(request):
-    return render(request, 'main/mascotas.html')  # Asegúrate de que la ruta sea correcta
+    mascotas = Mascota.objects.all()[:4]
+    return render(request, 'main/mascotas.html', {'mascotas': mascotas})  # Asegúrate de que la ruta sea correcta
+
+def lista_mascotas(request):
+    # Obtener todas las mascotas de la base de datos
+    mascotas = Mascota.objects.all()
+    return render(request, 'main/lista_mascotas.html', {'mascotas': mascotas})
+
+def agregar_mascota(request):
+    if request.method == 'POST':
+        # Crear una instancia del formulario con los datos enviados
+        form = MascotaForm(request.POST, request.FILES)  
+        if form.is_valid():  # Validar el formulario
+            form.save()  # Guardar la instancia en la base de datos
+            messages.success(request, '¡Mascota agregada exitosamente!')  # Mensaje de éxito
+            return redirect('lista_mascotas')  # Redirigir a la lista de mascotas
+        else:
+            # Si el formulario no es válido, mostrar un mensaje de error
+            messages.error(request, 'Error al agregar la mascota. Por favor, verifica los datos ingresados.')
+    else:
+        form = MascotaForm()  # Crear un formulario vacío para la solicitud GET
+
+    return render(request, 'main/agregar_mascota.html', {'form': form})  # Pasar el formulario al contexto
 
 @csrf_exempt
 def ask(request):

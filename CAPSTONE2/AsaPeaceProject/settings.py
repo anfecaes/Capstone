@@ -52,13 +52,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'AsaPeaceProject.wsgi.application'
 
-# Database
+# Database (Reemplaza con tu base de datos real, como PostgreSQL, MySQL, etc.)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # Motor de la base de datos
-        'NAME': BASE_DIR / "db.sqlite3",         # Archivo de la base de datos SQLite
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ASApeace',
+        'USER': 'postgres',
+        'PASSWORD': '1337',
+        'HOST': 'localhost',  # o '127.0.0.1'
+        'PORT': '5433',
     }
 }
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -68,8 +73,8 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'es'  # Cambiar el código de idioma a español
+TIME_ZONE = 'America/Santiago'  # Cambiar la zona horaria a Chile
 USE_I18N = True
 USE_TZ = True
 
@@ -79,6 +84,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',  # Asegúrate de que está apuntando a la carpeta 'static' correctamente
 ]
+
+# Media files (uploads like PNG, JPG)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'  # Carpeta donde se almacenarán los archivos cargados
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Mascotas</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+<h1>Lista de Mascotas Disponibles para Adopción</h1>
+
+<div class="mascotas-container">
+    {% for mascota in mascotas %}
+        <div class="mascota-card">
+            <img src="{{ mascota.foto.url }}" alt="Foto de {{ mascota.descripcion }}" class="mascota-foto">
+            <h2>{{ mascota.nombre }}</h2>  <!-- Mostramos el nombre de la mascota -->
+            <p><strong>Descripción:</strong> {{ mascota.descripcion }}</p>
+            <p><strong>Edad:</strong> {{ mascota.edad }} años humanos</p>
+            <p><strong>Vacunas al día:</strong> {{ mascota.vacunas_al_dia }}</p>
+            {% if mascota.documento_vacunas %}
+                <p><strong>Documento de Vacunas:</strong></p>
+                <img src="{{ mascota.documento_vacunas.url }}" alt="Documento de Vacunas" class="documento-vacunas">
+            {% endif %}
+            <p><strong>Motivo para la adopción:</strong> {{ mascota.motivo }}</p>
+            <p><strong>Contacto:</strong> {{ mascota.contacto }}</p>  <!-- Mostramos el contacto -->
+            <p><strong>Fecha de publicación:</strong> {{ mascota.fecha|date:"d/m/Y H:i" }}</p> <!-- Mostramos la fecha y hora -->
+        </div>
+    {% endfor %}
+</div>
+
+<style>
+    body {
+        background-repeat: repeat;
+        background-image: url("{% static 'Fondo/Fondo_Mascotas.jpg' %}"); /* Reemplaza con la ruta de tu imagen */
+        animation: moveBackground 20s linear infinite;
+        background-size: 7pc;
+        font-family: Arial, sans-serif;
+        color: #333;
+    }
+
+    @keyframes moveBackground {
+        0% {
+            background-position: 0% 0%; /* Posición inicial */
+        }
+        100% {
+            background-position: 100% 0%; /* Posición final */
+        }
+    }
+
+    .mascotas-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+    .mascota-card {
+        border: 5px solid #bf907e;
+        border-radius: 15px;
+        padding: 10px;
+        max-width: 300px;
+        background: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        background-image: linear-gradient(270deg, #debfab, #bf907e);
+    }
+    .mascota-foto, .documento-vacunas {
+        max-width: 100%;
+        height: auto;
+        border-radius: 4px;
+    }
+</style>
+
+</body>
+</html>

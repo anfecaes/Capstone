@@ -1,0 +1,185 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AsaPeace - Agregar Mascota</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-image: linear-gradient(270deg, #debfab, #bf907e);
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 5px 0px 10px rgba(0, 0, 0, 0.1);
+            background-image: linear-gradient(270deg, #debfab, #bf907e);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        input[type="text"], input[type="number"], textarea, input[type="file"], select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            background-image: linear-gradient(90deg, #debfab, #bf907e);
+            font-family: Arial, sans-serif;
+        }
+        input[type="submit"] {
+            width: 100%;
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+        }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+        }
+        input[type="file"] {
+            background-color: #debfab; /* Cambia el color de fondo */
+            color: #333; /* Color del texto */
+            padding: 8px;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            background-color: #333; /* Color del botón para seleccionar el archivo */
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background-color: #555; /* Color del botón al pasar el cursor */
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #000000;
+            border-radius: 4px;
+            background-color: #debfab; /* Color de fondo */
+            color: #333; /* Color del texto */
+            appearance: none; /* Elimina el estilo predeterminado del navegador */
+            cursor: pointer;
+            background-image: linear-gradient(90deg, #debfab, #bf907e); /* Gradiente para el fondo */
+            font-size: 16px;
+        }
+
+        select:hover {
+            background-color: #bf907e; /* Cambia el color de fondo al pasar el cursor */
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #555; /* Cambia el borde al hacer clic */
+        }
+
+
+    </style>
+</head>
+<body>
+
+<!-- Elemento de audio para reproducir música de fondo -->
+<audio id="background-audio" loop>
+    <source src="{% static 'audio/My_Castle_Town.mp3' %}" type="audio/mpeg">
+    Tu navegador no soporta el elemento de audio.
+</audio>
+
+<h1>Agregar Mascota para Adopción</h1>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="success-message">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<form action="{% url 'agregar_mascota' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <label for="nombre">Nombre de la mascota:</label>
+    <input type="text" id="nombre" name="nombre" required>
+
+    <label for="foto">Foto de la mascota (PNG o JPG):</label>
+    <input type="file" id="foto" name="foto" accept="image/png, image/jpeg" required>
+
+    <label for="descripcion">Descripción breve:</label>
+    <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
+
+    <label for="edad">Edad aproximada (años humanos):</label>
+    <input type="number" id="edad" name="edad" required>
+
+    <label for="vacunas">¿Tiene todas las vacunas al día?</label>
+    <select id="vacunas_al_dia" name="vacunas_al_dia" required>
+        <option value="">Selecciona una opción</option>
+        <option value="Sí">Sí</option>
+        <option value="No">No</option>
+        <option value="Prefiero no decir">Prefiero no decir</option>
+    </select>
+
+    <label for="documento_vacunas">Subir documento de vacunas (opcional, PNG o JPG):</label>
+    <input type="file" id="documento_vacunas" name="documento_vacunas" accept="image/png, image/jpeg">
+
+    <label for="motivo">Motivo por el cual necesita un nuevo hogar:</label>
+    <textarea id="motivo" name="motivo" rows="4" required></textarea>
+
+    <label for="contacto">Contacto (teléfono, Facebook, etc.):</label>
+    <input type="text" id="contacto" name="contacto" required>
+
+    <input type="submit" value="Agregar Mascota">
+</form>
+
+<script>
+    // Esperar a que la ventana se cargue completamente
+    window.addEventListener('load', function() {
+        var audio = document.getElementById('background-audio');
+        
+        // Agregar un evento de clic al cuerpo de la página
+        document.body.addEventListener('click', function() {
+            // Reproducir el audio al hacer clic
+            audio.play().catch(function(error) {
+                console.log('Error al intentar reproducir el audio: ', error);
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
