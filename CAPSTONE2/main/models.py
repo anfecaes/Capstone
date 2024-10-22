@@ -9,7 +9,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
 from django.urls import reverse
-
+from django.utils import timezone
 from django.conf import settings
 # from uuid import uuid4
 
@@ -271,3 +271,20 @@ class ImpuestoDescuento(models.Model):
 
     def __str__(self):
         return self.descripcion
+    
+#Mascota
+class Mascota(models.Model):
+    foto = models.ImageField(upload_to='fotos/')
+    descripcion = models.TextField()
+    edad = models.IntegerField()
+    vacunas_al_dia = models.CharField(max_length=50)
+    documento_vacunas = models.ImageField(upload_to='documentos_vacunas/', blank=True, null=True)
+    motivo = models.TextField()
+    nombre = models.TextField()  # Asegúrate de que este campo esté presente
+    contacto = models.TextField()  # Asegúrate de que este campo esté presente
+    fecha = models.DateTimeField(auto_now_add=True)  # Debe estar aquí
+
+    def __str__(self):
+        return self.nombre
+    
+    
