@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import openai
 import json
-from .models import Funeraria, Cementerio, ServiciosMascotas, Homenaje
+from .models import Funeraria, Cementerio, ServiciosMascotas, Homenaje, Mascota
 import base64
 from geopy.distance import great_circle
 from geopy.geocoders import Nominatim
@@ -13,14 +13,15 @@ from geopy.geocoders import Nominatim
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 #importaciones para loguear
-from .forms import HomenajeForm, RegistroForm, CondolenciaForm, CotizacionForm
+from .forms import HomenajeForm, RegistroForm, CondolenciaForm, CotizacionForm, MascotaForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-
+#Mascotas
+from django.contrib import messages  # Para mostrar mensajes de éxito
 
 # Asegúrate de que tu clave API de OpenAI esté configurada correctamente
-openai.api_key = 'sk-BSh4SZ8ofi0WdABDJae1leDsVuXCLHEal91v7OtznrT3BlbkFJe_tu6WtWprhwE96WIinS9J53EzSokUiCI9Fw06zncA'
+openai.api_key = 'api'
 
 
 @login_required
@@ -360,3 +361,32 @@ def cotizacion_view(request):
         form = CotizacionForm()
 
     return render(request, 'main/cotizacion.html', {'form': form, 'total': total})
+
+
+#Mascotas
+def mascotas(request):
+    mascotas = Mascota.objects.all()[:4]
+    return render(request, 'main/mascotas.html', {'mascotas': mascotas})  # Asegúrate de que la ruta sea correcta
+
+
+
+def agregar_mascota(request):
+    if request.method == 'POST':
+        # Crear una instancia del formulario con los datos enviados
+        form = MascotaForm(request.POST, request.FILES)  
+        if form.is_valid():  # Validar el formulario
+            form.save()  # Guardar la instancia en la base de datos
+            messages.success(request, '¡Mascota agregada exitosamente!')  # Mensaje de éxito
+            return redirect('listar_mascotas')  # Redirigir a la lista de mascotas
+        else:
+            # Si el formulario no es válido, mostrar un mensaje de error
+            messages.error(request, 'Error al agregar la mascota. Por favor, verifica los datos ingresados.')
+    else:
+        form = MascotaForm()  # Crear un formulario vacío para la solicitud GET
+
+    return render(request, 'main/agregar_mascota.html', {'form': form})  # Pasar el formulario al contexto
+
+def lista_mascotas(request):
+    # Obtener todas las mascotas de la base de datos
+    mascotas = Mascota.objects.all()
+    return render(request, 'main/lista_mascotas.html', {'mascotas': mascotas})

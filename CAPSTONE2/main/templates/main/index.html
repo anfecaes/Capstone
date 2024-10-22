@@ -58,7 +58,7 @@
                                     <li class="menu-item"><a href="{% url 'crear_homenaje' %}">CREAR HOMENAJE</a></li>
                                     <li class="menu-item"><a href="{% url 'historial_homenajes' %}">MI HISTORIAL</a></li>
                                     <li class="menu-item"><a href="{% url 'cotizacion' %}">COTIZA</a></li>
-                                    
+                                    <li class="menu-item"><a href="{% url 'mascotas' %}" class="nav-link">MASCOTAS</a></li>
                                     {% if homenajes %}
                                         <li class="menu-item dropdown">
                                             <a class="dropdown-toggle" href="#" role="button" id="dropdownInvitaciones" data-bs-toggle="dropdown" aria-expanded="false">
@@ -82,7 +82,7 @@
                             
                                 
                                 <li class="menu-item"><a href="#popular-books" class="nav-link">SERVICIOS</a></li>
-                                <li class="menu-item"><a href="#popular-books" class="nav-link">MASCOTAS</a></li>
+                                {% comment %} <li class="menu-item"><a href="#popular-books" class="nav-link">MASCOTAS</a></li> {% endcomment %}
                                 <li class="menu-item"><a href="#download-app" class="nav-link">SOBRE NOSOTROS</a></li>
                                 
                                 {% if user.is_authenticated %}
@@ -158,16 +158,17 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12">
-
+            
                             <div class="section-header align-center">
                                 <h2 class="section-title">SERVICIOS</h2>
                             </div>
-
+            
                             <ul class="tabs">
                                 <li data-tab-target="#all-genre" class="active tab">Funerarias</li>
                                 <li data-tab-target="#business" class="tab">Cementerios</li>
+                                <li data-tab-target="#pets" class="tab">Servicios para Mascotas</li>
                             </ul>
-
+            
                             <div class="tab-content">
                                 <div id="all-genre" data-tab-content class="active">
                                     <div class="row">
@@ -181,12 +182,7 @@
                                                         {% else %}
                                                             <img src="{% static 'images/logo-funeraria-martinez.jpg' %}" alt="{{ fune.nombre }}" class="product-item">
                                                         {% endif %}
-                                                        <button 
-                                                            type="button" 
-                                                            class="btn btn-primary add-to-cart" 
-                                                            data-url="{{ funeraria.link }}">
-                                                            VER
-                                                        </button>
+                                                        <button type="button" class="btn btn-primary add-to-cart" data-url="{{ funeraria.link }}">VER</button>
                                                     </figure>
                                                     <figcaption>
                                                         <h3>{{ fune.nombre }}</h3>
@@ -201,7 +197,7 @@
                                         {% endfor %}
                                     </div>
                                 </div>
-
+            
                                 <div id="business" data-tab-content>
                                     <div class="row">
                                         <!-- Iterar sobre los cementerios -->
@@ -229,9 +225,37 @@
                                         {% endfor %}
                                     </div>
                                 </div>
-
+            
+                                <div id="pets" data-tab-content>
+                                    <div class="row">
+                                        <!-- Iterar sobre los servicios de mascotas -->
+                                        {% for mascota in mascotas %}
+                                            <div class="col-md-3">
+                                                <div class="product-item">
+                                                    <figure class="product-style">
+                                                        {% if mascota.imagen_base64 %}
+                                                            <img src="data:image/png;base64,{{ mascota.imagen_base64 }}" alt="{{ mascota.nombre }}" class="product-item">
+                                                        {% else %}
+                                                            <img src="{% static 'images/default-pet-service.jpg' %}" alt="{{ mascota.nombre }}" class="product-item">
+                                                        {% endif %}
+                                                        <button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
+                                                    </figure>
+                                                    <figcaption>
+                                                        <h3>{{ mascota.nombre }}</h3>
+                                                        <span>{{ mascota.descripcion }}</span>
+                                                        <div class="item-price">{{ mascota.telefono }}</div>
+                                                        <div class="item-price">{{ mascota.email }}</div>
+                                                    </figcaption>
+                                                </div>
+                                            </div>
+                                        {% empty %}
+                                            <p>No hay servicios para mascotas registrados.</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+            
                             </div>
-
+            
                         </div><!--inner-tabs-->
                     </div>
                 </div>

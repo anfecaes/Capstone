@@ -38,6 +38,10 @@ urlpatterns = [
          name='password_reset_complete'),
 #     calculadora
      path('cotizacion/', cotizacion_view, name='cotizacion'),
+#     Mascotas
+     path('mascotas/', views.mascotas, name='mascotas'),
+     path('mascotas/agregar/', views.agregar_mascota, name='agregar_mascota'),
+     path('mascotas/listar/', views.lista_mascotas, name='listar_mascotas'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
