@@ -95,3 +95,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']
 
 APPEND_SLASH = False
+
+#Flow
+FLOW_API_KEY = 'ak_test_1234567890' # tu_api_key_aqui
+FLOW_SECRET_KEY = 'sk_test_0987654321' #tu_secret_key_aqui
+FLOW_ENDPOINT = 'https://sandbox.flow.cl/api/payment/create'  # Cambia este endpoint según la API de Flow https://www.flow.cl/api/payment/create

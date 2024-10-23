@@ -13,6 +13,9 @@ urlpatterns = [
     path('generar_pdf/', views.generar_pdf, name='generar_pdf'),  # Ruta para generar el PDF
     path('agregar_mascota/', views.agregar_mascota, name='agregar_mascota'),
     path('lista_mascotas/', views.lista_mascotas, name='lista_mascotas'),
+    path('crear-pago/', views.crear_pago_prueba, name='crear_pago_prueba'),
+    path('callback/', views.callback_pago, name='callback_pago'),
+    path('gracias/', views.pago_completado, name='pago_completado'),
 ]
 
 if settings.DEBUG:
