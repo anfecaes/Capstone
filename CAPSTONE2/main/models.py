@@ -12,7 +12,10 @@ from django.urls import reverse
 from django.utils import timezone
 from django.conf import settings
 # from uuid import uuid4
-
+#importaciones para calificaciones
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
 class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
 
@@ -104,7 +107,7 @@ class Usuario(AbstractUser):
 
     def __str__(self):
         return self.username
-
+    
 class Cementerio(models.Model):
     id_cementerio = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=255)
@@ -116,6 +119,39 @@ class Cementerio(models.Model):
         managed = True
         db_table = 'cementerio'
 
+    def __str__(self):
+        return self.nombre
+
+    def calificacion_promedio(self):
+        from django.contrib.contenttypes.models import ContentType
+        content_type = ContentType.objects.get_for_model(self)
+        calificaciones = Calificacion.objects.filter(content_type=content_type, object_id=self.id_cementerio)
+        if calificaciones.exists():
+            promedio = sum(c.puntuacion for c in calificaciones) / calificaciones.count()
+            return round(promedio, 2)
+        return 0
+# class Cementerio(models.Model):
+#     id_cementerio = models.AutoField(primary_key=True)
+#     nombre = models.CharField(max_length=255)
+#     direccion = models.TextField(blank=True, null=True)
+#     telefono = models.CharField(max_length=20, blank=True, null=True)
+#     imagen = models.BinaryField(blank=True, null=True)
+
+#     class Meta:
+#         managed = True
+#         db_table = 'cementerio'
+
+
+class Calificacion(models.Model):
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    puntuacion = models.PositiveSmallIntegerField()  # De 1 a 5 estrellas, por ejemplo
+    comentario = models.TextField(blank=True, null=True)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.usuario} - {self.puntuacion} estrellas'
 
 class DjangoAdminLog(models.Model):
     action_time = models.DateTimeField()
@@ -169,8 +205,6 @@ class Funeraria(models.Model):
     telefono = models.CharField(max_length=20, blank=True, null=True)
     email = models.CharField(unique=True, max_length=255, blank=True, null=True)
     imagen = models.BinaryField(blank=True, null=True)
-    
-    # Nuevo campo para almacenar un enlace (link)
     link = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
@@ -179,6 +213,30 @@ class Funeraria(models.Model):
 
     def __str__(self):
         return self.nombre
+
+    def calificacion_promedio(self):
+        calificaciones = self.calificaciones.all()  # Usar el related_name definido en el modelo Calificacion
+        if calificaciones.exists():
+            promedio = sum(c.puntuacion for c in calificaciones) / calificaciones.count()
+            return round(promedio, 2)
+        return 0  # Si no hay calificaciones, retornar 0
+# class Funeraria(models.Model):
+#     id_funeraria = models.AutoField(primary_key=True)
+#     nombre = models.CharField(max_length=255)
+#     direccion = models.TextField(blank=True, null=True)
+#     telefono = models.CharField(max_length=20, blank=True, null=True)
+#     email = models.CharField(unique=True, max_length=255, blank=True, null=True)
+#     imagen = models.BinaryField(blank=True, null=True)
+    
+#     # Nuevo campo para almacenar un enlace (link)
+#     link = models.CharField(max_length=255, blank=True, null=True)
+
+#     class Meta:
+#         managed = True
+#         db_table = 'funeraria'
+
+#     def __str__(self):
+#         return self.nombre
 
 class Homenaje(models.Model):
     autor = models.ForeignKey(Usuario, on_delete=models.CASCADE)
@@ -218,15 +276,38 @@ class Condolencia(models.Model):
 
 class ServiciosMascotas(models.Model):
     id_servi_mascota = models.AutoField(primary_key=True)
-    nombre = models.CharField(blank=True, null=True)
+    nombre = models.CharField(max_length=255, blank=True, null=True)
     direccion = models.TextField(blank=True, null=True)
-    telefono = models.CharField(blank=True, null=True)
-    email = models.CharField(blank=True, null=True)
+    telefono = models.CharField(max_length=20, blank=True, null=True)
+    email = models.CharField(max_length=255, blank=True, null=True)
     imagen = models.BinaryField(blank=True, null=True)
 
     class Meta:
         managed = True
         db_table = 'servicios_mascotas'
+
+    def __str__(self):
+        return self.nombre
+
+    def calificacion_promedio(self):
+        from django.contrib.contenttypes.models import ContentType
+        content_type = ContentType.objects.get_for_model(self)
+        calificaciones = Calificacion.objects.filter(content_type=content_type, object_id=self.id_servi_mascota)
+        if calificaciones.exists():
+            promedio = sum(c.puntuacion for c in calificaciones) / calificaciones.count()
+            return round(promedio, 2)
+        return 0
+# class ServiciosMascotas(models.Model):
+#     id_servi_mascota = models.AutoField(primary_key=True)
+#     nombre = models.CharField(blank=True, null=True)
+#     direccion = models.TextField(blank=True, null=True)
+#     telefono = models.CharField(blank=True, null=True)
+#     email = models.CharField(blank=True, null=True)
+#     imagen = models.BinaryField(blank=True, null=True)
+
+#     class Meta:
+#         managed = True
+#         db_table = 'servicios_mascotas'
 
 # implementación de la calculadora
 class TipoServicio(models.Model):
@@ -286,5 +367,3 @@ class Mascota(models.Model):
 
     def __str__(self):
         return self.nombre
-    
-    

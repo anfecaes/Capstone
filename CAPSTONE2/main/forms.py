@@ -1,7 +1,7 @@
 # forms.py
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Usuario, Homenaje, Condolencia, TipoServicio, ServicioAdicional, Ubicacion, Beneficio, Mascota
+from .models import Usuario, Homenaje, Condolencia, TipoServicio, ServicioAdicional, Ubicacion, Beneficio, Mascota, Calificacion
 
 
 class RegistroForm(UserCreationForm):
@@ -83,4 +83,14 @@ class MascotaForm(forms.ModelForm):
             'descripcion': forms.Textarea(attrs={'rows': 4}),
             'motivo': forms.Textarea(attrs={'rows': 4}),
             'contacto': forms.TextInput(attrs={'placeholder': 'Teléfono, Facebook, etc.'}),
+        }
+
+#calificaciones
+class CalificacionForm(forms.ModelForm):
+    class Meta:
+        model = Calificacion
+        fields = ['puntuacion', 'comentario']
+        widgets = {
+            'puntuacion': forms.NumberInput(attrs={'min': 1, 'max': 5}),
+            'comentario': forms.Textarea(attrs={'rows': 3}),
         }

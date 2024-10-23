@@ -91,6 +91,7 @@ CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']
 
 APPEND_SLASH = False
 
+LOGIN_URL = '/login/'
 # configuración de usarios portal
 # desactivar auth_user_model cuando se vaya a trabajar con admin
 AUTH_USER_MODEL = 'main.Usuario'  

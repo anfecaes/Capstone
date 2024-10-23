@@ -13,18 +13,21 @@ from geopy.geocoders import Nominatim
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseForbidden
 #importaciones para loguear
-from .forms import HomenajeForm, RegistroForm, CondolenciaForm, CotizacionForm, MascotaForm
+from .forms import HomenajeForm, RegistroForm, CondolenciaForm, CotizacionForm, MascotaForm, CalificacionForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 #Mascotas
 from django.contrib import messages  # Para mostrar mensajes de éxito
 
+#calificaciones
+from django.core.exceptions import FieldError
+from django.http import HttpResponseNotFound
+from django.db.models import Avg
+
 # Asegúrate de que tu clave API de OpenAI esté configurada correctamente
 openai.api_key = 'api'
 
-
-@login_required
 def homepage(request):
     try:
         # Obtener homenajes creados e invitados
@@ -56,6 +59,11 @@ def homepage(request):
             if mascota.imagen:
                 mascota.imagen_base64 = base64.b64encode(mascota.imagen).decode('utf-8')
 
+        # Obtener el ContentType de cada modelo
+        funeraria_content_type = ContentType.objects.get_for_model(Funeraria)
+        cementerio_content_type = ContentType.objects.get_for_model(Cementerio)
+        mascota_content_type = ContentType.objects.get_for_model(ServiciosMascotas)
+
         # Procesar el formulario de homenaje
         if request.method == 'POST':
             form = HomenajeForm(request.POST, request.FILES)
@@ -71,7 +79,10 @@ def homepage(request):
             'cementerios': cementerios,
             'mascotas': mascotas,
             'homenajes': homenajes,
-            'form': form
+            'form': form,
+            'funeraria_content_type': funeraria_content_type,
+            'cementerio_content_type': cementerio_content_type,
+            'mascota_content_type': mascota_content_type
         })
 
     except Exception as e:
@@ -390,3 +401,43 @@ def lista_mascotas(request):
     # Obtener todas las mascotas de la base de datos
     mascotas = Mascota.objects.all()
     return render(request, 'main/lista_mascotas.html', {'mascotas': mascotas})
+
+
+
+#calificaciones
+from django.contrib.contenttypes.models import ContentType
+
+@login_required
+def agregar_calificacion(request, content_type_id, object_id):
+    # Obtener el ContentType para el modelo
+    content_type = get_object_or_404(ContentType, id=content_type_id)
+    modelo = content_type.model_class()
+    
+    # Buscar el objeto correcto, dependiendo del modelo
+    try:
+        if content_type.model == 'funeraria':
+            objeto = modelo.objects.get(id_funeraria=object_id)
+        elif content_type.model == 'cementerio':
+            objeto = modelo.objects.get(id_cementerio=object_id)
+        elif content_type.model == 'serviciosmascotas':
+            objeto = modelo.objects.get(id_servi_mascota=object_id)
+        else:
+            raise FieldError("No se puede encontrar el campo adecuado para este modelo.")
+    except modelo.DoesNotExist:
+        return HttpResponseNotFound("El objeto solicitado no existe.")
+    
+    # Procesar el formulario de calificación
+    if request.method == 'POST':
+        form = CalificacionForm(request.POST)
+        if form.is_valid():
+            calificacion = form.save(commit=False)
+            calificacion.content_type = content_type
+            calificacion.object_id = object_id
+            calificacion.usuario = request.user
+            calificacion.save()
+            return redirect('homepage')
+    else:
+        form = CalificacionForm()
+    
+    # Renderizar la página de calificación con el formulario
+    return render(request, 'main/agregar_calificacion.html', {'form': form, 'modelo': objeto})
