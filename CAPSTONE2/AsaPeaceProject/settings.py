@@ -55,12 +55,12 @@ WSGI_APPLICATION = 'AsaPeaceProject.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('DB_NAME', 'asapeace'),
-        'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'guts_2015'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ASApeace',
+        'USER': 'postgres',
+        'PASSWORD': '1337',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '5433',
     }
 }
 
@@ -72,8 +72,8 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'es'  # Cambiar el código de idioma a español
+TIME_ZONE = 'America/Santiago'  # Cambiar la zona horaria a Chile
 USE_I18N = True
 USE_TZ = True
 
