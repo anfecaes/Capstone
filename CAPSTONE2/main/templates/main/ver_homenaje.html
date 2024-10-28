@@ -60,11 +60,25 @@
                     <h3 class="mb-3 text-primary">Condolencias</h3>
                     <ul class="list-group">
                         {% for condolencia in homenaje.condolencias.all %}
-                        <li class="list-group-item rounded shadow-sm mb-2">
-                            <strong>{{ condolencia.autor.username }}:</strong> {{ condolencia.mensaje }}
-                        </li>
+                            <li class="list-group-item rounded shadow-sm mb-3">
+                                <strong>{{ condolencia.autor.username }}:</strong> {{ condolencia.mensaje }}
+
+                                <!-- Mostrar el video de la condolencia, si está disponible -->
+                                {% if condolencia.video %}
+                                    <div class="condolencia-video mt-3">
+                                        <video 
+                                            controls 
+                                            class="rounded shadow-lg w-100 condolencia-video-thumbnail"
+                                            style="max-height: 300px; object-fit: cover;"
+                                            onclick="expandVideo(this)">
+                                            <source src="{{ condolencia.video.url }}" type="video/mp4">
+                                            Tu navegador no soporta la reproducción de video.
+                                        </video>
+                                    </div>
+                                {% endif %}
+                            </li>
                         {% empty %}
-                        <li class="list-group-item text-center text-muted">Aún no hay condolencias.</li>
+                            <li class="list-group-item text-center text-muted">Aún no hay condolencias.</li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -74,18 +88,20 @@
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ form.as_p }}
-                        
+                
                         <!-- Elementos para la grabación de video -->
                         <div>
                             <video id="videoPreview" width="320" height="240" autoplay muted></video>
                             <button type="button" id="startRecording">Comenzar Grabación</button>
                             <button type="button" id="stopRecording" disabled>Detener Grabación</button>
+                            <p id="videoStatus" class="text-success" style="display: none;">Video listo para subir</p>
                         </div>
-                    
+                
                         <input type="file" id="videoFileInput" name="video" accept="video/mp4" style="display: none;">
                         <button type="submit" name="condolencia">Enviar Condolencia</button>
-                    </form>                  
+                    </form>
                 </div>
+                
             </div>
         </div>
     </div>
@@ -162,6 +178,37 @@
         opacity: 0;
         transition: opacity 1.5s ease-in-out;
     }
+
+    /* Estilo del video en la lista de condolencias */
+.condolencia-video-thumbnail {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.condolencia-video-thumbnail:hover {
+    transform: scale(1.02);
+}
+
+/* Estilos para el modo pantalla completa */
+.fullscreen-video-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
+
+.fullscreen-video {
+    max-width: 90%;
+    max-height: 90%;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
 </style>
 {% endblock %}
 
@@ -181,6 +228,7 @@ const startButton = document.getElementById('startRecording');
 const stopButton = document.getElementById('stopRecording');
 const videoPreview = document.getElementById('videoPreview');
 const videoFileInput = document.getElementById('videoFileInput');
+const videoStatus = document.getElementById('videoStatus');
 
 let mediaRecorder;
 let recordedChunks = [];
@@ -193,6 +241,7 @@ startButton.addEventListener('click', async () => {
 
     // Configurar el MediaRecorder
     mediaRecorder = new MediaRecorder(stream);
+    recordedChunks = [];  // Reiniciar chunks grabados
     mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
             recordedChunks.push(event.data);
@@ -208,12 +257,24 @@ startButton.addEventListener('click', async () => {
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(file);
         videoFileInput.files = dataTransfer.files;
+
+        // Mostrar mensaje de confirmación de captura de video
+        videoStatus.style.display = 'block';
     };
 
-    // Iniciar la grabación
+    // Iniciar la grabación y establecer límite de tiempo
     mediaRecorder.start();
     startButton.disabled = true;
     stopButton.disabled = false;
+
+    setTimeout(() => {
+        if (mediaRecorder.state === "recording") {
+            mediaRecorder.stop();
+            videoPreview.srcObject.getTracks().forEach(track => track.stop());
+            startButton.disabled = false;
+            stopButton.disabled = true;
+        }
+    }, 60000);  // Detener automáticamente después de 1 minuto
 });
 
 stopButton.addEventListener('click', () => {
@@ -223,5 +284,6 @@ stopButton.addEventListener('click', () => {
     startButton.disabled = false;
     stopButton.disabled = true;
 });
+
 </script>
 {% endblock %}
