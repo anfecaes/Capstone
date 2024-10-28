@@ -218,111 +218,106 @@
                         </div>
                     </div>
 
-                    <div id="business" data-tab-content>
-                        <div class="row">
-                            <!-- Mostrar siempre la información de los cementerios -->
-                            {% for cemente in cementerios %}
-                                <div class="col-md-3">
-                                    <div class="product-item">
-                                        <figure class="product-style">
-                                            {% if cemente.imagen_base64 %}
-                                                <img src="data:image/png;base64,{{ cemente.imagen_base64 }}" alt="{{ cemente.nombre }}" class="product-item">
-                                            {% else %}
-                                                <img src="{% static 'images/logo-funeraria-martinez.jpg' %}" alt="{{ cemente.nombre }}" class="product-item">
-                                            {% endif %}
-                                            <button type="button" class="btn btn-primary add-to-cart" data-url="{{ cemente.link }}">VER</button>
-                                        </figure>
-                                        <figcaption>
-                                            <h3>{{ cemente.nombre }}</h3>
-                                            <span>{{ cemente.direccion }}</span>
-                                            <div class="item-price">{{ cemente.telefono }}</div>
-                                            
-                                            <!-- Mostrar el formulario de calificación solo si el usuario está autenticado -->
-                                            {% if user.is_authenticated and cemente.id_cementerio %}
-                                                <form method="post" action="{% url 'agregar_calificacion' content_type_id=cementerio_content_type.id object_id=cemente.id_cementerio %}">
-                                                    {% csrf_token %}
-                                                    <div class="rating">
-                                                        <input type="radio" id="star5-{{ cemente.id_cementerio }}" name="puntuacion" value="5" required />
-                                                        <label for="star5-{{ cemente.id_cementerio }}" title="5 estrellas">★</label>
-                                                        <input type="radio" id="star4-{{ cemente.id_cementerio }}" name="puntuacion" value="4" />
-                                                        <label for="star4-{{ cemente.id_cementerio }}" title="4 estrellas">★</label>
-                                                        <input type="radio" id="star3-{{ cemente.id_cementerio }}" name="puntuacion" value="3" />
-                                                        <label for="star3-{{ cemente.id_cementerio }}" title="3 estrellas">★</label>
-                                                        <input type="radio" id="star2-{{ cemente.id_cementerio }}" name="puntuacion" value="2" />
-                                                        <label for="star2-{{ cemente.id_cementerio }}" title="2 estrellas">★</label>
-                                                        <input type="radio" id="star1-{{ cemente.id_cementerio }}" name="puntuacion" value="1" />
-                                                        <label for="star1-{{ cemente.id_cementerio }}" title="1 estrella">★</label>
-                                                    </div>
-                                                    <textarea name="comentario" rows="2" placeholder="Escribe un comentario (opcional)"></textarea>
-                                                    <button type="submit" class="btn btn-secondary mt-2">Calificar</button>
-                                                </form>
-                                            {% endif %}
-                                        </figcaption>
+                    <!-- Sección de Cementerios -->
+    <div id="business" data-tab-content>
+        <div class="row">
+            {% for cemente in cementerios %}
+                <div class="col-md-3">
+                    <div class="product-item">
+                        <figure class="product-style">
+                            {% if cemente.imagen_base64 %}
+                                <img src="data:image/png;base64,{{ cemente.imagen_base64 }}" alt="{{ cemente.nombre }}" class="product-item">
+                            {% else %}
+                                <img src="{% static 'images/logo-funeraria-martinez.jpg' %}" alt="{{ cemente.nombre }}" class="product-item">
+                            {% endif %}
+                            <button type="button" class="btn btn-primary add-to-cart" data-url="{{ cemente.link }}">VER</button>
+                        </figure>
+                        <figcaption>
+                            <h3>{{ cemente.nombre }}</h3>
+                            <span>{{ cemente.direccion }}</span>
+                            <div class="item-price">{{ cemente.telefono }}</div>
+                            <div class="item-price">{{ cemente.email }}</div>
+
+                            <!-- Formulario de calificación solo para usuarios autenticados -->
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'agregar_calificacion' content_type_id=cementerio_content_type.id object_id=cemente.id_cementerio %}">
+                                    {% csrf_token %}
+                                    <div class="rating">
+                                        <input type="radio" id="star5-{{ cemente.id_cementerio }}" name="puntuacion" value="5" required />
+                                        <label for="star5-{{ cemente.id_cementerio }}" title="5 estrellas">★</label>
+                                        <input type="radio" id="star4-{{ cemente.id_cementerio }}" name="puntuacion" value="4" />
+                                        <label for="star4-{{ cemente.id_cementerio }}" title="4 estrellas">★</label>
+                                        <input type="radio" id="star3-{{ cemente.id_cementerio }}" name="puntuacion" value="3" />
+                                        <label for="star3-{{ cemente.id_cementerio }}" title="3 estrellas">★</label>
+                                        <input type="radio" id="star2-{{ cemente.id_cementerio }}" name="puntuacion" value="2" />
+                                        <label for="star2-{{ cemente.id_cementerio }}" title="2 estrellas">★</label>
+                                        <input type="radio" id="star1-{{ cemente.id_cementerio }}" name="puntuacion" value="1" />
+                                        <label for="star1-{{ cemente.id_cementerio }}" title="1 estrella">★</label>
                                     </div>
-                                </div>
-                            {% empty %}
-                                <p>No hay cementerios registrados.</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <div id="pets" data-tab-content>
-                        <div class="row">
-                            <!-- Mostrar siempre la información de los servicios para mascotas -->
-                            {% for mascota in mascotas %}
-                                <div class="col-md-3">
-                                    <div class="product-item">
-                                        <figure class="product-style">
-                                            {% if mascota.imagen_base64 %}
-                                                <img src="data:image/png;base64,{{ mascota.imagen_base64 }}" alt="{{ mascota.nombre }}" class="product-item">
-                                            {% else %}
-                                                <img src="{% static 'images/default-pet-service.jpg' %}" alt="{{ mascota.nombre }}" class="product-item">
-                                            {% endif %}
-                                            <button type="button" class="btn btn-primary add-to-cart" data-url="{{ mascota.link }}">VER</button>
-                                        </figure>
-                                        <figcaption>
-                                            <h3>{{ mascota.nombre }}</h3>
-                                            <span>{{ mascota.direccion }}</span>
-                                            <div class="item-price">{{ mascota.telefono }}</div>
-                                            
-                                            <!-- Mostrar el formulario de calificación solo si el usuario está autenticado -->
-                                            {% if user.is_authenticated and mascota.id_servicio_mascota %}
-                                                <form method="post" action="{% url 'agregar_calificacion' content_type_id=mascota_content_type.id object_id=mascota.id_servicio_mascota %}">
-                                                    {% csrf_token %}
-                                                    <div class="rating">
-                                                        <input type="radio" id="star5-{{ mascota.id_servicio_mascota }}" name="puntuacion" value="5" required />
-                                                        <label for="star5-{{ mascota.id_servicio_mascota }}" title="5 estrellas">★</label>
-                                                        <input type="radio" id="star4-{{ mascota.id_servicio_mascota }}" name="puntuacion" value="4" />
-                                                        <label for="star4-{{ mascota.id_servicio_mascota }}" title="4 estrellas">★</label>
-                                                        <input type="radio" id="star3-{{ mascota.id_servicio_mascota }}" name="puntuacion" value="3" />
-                                                        <label for="star3-{{ mascota.id_servicio_mascota }}" title="3 estrellas">★</label>
-                                                        <input type="radio" id="star2-{{ mascota.id_servicio_mascota }}" name="puntuacion" value="2" />
-                                                        <label for="star2-{{ mascota.id_servicio_mascota }}" title="2 estrellas">★</label>
-                                                        <input type="radio" id="star1-{{ mascota.id_servicio_mascota }}" name="puntuacion" value="1" />
-                                                        <label for="star1-{{ mascota.id_servicio_mascota }}" title="1 estrella">★</label>
-                                                    </div>
-                                                    <textarea name="comentario" rows="2" placeholder="Escribe un comentario (opcional)"></textarea>
-                                                    <button type="submit" class="btn btn-secondary mt-2">Calificar</button>
-                                                </form>
-                                            {% endif %}
-                                        </figcaption>
-                                    </div>
-                                </div>
-                            {% empty %}
-                                <p>No hay servicios para mascotas registrados.</p>
-                            {% endfor %}
-                        </div>
+                                    <textarea name="comentario" rows="2" placeholder="Escribe un comentario (opcional)"></textarea>
+                                    <button type="submit" class="btn btn-secondary mt-2">Calificar</button>
+                                </form>
+                            {% endif %}
+                        </figcaption>
                     </div>
                 </div>
-
-                <!-- Mostrar mensajes de éxito o error -->
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            </div><!--inner-tabs-->
+            {% empty %}
+                <p>No hay cementerios registrados.</p>
+            {% endfor %}
         </div>
+    </div>
+
+                    
+        <!-- Sección de Servicios para Mascotas -->
+    <div id="pets" data-tab-content>
+        <div class="row">
+            {% for mascota in mascotas %}
+                <div class="col-md-3">
+                    <div class="product-item">
+                        <figure class="product-style">
+                            {% if mascota.imagen_base64 %}
+                                <img src="data:image/png;base64,{{ mascota.imagen_base64 }}" alt="{{ mascota.nombre }}" class="product-item">
+                            {% else %}
+                                <img src="{% static 'images/default-pet-service.jpg' %}" alt="{{ mascota.nombre }}" class="product-item">
+                            {% endif %}
+                            <button type="button" class="btn btn-primary add-to-cart" data-url="{{ mascota.link }}">VER</button>
+                        </figure>
+                        <figcaption>
+                            <h3>{{ mascota.nombre }}</h3>
+                            <span>{{ mascota.descripcion }}</span>
+                            <div class="item-price">{{ mascota.telefono }}</div>
+                            <div class="item-price">{{ mascota.email }}</div>
+
+                            <!-- Formulario de calificación solo para usuarios autenticados -->
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'agregar_calificacion' content_type_id=mascota_content_type.id object_id=mascota.id_servi_mascota %}">
+                                    {% csrf_token %}
+                                    <div class="rating">
+                                        <input type="radio" id="star5-{{ mascota.id_servi_mascota }}" name="puntuacion" value="5" required />
+                                        <label for="star5-{{ mascota.id_servi_mascota }}" title="5 estrellas">★</label>
+                                        <input type="radio" id="star4-{{ mascota.id_servi_mascota }}" name="puntuacion" value="4" />
+                                        <label for="star4-{{ mascota.id_servi_mascota }}" title="4 estrellas">★</label>
+                                        <input type="radio" id="star3-{{ mascota.id_servi_mascota }}" name="puntuacion" value="3" />
+                                        <label for="star3-{{ mascota.id_servi_mascota }}" title="3 estrellas">★</label>
+                                        <input type="radio" id="star2-{{ mascota.id_servi_mascota }}" name="puntuacion" value="2" />
+                                        <label for="star2-{{ mascota.id_servi_mascota }}" title="2 estrellas">★</label>
+                                        <input type="radio" id="star1-{{ mascota.id_servi_mascota }}" name="puntuacion" value="1" />
+                                        <label for="star1-{{ mascota.id_servi_mascota }}" title="1 estrella">★</label>
+                                    </div>
+                                    <textarea name="comentario" rows="2" placeholder="Escribe un comentario (opcional)"></textarea>
+                                    <button type="submit" class="btn btn-secondary mt-2">Calificar</button>
+                                </form>
+                            {% endif %}
+                        </figcaption>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No hay servicios para mascotas registrados.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
     </div>
 </section>
         

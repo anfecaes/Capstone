@@ -19,7 +19,9 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 #Mascotas
 from django.contrib import messages  # Para mostrar mensajes de éxito
-
+import cv2
+import time
+from django.core.files.uploadedfile import UploadedFile
 #calificaciones
 from django.core.exceptions import FieldError
 from django.http import HttpResponseNotFound
@@ -28,48 +30,49 @@ from django.db.models import Avg
 # Asegúrate de que tu clave API de OpenAI esté configurada correctamente
 openai.api_key = 'api'
 
+from django.contrib.auth.models import AnonymousUser
+
+from django.contrib.contenttypes.models import ContentType
+
 def homepage(request):
     try:
-        # Obtener homenajes creados e invitados
-        homenajes_creados = Homenaje.objects.filter(autor=request.user).order_by('-fecha_publicacion')
-        homenajes_invitados = Homenaje.objects.filter(invitados=request.user).order_by('-fecha_publicacion')
+        # Verificar si el usuario está autenticado
+        if request.user.is_authenticated:
+            homenajes_creados = Homenaje.objects.filter(autor=request.user).order_by('-fecha_publicacion')
+            homenajes_invitados = Homenaje.objects.filter(invitados=request.user).order_by('-fecha_publicacion')
+            homenajes = homenajes_creados | homenajes_invitados
+        else:
+            homenajes = Homenaje.objects.none()
 
-        # Combinar ambos conjuntos
-        homenajes = homenajes_creados | homenajes_invitados
-
-        print(f"Homenajes encontrados: {homenajes}")
-
-        # Obtener todas las funerarias, cementerios y servicios de mascotas
+        # Obtener funerarias, cementerios y servicios de mascotas
         funerarias = Funeraria.objects.all()
         cementerios = Cementerio.objects.all()
         mascotas = ServiciosMascotas.objects.all()
 
-        # Convertir imágenes de funerarias a Base64
-        for funeraria in funerarias:
-            if funeraria.imagen:
-                funeraria.imagen_base64 = base64.b64encode(funeraria.imagen).decode('utf-8')
-
-        # Convertir imágenes de cementerios a Base64
-        for cementerio in cementerios:
-            if cementerio.imagen:
-                cementerio.imagen_base64 = base64.b64encode(cementerio.imagen).decode('utf-8')
-
-        # Convertir imágenes de servicios para mascotas a Base64
-        for mascota in mascotas:
-            if mascota.imagen:
-                mascota.imagen_base64 = base64.b64encode(mascota.imagen).decode('utf-8')
-
-        # Obtener el ContentType de cada modelo
+        # Obtener ContentType para cada modelo
         funeraria_content_type = ContentType.objects.get_for_model(Funeraria)
         cementerio_content_type = ContentType.objects.get_for_model(Cementerio)
         mascota_content_type = ContentType.objects.get_for_model(ServiciosMascotas)
 
-        # Procesar el formulario de homenaje
-        if request.method == 'POST':
+        # Convertir imágenes a Base64
+        for funeraria in funerarias:
+            if funeraria.imagen:
+                funeraria.imagen_base64 = base64.b64encode(funeraria.imagen).decode('utf-8')
+
+        for cementerio in cementerios:
+            if cementerio.imagen:
+                cementerio.imagen_base64 = base64.b64encode(cementerio.imagen).decode('utf-8')
+
+        for mascota in mascotas:
+            if mascota.imagen:
+                mascota.imagen_base64 = base64.b64encode(mascota.imagen).decode('utf-8')
+
+        # Procesar formulario de homenaje
+        if request.method == 'POST' and request.user.is_authenticated:
             form = HomenajeForm(request.POST, request.FILES)
             if form.is_valid():
                 form.save()
-                return redirect('homepage')  # Redirigir tras guardar
+                return redirect('homepage')
         else:
             form = HomenajeForm()
 
@@ -79,56 +82,72 @@ def homepage(request):
             'cementerios': cementerios,
             'mascotas': mascotas,
             'homenajes': homenajes,
-            'form': form,
+            'form': form if request.user.is_authenticated else None,
             'funeraria_content_type': funeraria_content_type,
             'cementerio_content_type': cementerio_content_type,
-            'mascota_content_type': mascota_content_type
+            'mascota_content_type': mascota_content_type,
         })
 
     except Exception as e:
         print(f"Error en la vista homepage: {e}")
         return render(request, 'main/error.html', {'error': str(e)})
 
+
 # def homepage(request):
-#     funerarias = Funeraria.objects.all()
-#     cementerios = Cementerio.objects.all()
-#     mascotas = ServiciosMascotas.objects.all()
+#     try:
+#         # Verificar si el usuario está autenticado
+#         if request.user.is_authenticated:
+#             # Obtener homenajes creados e invitados para usuarios autenticados
+#             homenajes_creados = Homenaje.objects.filter(autor=request.user).order_by('-fecha_publicacion')
+#             homenajes_invitados = Homenaje.objects.filter(invitados=request.user).order_by('-fecha_publicacion')
+#             # Combinar ambos conjuntos
+#             homenajes = homenajes_creados | homenajes_invitados
+#         else:
+#             # Para usuarios no autenticados, no intentamos filtrar por `request.user`
+#             homenajes = Homenaje.objects.none()  # Ningún homenaje será mostrado
 
-#     # Obtener los homenajes creados por el usuario autenticado
-#     homenajes = Homenaje.objects.filter(autor=request.user).order_by('-fecha_publicacion')
+#         # Obtener todas las funerarias, cementerios y servicios de mascotas
+#         funerarias = Funeraria.objects.all()
+#         cementerios = Cementerio.objects.all()
+#         mascotas = ServiciosMascotas.objects.all()
 
-#     # Convertir las imágenes a base64 para cada funeraria
-#     for funeraria in funerarias:
-#         if funeraria.imagen:
-#             funeraria.imagen_base64 = base64.b64encode(funeraria.imagen).decode('utf-8')
+#         # Convertir imágenes de funerarias a Base64
+#         for funeraria in funerarias:
+#             if funeraria.imagen:
+#                 funeraria.imagen_base64 = base64.b64encode(funeraria.imagen).decode('utf-8')
 
-#     # Convertir las imágenes a base64 para cada cementerio
-#     for cementerio in cementerios:
-#         if cementerio.imagen:
-#             cementerio.imagen_base64 = base64.b64encode(cementerio.imagen).decode('utf-8')
+#         # Convertir imágenes de cementerios a Base64
+#         for cementerio in cementerios:
+#             if cementerio.imagen:
+#                 cementerio.imagen_base64 = base64.b64encode(cementerio.imagen).decode('utf-8')
 
-#     # Convertir las imágenes a base64 para cada servicio de mascotas
-#     for mascota in mascotas:
-#         if mascota.imagen:
-#             mascota.imagen_base64 = base64.b64encode(mascota.imagen).decode('utf-8')
+#         # Convertir imágenes de servicios para mascotas a Base64
+#         for mascota in mascotas:
+#             if mascota.imagen:
+#                 mascota.imagen_base64 = base64.b64encode(mascota.imagen).decode('utf-8')
 
-#     # Procesar el formulario de homenaje si es necesario (en este caso, es solo ilustrativo)
-#     if request.method == 'POST':
-#         form = HomenajeForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('homepage')  # Redirigir a la misma página tras crear el homenaje
-#     else:
-#         form = HomenajeForm()
+#         # Procesar el formulario de homenaje
+#         if request.method == 'POST' and request.user.is_authenticated:
+#             form = HomenajeForm(request.POST, request.FILES)
+#             if form.is_valid():
+#                 form.save()
+#                 return redirect('homepage')  # Redirigir tras guardar
+#         else:
+#             form = HomenajeForm()
 
-#     # Renderizar la plantilla con los datos procesados
-#     return render(request, 'main/index.html', {
-#         'funerarias': funerarias,
-#         'cementerios': cementerios,
-#         'mascotas': mascotas,
-#         'homenajes': homenajes,  # Incluir los homenajes del usuario en el contexto
-#         'form': form
-#     })
+#         # Renderizar la plantilla con todos los datos
+#         return render(request, 'main/index.html', {
+#             'funerarias': funerarias,
+#             'cementerios': cementerios,
+#             'mascotas': mascotas,
+#             'homenajes': homenajes,
+#             'form': form if request.user.is_authenticated else None
+#         })
+
+#     except Exception as e:
+#         print(f"Error en la vista homepage: {e}")
+#         return render(request, 'main/error.html', {'error': str(e)})
+
 
 
 # Vista de registro
@@ -183,18 +202,16 @@ def crear_homenaje(request):
 
 @login_required
 def ver_homenaje(request, slug):
-    # Obtener el homenaje correspondiente al slug
     homenaje = get_object_or_404(Homenaje, slug=slug)
 
     # Verificar permisos
     if request.user != homenaje.autor and request.user not in homenaje.invitados.all():
         return HttpResponseForbidden("No tienes permiso para acceder a este homenaje.")
 
-    # Inicializar el formulario de condolencias vacío
     form = CondolenciaForm()
 
     if request.method == 'POST':
-        print(f"Datos del POST: {request.POST}")  # Depurar el contenido del POST
+        print(f"Datos del POST: {request.POST}")
 
         if 'vela' in request.POST:
             homenaje.velas += 1
@@ -203,25 +220,43 @@ def ver_homenaje(request, slug):
             homenaje.palomas += 1
             homenaje.save()
         elif 'condolencia' in request.POST:
-            form = CondolenciaForm(request.POST)
+            form = CondolenciaForm(request.POST, request.FILES)
             if form.is_valid():
-                condolencia = form.save(commit=False)
-                condolencia.homenaje = homenaje  # Relacionar la condolencia con el homenaje
-                condolencia.autor = request.user  # Asociar al usuario actual como autor
-                condolencia.save()
-                print(f"Condolencia guardada: {condolencia}")
+                video_file = form.cleaned_data.get('video')
 
-                return redirect(homenaje.get_absolute_url())  # Redirigir tras guardar
+                # Verificar la duración del video
+                if video_file:
+                    video_path = video_file.temporary_file_path()
+                    cap = cv2.VideoCapture(video_path)
+                    duration = cap.get(cv2.CAP_PROP_FRAME_COUNT) / cap.get(cv2.CAP_PROP_FPS)
+                    cap.release()
+
+                    if duration > 60:
+                        form.add_error('video', 'El video no puede durar más de 1 minuto.')
+                    else:
+                        condolencia = form.save(commit=False)
+                        condolencia.homenaje = homenaje
+                        condolencia.autor = request.user
+                        condolencia.save()
+                        print(f"Condolencia guardada: {condolencia}")
+
+                        return redirect(homenaje.get_absolute_url())
+                else:
+                    condolencia = form.save(commit=False)
+                    condolencia.homenaje = homenaje
+                    condolencia.autor = request.user
+                    condolencia.save()
+                    print(f"Condolencia guardada: {condolencia}")
+
+                    return redirect(homenaje.get_absolute_url())
             else:
                 print(f"Errores del formulario: {form.errors}")
 
-    # Renderizar la plantilla con el formulario vacío
     return render(
         request,
         'main/ver_homenaje.html',
         {'homenaje': homenaje, 'form': form}
     )
-
 
 
 
@@ -344,7 +379,7 @@ def encontrar_funeraria_cercana(request):
 #     return max(total, 0)  # Asegurar que el total no sea negativo
 
 def cotizacion_view(request):
-    total = None  # Inicializar el total como None
+    total = None
 
     if request.method == 'POST':
         print(f"Datos POST: {request.POST}")  # Verifica los datos enviados
@@ -371,7 +406,11 @@ def cotizacion_view(request):
     else:
         form = CotizacionForm()
 
+    # Depuración para verificar que el formulario se está cargando correctamente
+    print(f"Formulario inicial: {form}")
+
     return render(request, 'main/cotizacion.html', {'form': form, 'total': total})
+
 
 
 #Mascotas

@@ -32,7 +32,7 @@ class HomenajeForm(forms.ModelForm):
 class CondolenciaForm(forms.ModelForm):
     class Meta:
         model = Condolencia
-        fields = ['mensaje']  # Solo se solicitará el mensaje
+        fields = ['mensaje', 'video']  # Agregamos el campo de video
         widgets = {
             'mensaje': forms.Textarea(attrs={
                 'class': 'form-control',
@@ -42,35 +42,40 @@ class CondolenciaForm(forms.ModelForm):
             }),
         }
         labels = {
-            'mensaje': 'Mensaje de Condolencia'
+            'mensaje': 'Mensaje de Condolencia',
+            'video': 'Sube un video (opcional, máximo 1 minuto)',
         }
         
 # implementación calculadora
 
+# class CotizacionForm(forms.Form):
+#     tipo_servicio = forms.ModelChoiceField(
+#         queryset=TipoServicio.objects.all(),
+#         label="Tipo de Servicio",
+#         empty_label="Seleccione un servicio"
+#     )
+#     ubicacion = forms.ModelChoiceField(
+#         queryset=Ubicacion.objects.all(),
+#         label="Ubicación",
+#         empty_label="Seleccione una ubicación"
+#     )
+#     servicios_adicionales = forms.ModelMultipleChoiceField(
+#         queryset=ServicioAdicional.objects.all(),
+#         widget=forms.CheckboxSelectMultiple,
+#         label="Servicios Adicionales",
+#         required=False
+#     )
+#     beneficio = forms.ModelChoiceField(
+#         queryset=Beneficio.objects.all(),
+#         label="Beneficio",
+#         required=False,
+#         empty_label="Sin beneficio"
+#     )
 class CotizacionForm(forms.Form):
-    tipo_servicio = forms.ModelChoiceField(
-        queryset=TipoServicio.objects.all(),
-        label="Tipo de Servicio",
-        empty_label="Seleccione un servicio"
-    )
-    ubicacion = forms.ModelChoiceField(
-        queryset=Ubicacion.objects.all(),
-        label="Ubicación",
-        empty_label="Seleccione una ubicación"
-    )
-    servicios_adicionales = forms.ModelMultipleChoiceField(
-        queryset=ServicioAdicional.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        label="Servicios Adicionales",
-        required=False
-    )
-    beneficio = forms.ModelChoiceField(
-        queryset=Beneficio.objects.all(),
-        label="Beneficio",
-        required=False,
-        empty_label="Sin beneficio"
-    )
-
+    tipo_servicio = forms.ModelChoiceField(queryset=TipoServicio.objects.all())
+    ubicacion = forms.ModelChoiceField(queryset=Ubicacion.objects.all())
+    servicios_adicionales = forms.ModelMultipleChoiceField(queryset=ServicioAdicional.objects.all(), required=False)
+    beneficio = forms.ModelChoiceField(queryset=Beneficio.objects.all(), required=False)
 
 #Mascota
 class MascotaForm(forms.ModelForm):

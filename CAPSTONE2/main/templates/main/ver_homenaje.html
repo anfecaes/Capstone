@@ -71,11 +71,20 @@
 
                 <!-- Formulario para Condolencias -->
                 <div class="mt-4">
-                    <form method="POST" class="mt-4">
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ form.as_p }}
-                        <button type="submit" name="condolencia" class="btn btn-primary mt-2">Enviar Condolencia</button>
-                    </form>
+                        
+                        <!-- Elementos para la grabación de video -->
+                        <div>
+                            <video id="videoPreview" width="320" height="240" autoplay muted></video>
+                            <button type="button" id="startRecording">Comenzar Grabación</button>
+                            <button type="button" id="stopRecording" disabled>Detener Grabación</button>
+                        </div>
+                    
+                        <input type="file" id="videoFileInput" name="video" accept="video/mp4" style="display: none;">
+                        <button type="submit" name="condolencia">Enviar Condolencia</button>
+                    </form>                  
                 </div>
             </div>
         </div>
@@ -163,5 +172,56 @@
         const section = document.getElementById('homenaje-section');
         section.style.opacity = 1;
     });
+
+</script>
+
+<script>
+{% comment %} camara {% endcomment %}
+const startButton = document.getElementById('startRecording');
+const stopButton = document.getElementById('stopRecording');
+const videoPreview = document.getElementById('videoPreview');
+const videoFileInput = document.getElementById('videoFileInput');
+
+let mediaRecorder;
+let recordedChunks = [];
+
+startButton.addEventListener('click', async () => {
+    // Pedir permiso para acceder a la cámara
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    videoPreview.srcObject = stream;
+    videoPreview.play();
+
+    // Configurar el MediaRecorder
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+        }
+    };
+
+    mediaRecorder.onstop = () => {
+        // Crear el archivo de video
+        const blob = new Blob(recordedChunks, { type: 'video/mp4' });
+        const file = new File([blob], 'video.mp4', { type: 'video/mp4' });
+
+        // Asignar el archivo al input file para enviarlo con el formulario
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        videoFileInput.files = dataTransfer.files;
+    };
+
+    // Iniciar la grabación
+    mediaRecorder.start();
+    startButton.disabled = true;
+    stopButton.disabled = false;
+});
+
+stopButton.addEventListener('click', () => {
+    // Detener la grabación
+    mediaRecorder.stop();
+    videoPreview.srcObject.getTracks().forEach(track => track.stop());
+    startButton.disabled = false;
+    stopButton.disabled = true;
+});
 </script>
 {% endblock %}

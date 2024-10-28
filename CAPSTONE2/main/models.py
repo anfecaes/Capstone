@@ -11,6 +11,7 @@ from django.utils.text import slugify
 from django.urls import reverse
 from django.utils import timezone
 from django.conf import settings
+from django.core.validators import FileExtensionValidator
 # from uuid import uuid4
 #importaciones para calificaciones
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -269,6 +270,7 @@ class Condolencia(models.Model):
     homenaje = models.ForeignKey(Homenaje, related_name='condolencias', on_delete=models.CASCADE)
     autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     mensaje = models.TextField()
+    video = models.FileField(upload_to='videos_condolencias/', blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['mp4'])])
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
