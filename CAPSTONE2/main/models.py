@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.conf import settings
 from django.core.validators import FileExtensionValidator
+
 # from uuid import uuid4
 #importaciones para calificaciones
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -131,16 +132,7 @@ class Cementerio(models.Model):
             promedio = sum(c.puntuacion for c in calificaciones) / calificaciones.count()
             return round(promedio, 2)
         return 0
-# class Cementerio(models.Model):
-#     id_cementerio = models.AutoField(primary_key=True)
-#     nombre = models.CharField(max_length=255)
-#     direccion = models.TextField(blank=True, null=True)
-#     telefono = models.CharField(max_length=20, blank=True, null=True)
-#     imagen = models.BinaryField(blank=True, null=True)
 
-#     class Meta:
-#         managed = True
-#         db_table = 'cementerio'
 
 
 class Calificacion(models.Model):
@@ -221,23 +213,7 @@ class Funeraria(models.Model):
             promedio = sum(c.puntuacion for c in calificaciones) / calificaciones.count()
             return round(promedio, 2)
         return 0  # Si no hay calificaciones, retornar 0
-# class Funeraria(models.Model):
-#     id_funeraria = models.AutoField(primary_key=True)
-#     nombre = models.CharField(max_length=255)
-#     direccion = models.TextField(blank=True, null=True)
-#     telefono = models.CharField(max_length=20, blank=True, null=True)
-#     email = models.CharField(unique=True, max_length=255, blank=True, null=True)
-#     imagen = models.BinaryField(blank=True, null=True)
-    
-#     # Nuevo campo para almacenar un enlace (link)
-#     link = models.CharField(max_length=255, blank=True, null=True)
 
-#     class Meta:
-#         managed = True
-#         db_table = 'funeraria'
-
-#     def __str__(self):
-#         return self.nombre
 
 class Homenaje(models.Model):
     autor = models.ForeignKey(Usuario, on_delete=models.CASCADE)
@@ -265,17 +241,57 @@ class Homenaje(models.Model):
     class Meta:
         managed = True
         db_table = 'main_homenaje'
-
+        
+        
 class Condolencia(models.Model):
     homenaje = models.ForeignKey(Homenaje, related_name='condolencias', on_delete=models.CASCADE)
     autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     mensaje = models.TextField()
-    video = models.FileField(upload_to='videos_condolencias/', blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=['mp4'])])
+    video_subido = models.FileField(
+        upload_to='videos_condolencias/subidos/', 
+        blank=True, 
+        null=True, 
+        validators=[FileExtensionValidator(allowed_extensions=['mp4', 'webm'])]
+    )
+    video_capturado = models.FileField(
+        upload_to='videos_condolencias/capturados/', 
+        blank=True, 
+        null=True, 
+        validators=[FileExtensionValidator(allowed_extensions=['mp4', 'webm'])]
+    )
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.autor.username} - {self.mensaje[:30]}"
+    
+# class Condolencia(models.Model):
+#     homenaje = models.ForeignKey(Homenaje, related_name='condolencias', on_delete=models.CASCADE)
+#     autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+#     mensaje = models.TextField()
+    
+#     # Campo para el video subido por el usuario
+#     video_subido = models.FileField(
+#         upload_to='videos_condolencias/subidos/', 
+#         blank=True, 
+#         null=True, 
+#         validators=[FileExtensionValidator(allowed_extensions=['mp4'])]
+#     )
 
+#     # Campo para el video capturado directamente desde la cámara
+#     video_capturado = models.FileField(
+#         upload_to='videos_condolencias/capturados/', 
+#         blank=True, 
+#         null=True, 
+#         validators=[FileExtensionValidator(allowed_extensions=['mp4'])]
+#     )
+
+#     fecha_publicacion = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self):
+#         return f"{self.autor.username} - {self.mensaje[:30]}"
+#     class Meta:
+#         managed = True
+#         db_table = 'main_condolencia'
 class ServiciosMascotas(models.Model):
     id_servi_mascota = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=255, blank=True, null=True)
@@ -299,17 +315,7 @@ class ServiciosMascotas(models.Model):
             promedio = sum(c.puntuacion for c in calificaciones) / calificaciones.count()
             return round(promedio, 2)
         return 0
-# class ServiciosMascotas(models.Model):
-#     id_servi_mascota = models.AutoField(primary_key=True)
-#     nombre = models.CharField(blank=True, null=True)
-#     direccion = models.TextField(blank=True, null=True)
-#     telefono = models.CharField(blank=True, null=True)
-#     email = models.CharField(blank=True, null=True)
-#     imagen = models.BinaryField(blank=True, null=True)
 
-#     class Meta:
-#         managed = True
-#         db_table = 'servicios_mascotas'
 
 # implementación de la calculadora
 class TipoServicio(models.Model):

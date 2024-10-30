@@ -19,7 +19,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 #Mascotas
 from django.contrib import messages  # Para mostrar mensajes de éxito
-import cv2
+
 import time
 from django.core.files.uploadedfile import UploadedFile
 #calificaciones
@@ -199,67 +199,101 @@ def crear_homenaje(request):
         form = HomenajeForm()
     return render(request, 'main/crear_homenaje.html', {'form': form})
 
-
 @login_required
 def ver_homenaje(request, slug):
     homenaje = get_object_or_404(Homenaje, slug=slug)
 
-    # Verificar permisos
+    # Verificar permisos para acceder al homenaje
     if request.user != homenaje.autor and request.user not in homenaje.invitados.all():
         return HttpResponseForbidden("No tienes permiso para acceder a este homenaje.")
 
     form = CondolenciaForm()
 
     if request.method == 'POST':
-        print(f"Datos del POST: {request.POST}")
-
+        # Manejo de reacciones (vela y paloma)
         if 'vela' in request.POST:
             homenaje.velas += 1
             homenaje.save()
         elif 'paloma' in request.POST:
             homenaje.palomas += 1
             homenaje.save()
+        # Manejo de creación de condolencia
         elif 'condolencia' in request.POST:
             form = CondolenciaForm(request.POST, request.FILES)
             if form.is_valid():
-                video_file = form.cleaned_data.get('video')
+                condolencia = form.save(commit=False)
+                condolencia.homenaje = homenaje
+                condolencia.autor = request.user
 
-                # Verificar la duración del video
-                if video_file:
-                    video_path = video_file.temporary_file_path()
-                    cap = cv2.VideoCapture(video_path)
-                    duration = cap.get(cv2.CAP_PROP_FRAME_COUNT) / cap.get(cv2.CAP_PROP_FPS)
-                    cap.release()
+                # Asignar archivos de video si están disponibles en request.FILES
+                if 'video_subido' in request.FILES:
+                    condolencia.video_subido = request.FILES['video_subido']
+                if 'video_capturado' in request.FILES:
+                    condolencia.video_capturado = request.FILES['video_capturado']
 
-                    if duration > 60:
-                        form.add_error('video', 'El video no puede durar más de 1 minuto.')
-                    else:
-                        condolencia = form.save(commit=False)
-                        condolencia.homenaje = homenaje
-                        condolencia.autor = request.user
-                        condolencia.save()
-                        print(f"Condolencia guardada: {condolencia}")
+                condolencia.save()
+                # Redirigir para evitar reenvío del formulario al recargar
+                return redirect('ver_homenaje', slug=slug)
 
-                        return redirect(homenaje.get_absolute_url())
-                else:
-                    condolencia = form.save(commit=False)
-                    condolencia.homenaje = homenaje
-                    condolencia.autor = request.user
-                    condolencia.save()
-                    print(f"Condolencia guardada: {condolencia}")
+    # Obtener todas las condolencias asociadas al homenaje
+    condolencias = homenaje.condolencias.all()
 
-                    return redirect(homenaje.get_absolute_url())
-            else:
-                print(f"Errores del formulario: {form.errors}")
+    return render(request, 'main/ver_homenaje.html', {
+        'homenaje': homenaje,
+        'form': form,
+        'condolencias': condolencias
+    })
 
-    return render(
-        request,
-        'main/ver_homenaje.html',
-        {'homenaje': homenaje, 'form': form}
-    )
+# @login_required
+# def ver_homenaje(request, slug):
+#     homenaje = get_object_or_404(Homenaje, slug=slug)
 
+#     # Verificar permisos
+#     if request.user != homenaje.autor and request.user not in homenaje.invitados.all():
+#         return HttpResponseForbidden("No tienes permiso para acceder a este homenaje.")
 
+#     form = CondolenciaForm()
 
+#     if request.method == 'POST':
+#         print(f"Datos del POST: {request.POST}")
+
+#         # Manejo de reacciones
+#         if 'vela' in request.POST:
+#             homenaje.velas += 1
+#             homenaje.save()
+#         elif 'paloma' in request.POST:
+#             homenaje.palomas += 1
+#             homenaje.save()
+        
+#         # Manejo de condolencias
+#         elif 'condolencia' in request.POST:
+#             form = CondolenciaForm(request.POST, request.FILES)
+#             if form.is_valid():
+#                 condolencia = form.save(commit=False)
+#                 condolencia.homenaje = homenaje
+#                 condolencia.autor = request.user
+
+#                 # Asigna el video capturado automáticamente si está en los archivos
+#                 if 'video_capturado' in request.FILES:
+#                     condolencia.video_capturado = request.FILES['video_capturado']
+#                 if 'video_subido' in request.FILES:
+#                     condolencia.video_subido = request.FILES['video_subido']
+
+#                 condolencia.save()
+#                 print(f"Condolencia guardada: {condolencia}")
+
+#                 return redirect(homenaje.get_absolute_url())
+#             else:
+#                 print(f"Errores del formulario: {form.errors}")
+
+#     # Obtener todas las condolencias asociadas al homenaje para pasarlas al contexto
+#     condolencias = homenaje.condolencias.all()
+
+#     return render(request, 'main/ver_homenaje.html', {
+#         'homenaje': homenaje,
+#         'form': form,
+#         'condolencias': condolencias  # Aseguramos de pasar las condolencias al contexto
+#     })
 # Vista para mostrar el enlace que el creador puede compartir
 @login_required
 def homenaje_compartido(request, slug):

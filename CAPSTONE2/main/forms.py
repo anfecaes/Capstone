@@ -32,7 +32,7 @@ class HomenajeForm(forms.ModelForm):
 class CondolenciaForm(forms.ModelForm):
     class Meta:
         model = Condolencia
-        fields = ['mensaje', 'video']  # Agregamos el campo de video
+        fields = ['mensaje', 'video_subido']
         widgets = {
             'mensaje': forms.Textarea(attrs={
                 'class': 'form-control',
@@ -43,8 +43,25 @@ class CondolenciaForm(forms.ModelForm):
         }
         labels = {
             'mensaje': 'Mensaje de Condolencia',
-            'video': 'Sube un video (opcional, máximo 1 minuto)',
+            'video_subido': 'Sube un video como homenaje (opcional, máximo 1 minuto)',
         }
+
+# class CondolenciaForm(forms.ModelForm):
+#     class Meta:
+#         model = Condolencia
+#         fields = ['mensaje', 'video_subido']  # Excluye video_capturado
+#         widgets = {
+#             'mensaje': forms.Textarea(attrs={
+#                 'class': 'form-control',
+#                 'placeholder': 'Escribe aquí tu condolencia...',
+#                 'rows': 3,
+#                 'style': 'resize: none;'
+#             }),
+#         }
+#         labels = {
+#             'mensaje': 'Mensaje de Condolencia',
+#             'video_subido': 'Sube un video como homenaje (opcional, máximo 1 minuto)',
+#         }
         
 # implementación calculadora
 

@@ -103,5 +103,8 @@ AUTH_USER_MODEL = 'main.Usuario'
 # EMAIL_HOST_PASSWORD = 'tu-contraseña'
 # DEFAULT_FROM_EMAIL = 'tu-email@gmail.com'
 
+# Define la URL para acceder a los archivos multimedia
 MEDIA_URL = '/media/'
+
+# Define la ruta en tu sistema de archivos donde se guardarán los archivos multimedia
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

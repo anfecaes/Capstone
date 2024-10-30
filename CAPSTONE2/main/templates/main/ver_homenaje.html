@@ -16,7 +16,8 @@
 
                 <div class="homenaje-content card shadow-lg p-5 rounded-lg">
                     <p class="homenaje-message">{{ homenaje.mensaje }}</p>
-
+                    
+                    <!-- Mostrar la imagen si está disponible -->
                     {% if homenaje.imagen %}
                     <div class="homenaje-image text-center mb-4">
                         <img src="{{ homenaje.imagen.url }}" 
@@ -26,6 +27,7 @@
                     </div>
                     {% endif %}
 
+                    <!-- Mostrar el video si está disponible -->
                     {% if homenaje.video %}
                     <div class="homenaje-video text-center mb-4">
                         <video controls class="rounded shadow-lg w-100">
@@ -55,23 +57,27 @@
                     </form>
                 </div>
 
-                <!-- Sección de Condolencias -->
+                <!-- Condolencias -->
                 <div class="condolencias mt-5">
                     <h3 class="mb-3 text-primary">Condolencias</h3>
                     <ul class="list-group">
-                        {% for condolencia in homenaje.condolencias.all %}
+                        {% for condolencia in condolencias %}
                             <li class="list-group-item rounded shadow-sm mb-3">
                                 <strong>{{ condolencia.autor.username }}:</strong> {{ condolencia.mensaje }}
-
-                                <!-- Mostrar el video de la condolencia, si está disponible -->
-                                {% if condolencia.video %}
-                                    <div class="condolencia-video mt-3">
-                                        <video 
-                                            controls 
-                                            class="rounded shadow-lg w-100 condolencia-video-thumbnail"
-                                            style="max-height: 300px; object-fit: cover;"
-                                            onclick="expandVideo(this)">
-                                            <source src="{{ condolencia.video.url }}" type="video/mp4">
+                                {% if condolencia.video_subido %}
+                                    <div class="mt-2">
+                                        <p>Video subido:</p>
+                                        <video controls class="rounded shadow-lg w-100" style="max-height: 300px; object-fit: cover;">
+                                            <source src="{{ condolencia.video_subido.url }}" type="video/mp4">
+                                            Tu navegador no soporta la reproducción de video.
+                                        </video>
+                                    </div>
+                                {% endif %}
+                                {% if condolencia.video_capturado %}
+                                    <div class="mt-2">
+                                        <p>Video capturado:</p>
+                                        <video controls class="rounded shadow-lg w-100" style="max-height: 300px; object-fit: cover;">
+                                            <source src="{{ condolencia.video_capturado.url }}" type="video/webm">
                                             Tu navegador no soporta la reproducción de video.
                                         </video>
                                     </div>
@@ -88,202 +94,96 @@
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ form.as_p }}
-                
-                        <!-- Elementos para la grabación de video -->
-                        <div>
+                        <input type="file" id="videoCapturedInput" name="video_capturado" accept="video/webm" style="display: none;">
+                        <div class="video-capture mt-4">
                             <video id="videoPreview" width="320" height="240" autoplay muted></video>
                             <button type="button" id="startRecording">Comenzar Grabación</button>
                             <button type="button" id="stopRecording" disabled>Detener Grabación</button>
-                            <p id="videoStatus" class="text-success" style="display: none;">Video listo para subir</p>
+                            <p id="videoStatus" style="display: none;">Video listo para enviar</p>
                         </div>
-                
-                        <input type="file" id="videoFileInput" name="video" accept="video/mp4" style="display: none;">
                         <button type="submit" name="condolencia">Enviar Condolencia</button>
                     </form>
                 </div>
-                
             </div>
         </div>
     </div>
-</section>
-{%endblock%}
-{% block extra_css %}
-<style>
-    /* Estilo para el título */
-    .section-title {
-        font-family: 'Poppins', sans-serif;
-        font-size: 2.5rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: #2c3e50;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-    }
 
-    /* Estilo del mensaje de homenaje */
-    .homenaje-message {
-        font-family: 'Roboto', sans-serif;
-        font-size: 1.2rem;
-        line-height: 1.8;
-        background-color: #f8f9fa;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
-        margin-bottom: 20px;
-    }
+    <!-- Script para grabación de video -->
+    <script>
+        const startButton = document.getElementById('startRecording');
+        const stopButton = document.getElementById('stopRecording');
+        const videoPreview = document.getElementById('videoPreview');
+        const videoCapturedInput = document.getElementById('videoCapturedInput');
+        const videoStatus = document.getElementById('videoStatus');
 
-    /* Botones de reacciones */
-    .reacciones button {
-        background-color: #ffffff;
-        transition: background-color 0.3s ease, transform 0.2s;
-    }
+        let mediaRecorder;
+        let recordedChunks = [];
 
-    .reacciones button:hover {
-        background-color: #e9ecef;
-        transform: scale(1.1);
-    }
+        startButton.addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                videoPreview.srcObject = stream;
+                videoPreview.play();
 
-    /* Listado de condolencias */
-    .list-group-item {
-        font-family: 'Roboto', sans-serif;
-        font-size: 1rem;
-    }
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp8,opus' });
+                recordedChunks = [];
 
-    /* Estilo del formulario */
-    form input, form textarea {
-        border-radius: 10px;
-        border: 1px solid #ced4da;
-        padding: 10px;
-    }
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
 
-    form input:focus, form textarea:focus {
-        border-color: #007bff;
-        outline: none;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-    }
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    if (blob.size > 0) {
+                        const file = new File([blob], 'video_capturado.webm', { type: 'video/webm' });
 
-    .btn-primary {
-        background-color: #007bff;
-        border: none;
-        transition: background-color 0.3s ease, transform 0.2s;
-    }
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        videoCapturedInput.files = dataTransfer.files;
 
-    .btn-primary:hover {
-        background-color: #0056b3;
-        transform: scale(1.05);
-    }
+                        const videoURL = URL.createObjectURL(blob);
+                        videoPreview.srcObject = null;
+                        videoPreview.src = videoURL;
+                        videoPreview.controls = true;
+                        videoPreview.play();
 
-    /* Efecto de fade-in al cargar la página */
-    #homenaje-section {
-        opacity: 0;
-        transition: opacity 1.5s ease-in-out;
-    }
+                        videoStatus.style.display = 'block';
+                    }
+                };
 
-    /* Estilo del video en la lista de condolencias */
-.condolencia-video-thumbnail {
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
+                mediaRecorder.start();
+                startButton.disabled = true;
+                stopButton.disabled = false;
 
-.condolencia-video-thumbnail:hover {
-    transform: scale(1.02);
-}
+                setTimeout(() => {
+                    if (mediaRecorder.state === "recording") {
+                        mediaRecorder.stop();
+                        stopTracks(videoPreview);
+                        startButton.disabled = false;
+                        stopButton.disabled = true;
+                    }
+                }, 60000);
 
-/* Estilos para el modo pantalla completa */
-.fullscreen-video-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1050;
-}
+            } catch (error) {
+                alert("No se pudo acceder a la cámara. Verifica los permisos.");
+            }
+        });
 
-.fullscreen-video {
-    max-width: 90%;
-    max-height: 90%;
-    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-}
-</style>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    // Efecto de fade-in en la sección al cargar la página
-    document.addEventListener('DOMContentLoaded', function () {
-        const section = document.getElementById('homenaje-section');
-        section.style.opacity = 1;
-    });
-
-</script>
-
-<script>
-{% comment %} camara {% endcomment %}
-const startButton = document.getElementById('startRecording');
-const stopButton = document.getElementById('stopRecording');
-const videoPreview = document.getElementById('videoPreview');
-const videoFileInput = document.getElementById('videoFileInput');
-const videoStatus = document.getElementById('videoStatus');
-
-let mediaRecorder;
-let recordedChunks = [];
-
-startButton.addEventListener('click', async () => {
-    // Pedir permiso para acceder a la cámara
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    videoPreview.srcObject = stream;
-    videoPreview.play();
-
-    // Configurar el MediaRecorder
-    mediaRecorder = new MediaRecorder(stream);
-    recordedChunks = [];  // Reiniciar chunks grabados
-    mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-            recordedChunks.push(event.data);
-        }
-    };
-
-    mediaRecorder.onstop = () => {
-        // Crear el archivo de video
-        const blob = new Blob(recordedChunks, { type: 'video/mp4' });
-        const file = new File([blob], 'video.mp4', { type: 'video/mp4' });
-
-        // Asignar el archivo al input file para enviarlo con el formulario
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(file);
-        videoFileInput.files = dataTransfer.files;
-
-        // Mostrar mensaje de confirmación de captura de video
-        videoStatus.style.display = 'block';
-    };
-
-    // Iniciar la grabación y establecer límite de tiempo
-    mediaRecorder.start();
-    startButton.disabled = true;
-    stopButton.disabled = false;
-
-    setTimeout(() => {
-        if (mediaRecorder.state === "recording") {
+        stopButton.addEventListener('click', () => {
             mediaRecorder.stop();
-            videoPreview.srcObject.getTracks().forEach(track => track.stop());
+            stopTracks(videoPreview);
             startButton.disabled = false;
             stopButton.disabled = true;
+        });
+
+        function stopTracks(videoElement) {
+            if (videoElement.srcObject) {
+                videoElement.srcObject.getTracks().forEach(track => track.stop());
+                videoElement.srcObject = null;
+            }
         }
-    }, 60000);  // Detener automáticamente después de 1 minuto
-});
-
-stopButton.addEventListener('click', () => {
-    // Detener la grabación
-    mediaRecorder.stop();
-    videoPreview.srcObject.getTracks().forEach(track => track.stop());
-    startButton.disabled = false;
-    stopButton.disabled = true;
-});
-
-</script>
+    </script>
+</section>
 {% endblock %}
