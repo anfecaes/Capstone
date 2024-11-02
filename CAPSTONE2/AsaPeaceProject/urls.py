@@ -15,7 +15,8 @@ urlpatterns = [
     path('registro/', views.registro, name='registro'),
     
     path('login/', views.login_view, name='login'),  # Vista de login
-    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='homepage'), name='logout'),
+
     
     # homenajes
     
@@ -44,6 +45,8 @@ urlpatterns = [
      path('mascotas/listar/', views.lista_mascotas, name='listar_mascotas'),
 #    Ruta para generar el PDF
      path('generar_pdf/', views.generar_pdf, name='generar_pdf'),
+     #calificacion
+     path('calificar/<int:content_type_id>/<int:object_id>/', views.agregar_calificacion, name='agregar_calificacion'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

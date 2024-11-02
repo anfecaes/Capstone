@@ -1,7 +1,7 @@
 # forms.py
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Usuario, Homenaje, Condolencia, TipoServicio, ServicioAdicional, Ubicacion, Beneficio, Mascota
+from .models import Usuario, Homenaje, Condolencia, TipoServicio, ServicioAdicional, Ubicacion, Beneficio, Mascota, Calificacion
 
 
 class RegistroForm(UserCreationForm):
@@ -32,7 +32,7 @@ class HomenajeForm(forms.ModelForm):
 class CondolenciaForm(forms.ModelForm):
     class Meta:
         model = Condolencia
-        fields = ['mensaje']  # Solo se solicitará el mensaje
+        fields = ['mensaje', 'video_subido']
         widgets = {
             'mensaje': forms.Textarea(attrs={
                 'class': 'form-control',
@@ -42,35 +42,57 @@ class CondolenciaForm(forms.ModelForm):
             }),
         }
         labels = {
-            'mensaje': 'Mensaje de Condolencia'
+            'mensaje': 'Mensaje de Condolencia',
+            'video_subido': 'Sube un video como homenaje (opcional, máximo 1 minuto)',
         }
+
+# class CondolenciaForm(forms.ModelForm):
+#     class Meta:
+#         model = Condolencia
+#         fields = ['mensaje', 'video_subido']  # Excluye video_capturado
+#         widgets = {
+#             'mensaje': forms.Textarea(attrs={
+#                 'class': 'form-control',
+#                 'placeholder': 'Escribe aquí tu condolencia...',
+#                 'rows': 3,
+#                 'style': 'resize: none;'
+#             }),
+#         }
+#         labels = {
+#             'mensaje': 'Mensaje de Condolencia',
+#             'video_subido': 'Sube un video como homenaje (opcional, máximo 1 minuto)',
+#         }
         
 # implementación calculadora
 
+# class CotizacionForm(forms.Form):
+#     tipo_servicio = forms.ModelChoiceField(
+#         queryset=TipoServicio.objects.all(),
+#         label="Tipo de Servicio",
+#         empty_label="Seleccione un servicio"
+#     )
+#     ubicacion = forms.ModelChoiceField(
+#         queryset=Ubicacion.objects.all(),
+#         label="Ubicación",
+#         empty_label="Seleccione una ubicación"
+#     )
+#     servicios_adicionales = forms.ModelMultipleChoiceField(
+#         queryset=ServicioAdicional.objects.all(),
+#         widget=forms.CheckboxSelectMultiple,
+#         label="Servicios Adicionales",
+#         required=False
+#     )
+#     beneficio = forms.ModelChoiceField(
+#         queryset=Beneficio.objects.all(),
+#         label="Beneficio",
+#         required=False,
+#         empty_label="Sin beneficio"
+#     )
 class CotizacionForm(forms.Form):
-    tipo_servicio = forms.ModelChoiceField(
-        queryset=TipoServicio.objects.all(),
-        label="Tipo de Servicio",
-        empty_label="Seleccione un servicio"
-    )
-    ubicacion = forms.ModelChoiceField(
-        queryset=Ubicacion.objects.all(),
-        label="Ubicación",
-        empty_label="Seleccione una ubicación"
-    )
-    servicios_adicionales = forms.ModelMultipleChoiceField(
-        queryset=ServicioAdicional.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        label="Servicios Adicionales",
-        required=False
-    )
-    beneficio = forms.ModelChoiceField(
-        queryset=Beneficio.objects.all(),
-        label="Beneficio",
-        required=False,
-        empty_label="Sin beneficio"
-    )
-
+    tipo_servicio = forms.ModelChoiceField(queryset=TipoServicio.objects.all())
+    ubicacion = forms.ModelChoiceField(queryset=Ubicacion.objects.all())
+    servicios_adicionales = forms.ModelMultipleChoiceField(queryset=ServicioAdicional.objects.all(), required=False)
+    beneficio = forms.ModelChoiceField(queryset=Beneficio.objects.all(), required=False)
 
 #Mascota
 class MascotaForm(forms.ModelForm):
@@ -83,4 +105,14 @@ class MascotaForm(forms.ModelForm):
             'descripcion': forms.Textarea(attrs={'rows': 4}),
             'motivo': forms.Textarea(attrs={'rows': 4}),
             'contacto': forms.TextInput(attrs={'placeholder': 'Teléfono, Facebook, etc.'}),
+        }
+
+#calificaciones
+class CalificacionForm(forms.ModelForm):
+    class Meta:
+        model = Calificacion
+        fields = ['puntuacion', 'comentario']
+        widgets = {
+            'puntuacion': forms.NumberInput(attrs={'min': 1, 'max': 5}),
+            'comentario': forms.Textarea(attrs={'rows': 3}),
         }

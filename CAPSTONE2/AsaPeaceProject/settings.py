@@ -91,6 +91,7 @@ CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000']
 
 APPEND_SLASH = False
 
+LOGIN_URL = '/login/'
 # configuración de usarios portal
 # desactivar auth_user_model cuando se vaya a trabajar con admin
 AUTH_USER_MODEL = 'main.Usuario'  
@@ -102,5 +103,8 @@ AUTH_USER_MODEL = 'main.Usuario'
 # EMAIL_HOST_PASSWORD = 'tu-contraseña'
 # DEFAULT_FROM_EMAIL = 'tu-email@gmail.com'
 
+# Define la URL para acceder a los archivos multimedia
 MEDIA_URL = '/media/'
+
+# Define la ruta en tu sistema de archivos donde se guardarán los archivos multimedia
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

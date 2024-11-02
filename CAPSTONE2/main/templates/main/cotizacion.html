@@ -1,5 +1,5 @@
 {% extends 'main/index.html' %}
-{% load static %}
+
 {% block title %}Cotización de Servicios Funerarios{% endblock %}
 
 {% block content %}
@@ -15,35 +15,32 @@
                     Los servicios específicos ofrecidos por funerarias y cementerios pueden variar.
                 </div>
 
-                <form method="POST" class="form-cotizacion card p-4 shadow-lg">
+                <!-- Mostrar errores del formulario si los hay -->
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <p>Por favor, corrige los siguientes errores:</p>
+                        <ul>
+                            {% for field, errors in form.errors.items %}
+                                <li>{{ field }}: {{ errors }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <form method="post">
                     {% csrf_token %}
-                    <div class="form-group">
-                        {{ form.tipo_servicio.label_tag }}
-                        {{ form.tipo_servicio }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.ubicacion.label_tag }}
-                        {{ form.ubicacion }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.servicios_adicionales.label_tag }}
-                        <pre>{{ form.servicios_adicionales }}</pre>  <!-- Imprimir contenido -->
-                    </div>
-                    <div class="form-group">
-                        {{ form.beneficio.label_tag }}
-                        {{ form.beneficio }}
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block mt-3">Calcular Cotización</button>
+                    {{ form.as_p }}
+                    <button type="submit">Calcular</button>
                 </form>
                 
-                
-
+                <!-- Mostrar el resultado solo si el total no es None -->
                 {% if total is not None %}
-                <div class="resultado-cotizacion mt-4 alert alert-info">
-                    <h4>Resultado</h4>
-                    <p>El costo total estimado es: <strong>{{ total }} CLP</strong></p>
-                </div>
+                    <div class="resultado-cotizacion mt-4 alert alert-info">
+                        <h4>Resultado</h4>
+                        <p>El costo total estimado es: <strong>{{ total }} CLP</strong></p>
+                    </div>
                 {% endif %}
+                
             </div>
         </div>
     </div>

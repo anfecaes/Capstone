@@ -47,9 +47,9 @@
                         <div class="main-menu stellarnav">
                             <ul class="menu-list">
                                 {%if user.is_authenticated%}
-                                <li class="menu-item user-info">
-                                    <span> Hola, <strong>{{ user.username }}</strong></span>  <!-- Nombre del usuario con ícono -->
-                                </li>
+                                    <li class="menu-item user-info">
+                                        <span> Hola, <strong>{{ user.username }}</strong></span>  <!-- Nombre del usuario con ícono -->
+                                    </li>
                                 {%endif%}
                                 <li class="menu-item"><a href="{% url 'homepage' %}">INICIO</a></li>
                                 
@@ -86,14 +86,14 @@
                                 <li class="menu-item"><a href="#download-app" class="nav-link">SOBRE NOSOTROS</a></li>
                                 
                                 {% if user.is_authenticated %}
-                                <li class="menu-item">
-                                    <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: inline;">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-link nav-link logout-link">
-                                            <i class="icon icon-logout"></i> Cerrar Sesión
-                                        </button>
-                                    </form>
-                                </li>
+                                    <li class="menu-item">
+                                        <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-link nav-link logout-link">
+                                                <i class="icon icon-logout"></i> CERRAR SESIÓN
+                                            </button>
+                                        </form>
+                                    </li>
                                 {% else %}
                                     <li class="menu-item"><a href="{% url 'registro' %}" class="nav-link">REGÍSTRATE</a></li>
                                     <li class="menu-item"><a href="{% url 'login' %}" class="nav-link">INICIAR SESIÓN</a></li>
@@ -111,158 +111,227 @@
     <main>
         {% block content %}
         <!-- Aquí va el contenido específico de cada página hija -->
+        <!-- Aquí va el contenido específico de cada página hija -->
         
         
-            <!-- Sección del mapa y ubicación solo para usuarios autenticados -->
-            <section id="best-selling" class="leaf-pattern-overlay">
-                <div class="corner-pattern-overlay"></div>
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-md-8">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h2 class="section-title divider">¡PRUEBA NUESTRO CHATBOT CON INTELIGENCIA ARTIFICIAL!</h2>
-                                    <h3 class="item-title">Conoce a tu nuevo amigo</h3>
-                                    <p>Te damos ayuda y asistencia legal, y a su vez te orientamos para que consigas la experiencia más grata en este proceso.</p>
-					{% if user.is_authenticated %}
-                                    <!-- Aquí es donde añadimos el mapa -->
-                                    <div id="map" style="height: 400px; width: 100%;"></div>
-                                    
-                                    <!-- Botón para obtener la ubicación -->
-                                    <div class="btn-wrap">
-                                        <button onclick="obtenerUbicacion()" class="btn-accent-arrow">
-                                            Obtener mi ubicación
-                                            <i class="icon icon-ns-arrow-right"></i>
-                                        </button>
+        <!-- Aquí va el contenido específico de cada página hija -->  
+        
+        
+  <!-- Sección del mapa y ubicación solo para usuarios autenticados -->
+  <section id="best-selling" class="leaf-pattern-overlay">
+    <div class="corner-pattern-overlay"></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="section-title divider">¡PRUEBA NUESTRO CHATBOT CON INTELIGENCIA ARTIFICIAL!</h2>
+                        <h3 class="item-title">Conoce a tu nuevo amigo</h3>
+                        <p>Te damos ayuda y asistencia legal, y a su vez te orientamos para que consigas la experiencia más grata en este proceso.</p>
+        {% if user.is_authenticated %}
+                                        <!-- Aquí es donde añadimos el mapa -->
+                                        <div id="map" style="height: 400px; width: 100%;"></div>
+                                        
+                                        <!-- Botón para obtener la ubicación -->
+                                        <div class="btn-wrap">
+                                            <button onclick="obtenerUbicacion()" class="btn-accent-arrow">
+                                                Obtener mi ubicación
+                                                <i class="icon icon-ns-arrow-right"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </section>
+
+                <!-- Incluir Leaflet CSS y JS en el head -->
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+                <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+                <script>
+                    // Inicializar la función de geolocalización al cargar la página
+                    window.onload = function() {
+                        obtenerUbicacion();
+                    };
+                </script>
+        {% endif %}
+        
+
+<section id="popular-books" class="bookshelf py-5 my-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="section-header align-center">
+                    <h2 class="section-title">SERVICIOS</h2>
                 </div>
-            </section>
 
-            <!-- Incluir Leaflet CSS y JS en el head -->
-            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+                <ul class="tabs">
+                    <li data-tab-target="#all-genre" class="active tab">Funerarias</li>
+                    <li data-tab-target="#business" class="tab">Cementerios</li>
+                    <li data-tab-target="#pets" class="tab">Servicios para Mascotas</li>
+                </ul>
 
-            <script>
-                // Inicializar la función de geolocalización al cargar la página
-                window.onload = function() {
-                    obtenerUbicacion();
-                };
-            </script>
-			{% endif %}
-            <!-- Sección de funerarias solo para usuarios autenticados -->
-            <section id="popular-books" class="bookshelf py-5 my-5">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12">
-            
-                            <div class="section-header align-center">
-                                <h2 class="section-title">SERVICIOS</h2>
-                            </div>
-            
-                            <ul class="tabs">
-                                <li data-tab-target="#all-genre" class="active tab">Funerarias</li>
-                                <li data-tab-target="#business" class="tab">Cementerios</li>
-                                <li data-tab-target="#pets" class="tab">Servicios para Mascotas</li>
-                            </ul>
-            
-                            <div class="tab-content">
-                                <div id="all-genre" data-tab-content class="active">
-                                    <div class="row">
-                                        <!-- Iterar sobre las funerarias -->
-                                        {% for fune in funerarias %}
-                                            <div class="col-md-3">
-                                                <div class="product-item">
-                                                    <figure class="product-style">
-                                                        {% if fune.imagen_base64 %}
-                                                            <img src="data:image/png;base64,{{ fune.imagen_base64 }}" alt="{{ fune.nombre }}" class="product-item">
-                                                        {% else %}
-                                                            <img src="{% static 'images/logo-funeraria-martinez.jpg' %}" alt="{{ fune.nombre }}" class="product-item">
-                                                        {% endif %}
-                                                        <button type="button" class="btn btn-primary add-to-cart" data-url="{{ funeraria.link }}">VER</button>
-                                                    </figure>
-                                                    <figcaption>
-                                                        <h3>{{ fune.nombre }}</h3>
-                                                        <span>{{ fune.direccion }}</span>
-                                                        <div class="item-price">{{ fune.telefono }}</div>
-                                                        <div class="item-price">{{ fune.email }}</div>
-                                                    </figcaption>
-                                                </div>
-                                            </div>
-                                        {% empty %}
-                                            <p>No hay funerarias registradas.</p>
-                                        {% endfor %}
+                <div class="tab-content">
+                    <div id="all-genre" data-tab-content class="active">
+                        <div class="row">
+                            <!-- Mostrar siempre la información de las funerarias -->
+                            {% for fune in funerarias %}
+                                <div class="col-md-3">
+                                    <div class="product-item">
+                                        <figure class="product-style">
+                                            {% if fune.imagen_base64 %}
+                                                <img src="data:image/png;base64,{{ fune.imagen_base64 }}" alt="{{ fune.nombre }}" class="product-item">
+                                            {% else %}
+                                                <img src="{% static 'images/logo-funeraria-martinez.jpg' %}" alt="{{ fune.nombre }}" class="product-item">
+                                            {% endif %}
+                                            <button type="button" class="btn btn-primary add-to-cart" data-url="{{ fune.link }}">VER</button>
+                                        </figure>
+                                        <figcaption>
+                                            <h3>{{ fune.nombre }}</h3>
+                                            <span>{{ fune.direccion }}</span>
+                                            <div class="item-price">{{ fune.telefono }}</div>
+                                            <div class="item-price">{{ fune.email }}</div>
+                                            
+                                            <!-- Mostrar el formulario de calificación solo si el usuario está autenticado -->
+                                            {% if user.is_authenticated and fune.id_funeraria %}
+                                                <form method="post" action="{% url 'agregar_calificacion' content_type_id=funeraria_content_type.id object_id=fune.id_funeraria %}">
+                                                    {% csrf_token %}
+                                                    <div class="rating">
+                                                        <input type="radio" id="star5-{{ fune.id_funeraria }}" name="puntuacion" value="5" required />
+                                                        <label for="star5-{{ fune.id_funeraria }}" title="5 estrellas">★</label>
+                                                        <input type="radio" id="star4-{{ fune.id_funeraria }}" name="puntuacion" value="4" />
+                                                        <label for="star4-{{ fune.id_funeraria }}" title="4 estrellas">★</label>
+                                                        <input type="radio" id="star3-{{ fune.id_funeraria }}" name="puntuacion" value="3" />
+                                                        <label for="star3-{{ fune.id_funeraria }}" title="3 estrellas">★</label>
+                                                        <input type="radio" id="star2-{{ fune.id_funeraria }}" name="puntuacion" value="2" />
+                                                        <label for="star2-{{ fune.id_funeraria }}" title="2 estrellas">★</label>
+                                                        <input type="radio" id="star1-{{ fune.id_funeraria }}" name="puntuacion" value="1" />
+                                                        <label for="star1-{{ fune.id_funeraria }}" title="1 estrella">★</label>
+                                                    </div>
+                                                    <textarea name="comentario" rows="2" placeholder="Escribe un comentario (opcional)"></textarea>
+                                                    <button type="submit" class="btn btn-secondary mt-2">Calificar</button>
+                                                </form>
+                                            {% endif %}
+                                        </figcaption>
                                     </div>
                                 </div>
-            
-                                <div id="business" data-tab-content>
-                                    <div class="row">
-                                        <!-- Iterar sobre los cementerios -->
-                                        {% for cemente in cementerios %}
-                                            <div class="col-md-3">
-                                                <div class="product-item">
-                                                    <figure class="product-style">
-                                                        {% if cemente.imagen_base64 %}
-                                                            <img src="data:image/png;base64,{{ cemente.imagen_base64 }}" alt="{{ cemente.nombre }}" class="product-item">
-                                                        {% else %}
-                                                            <img src="{% static 'images/logo-funeraria-martinez.jpg' %}" alt="{{ cemente.nombre }}" class="product-item">
-                                                        {% endif %}
-                                                        <button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
-                                                    </figure>
-                                                    <figcaption>
-                                                        <h3>{{ cemente.nombre }}</h3>
-                                                        <span>{{ cemente.direccion }}</span>
-                                                        <div class="item-price">{{ cemente.telefono }}</div>
-                                                        <div class="item-price">{{ cemente.email }}</div>
-                                                    </figcaption>
-                                                </div>
-                                            </div>
-                                        {% empty %}
-                                            <p>No hay cementerios registrados.</p>
-                                        {% endfor %}
+                            {% empty %}
+                                <p>No hay funerarias registradas.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Sección de Cementerios -->
+    <div id="business" data-tab-content>
+        <div class="row">
+            {% for cemente in cementerios %}
+                <div class="col-md-3">
+                    <div class="product-item">
+                        <figure class="product-style">
+                            {% if cemente.imagen_base64 %}
+                                <img src="data:image/png;base64,{{ cemente.imagen_base64 }}" alt="{{ cemente.nombre }}" class="product-item">
+                            {% else %}
+                                <img src="{% static 'images/logo-funeraria-martinez.jpg' %}" alt="{{ cemente.nombre }}" class="product-item">
+                            {% endif %}
+                            <button type="button" class="btn btn-primary add-to-cart" data-url="{{ cemente.link }}">VER</button>
+                        </figure>
+                        <figcaption>
+                            <h3>{{ cemente.nombre }}</h3>
+                            <span>{{ cemente.direccion }}</span>
+                            <div class="item-price">{{ cemente.telefono }}</div>
+                            <div class="item-price">{{ cemente.email }}</div>
+
+                            <!-- Formulario de calificación solo para usuarios autenticados -->
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'agregar_calificacion' content_type_id=cementerio_content_type.id object_id=cemente.id_cementerio %}">
+                                    {% csrf_token %}
+                                    <div class="rating">
+                                        <input type="radio" id="star5-{{ cemente.id_cementerio }}" name="puntuacion" value="5" required />
+                                        <label for="star5-{{ cemente.id_cementerio }}" title="5 estrellas">★</label>
+                                        <input type="radio" id="star4-{{ cemente.id_cementerio }}" name="puntuacion" value="4" />
+                                        <label for="star4-{{ cemente.id_cementerio }}" title="4 estrellas">★</label>
+                                        <input type="radio" id="star3-{{ cemente.id_cementerio }}" name="puntuacion" value="3" />
+                                        <label for="star3-{{ cemente.id_cementerio }}" title="3 estrellas">★</label>
+                                        <input type="radio" id="star2-{{ cemente.id_cementerio }}" name="puntuacion" value="2" />
+                                        <label for="star2-{{ cemente.id_cementerio }}" title="2 estrellas">★</label>
+                                        <input type="radio" id="star1-{{ cemente.id_cementerio }}" name="puntuacion" value="1" />
+                                        <label for="star1-{{ cemente.id_cementerio }}" title="1 estrella">★</label>
                                     </div>
-                                </div>
-            
-                                <div id="pets" data-tab-content>
-                                    <div class="row">
-                                        <!-- Iterar sobre los servicios de mascotas -->
-                                        {% for mascota in mascotas %}
-                                            <div class="col-md-3">
-                                                <div class="product-item">
-                                                    <figure class="product-style">
-                                                        {% if mascota.imagen_base64 %}
-                                                            <img src="data:image/png;base64,{{ mascota.imagen_base64 }}" alt="{{ mascota.nombre }}" class="product-item">
-                                                        {% else %}
-                                                            <img src="{% static 'images/default-pet-service.jpg' %}" alt="{{ mascota.nombre }}" class="product-item">
-                                                        {% endif %}
-                                                        <button type="button" class="add-to-cart" data-product-tile="add-to-cart">VER</button>
-                                                    </figure>
-                                                    <figcaption>
-                                                        <h3>{{ mascota.nombre }}</h3>
-                                                        <span>{{ mascota.descripcion }}</span>
-                                                        <div class="item-price">{{ mascota.telefono }}</div>
-                                                        <div class="item-price">{{ mascota.email }}</div>
-                                                    </figcaption>
-                                                </div>
-                                            </div>
-                                        {% empty %}
-                                            <p>No hay servicios para mascotas registrados.</p>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-            
-                            </div>
-            
-                        </div><!--inner-tabs-->
+                                    <textarea name="comentario" rows="2" placeholder="Escribe un comentario (opcional)"></textarea>
+                                    <button type="submit" class="btn btn-secondary mt-2">Calificar</button>
+                                </form>
+                            {% endif %}
+                        </figcaption>
                     </div>
                 </div>
-            </section>
+            {% empty %}
+                <p>No hay cementerios registrados.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+                    
+        <!-- Sección de Servicios para Mascotas -->
+    <div id="pets" data-tab-content>
+        <div class="row">
+            {% for mascota in mascotas %}
+                <div class="col-md-3">
+                    <div class="product-item">
+                        <figure class="product-style">
+                            {% if mascota.imagen_base64 %}
+                                <img src="data:image/png;base64,{{ mascota.imagen_base64 }}" alt="{{ mascota.nombre }}" class="product-item">
+                            {% else %}
+                                <img src="{% static 'images/default-pet-service.jpg' %}" alt="{{ mascota.nombre }}" class="product-item">
+                            {% endif %}
+                            <button type="button" class="btn btn-primary add-to-cart" data-url="{{ mascota.link }}">VER</button>
+                        </figure>
+                        <figcaption>
+                            <h3>{{ mascota.nombre }}</h3>
+                            <span>{{ mascota.descripcion }}</span>
+                            <div class="item-price">{{ mascota.telefono }}</div>
+                            <div class="item-price">{{ mascota.email }}</div>
+
+                            <!-- Formulario de calificación solo para usuarios autenticados -->
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'agregar_calificacion' content_type_id=mascota_content_type.id object_id=mascota.id_servi_mascota %}">
+                                    {% csrf_token %}
+                                    <div class="rating">
+                                        <input type="radio" id="star5-{{ mascota.id_servi_mascota }}" name="puntuacion" value="5" required />
+                                        <label for="star5-{{ mascota.id_servi_mascota }}" title="5 estrellas">★</label>
+                                        <input type="radio" id="star4-{{ mascota.id_servi_mascota }}" name="puntuacion" value="4" />
+                                        <label for="star4-{{ mascota.id_servi_mascota }}" title="4 estrellas">★</label>
+                                        <input type="radio" id="star3-{{ mascota.id_servi_mascota }}" name="puntuacion" value="3" />
+                                        <label for="star3-{{ mascota.id_servi_mascota }}" title="3 estrellas">★</label>
+                                        <input type="radio" id="star2-{{ mascota.id_servi_mascota }}" name="puntuacion" value="2" />
+                                        <label for="star2-{{ mascota.id_servi_mascota }}" title="2 estrellas">★</label>
+                                        <input type="radio" id="star1-{{ mascota.id_servi_mascota }}" name="puntuacion" value="1" />
+                                        <label for="star1-{{ mascota.id_servi_mascota }}" title="1 estrella">★</label>
+                                    </div>
+                                    <textarea name="comentario" rows="2" placeholder="Escribe un comentario (opcional)"></textarea>
+                                    <button type="submit" class="btn btn-secondary mt-2">Calificar</button>
+                                </form>
+                            {% endif %}
+                        </figcaption>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No hay servicios para mascotas registrados.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+    </div>
+</section>
         
+
         
-        {% endblock %}
+
+        {% endblock %} 
+        
     </main>
 
 	<section id="download-app" class="leaf-pattern-overlay">
@@ -377,7 +446,7 @@
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
         
-    <script src="{% static 'js/plugins.js' %}"></script>
+    {% comment %} <script src="{% static 'js/plugins.js' %}"></script> {% endcomment %}
     <script src="{% static 'js/script.js' %}"></script>
     <script>
         // Captura el evento del botón y redirige al link guardado
@@ -412,3 +481,33 @@
 </body>
 
 </html>
+
+
+{% comment %} /* calificaciones */ {% endcomment %}
+<style>
+    .rating {
+        direction: rtl;
+        display: inline-flex;
+        font-size: 24px;
+        justify-content: center;
+    }
+    .rating input {
+        display: none;
+    }
+    .rating label {
+        color: #ddd;
+        cursor: pointer;
+        margin: 0 5px;
+    }
+    .rating input:checked ~ label,
+    .rating input:hover ~ label {
+        color: #FFD700;
+    }
+    .rating input:hover ~ label {
+        color: #FFD700;
+    }
+    .rating label:hover,
+    .rating label:hover ~ label {
+        color: #FFD700;
+    }
+</style>
