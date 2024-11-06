@@ -27,6 +27,10 @@ from django.core.exceptions import FieldError
 from django.http import HttpResponseNotFound
 from django.db.models import Avg
 
+#transbank
+from .models import Donacion
+from transbank.webpay.webpay_plus.transaction import Transaction
+from django.urls import reverse
 # Asegúrate de que tu clave API de OpenAI esté configurada correctamente
 openai.api_key = 'api'
 
@@ -514,3 +518,52 @@ def agregar_calificacion(request, content_type_id, object_id):
     
     # Renderizar la página de calificación con el formulario
     return render(request, 'main/agregar_calificacion.html', {'form': form, 'modelo': objeto})
+
+
+
+# Vista para iniciar donación
+def iniciar_donacion(request):
+    if request.method == 'POST':
+        nombre_donante = request.POST['nombre_donante']
+        email_donante = request.POST['email_donante']
+        monto = request.POST['monto']
+
+        # Crear la donación
+        donacion = Donacion.objects.create(
+            nombre_donante=nombre_donante,
+            email_donante=email_donante,
+            monto=monto,
+        )
+
+        # Configurar la transacción con Transbank
+        transaccion = Transaction()
+        respuesta = transaccion.create(
+            buy_order=str(donacion.id),
+            session_id=request.session.session_key,
+            amount=monto,
+            return_url=request.build_absolute_uri(reverse('confirmacion_donacion'))
+        )
+
+        # Guardar el token de la transacción
+        donacion.transaccion_id = respuesta.get('token')
+        donacion.save()
+
+        return redirect(respuesta.get('url') + '?token_ws=' + respuesta.get('token'))
+
+    return render(request, 'main/iniciar_donacion.html')
+
+
+# Vista para confirmar el pago
+def confirmacion_donacion(request):
+    token_ws = request.GET.get('token_ws')
+
+    transaccion = Transaction()
+    respuesta = transaccion.commit(token_ws)
+
+    if respuesta.get('status') == 'AUTHORIZED':
+        donacion = get_object_or_404(Donacion, pk=respuesta.get('buy_order'))
+        donacion.pagado = True
+        donacion.save()
+        return render(request, 'main/confirmacion_exitosa.html', {'donacion': donacion})
+    else:
+        return render(request, 'main/confirmacion_fallida.html')

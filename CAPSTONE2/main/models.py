@@ -375,3 +375,14 @@ class Mascota(models.Model):
 
     def __str__(self):
         return self.nombre
+
+class Donacion(models.Model):
+    nombre_donante = models.CharField(max_length=255)
+    email_donante = models.EmailField()
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
+    transaccion_id = models.CharField(max_length=255, blank=True, null=True)
+    pagado = models.BooleanField(default=False)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Donación de {self.nombre_donante} por {self.monto} - {'Pagado' if self.pagado else 'Pendiente'}"
