@@ -47,6 +47,8 @@ urlpatterns = [
      path('generar_pdf/', views.generar_pdf, name='generar_pdf'),
      #calificacion
      path('calificar/<int:content_type_id>/<int:object_id>/', views.agregar_calificacion, name='agregar_calificacion'),
+     path('iniciar/', views.iniciar_donacion, name='iniciar_donacion'),
+     path('confirmacion/', views.confirmacion_donacion, name='confirmacion_donacion'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

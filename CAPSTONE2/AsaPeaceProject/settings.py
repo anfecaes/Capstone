@@ -52,15 +52,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'AsaPeaceProject.wsgi.application'
 
-# Database
+# Database Pablo
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'ASApeace',
+#        'USER': 'postgres',
+#        'PASSWORD': '1337',
+#        'HOST': 'localhost',
+#        'PORT': '5433',
+#    }
+#}
+
+# Database Andres
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ASApeace',
-        'USER': 'postgres',
-        'PASSWORD': '1337',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('DB_NAME', 'asapeace'),
+        'USER': os.getenv('DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'guts_2015'),
         'HOST': 'localhost',
-        'PORT': '5433',
+        'PORT': '5432',
     }
 }
 
@@ -108,3 +120,8 @@ MEDIA_URL = '/media/'
 
 # Define la ruta en tu sistema de archivos donde se guardarán los archivos multimedia
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Ajustes de Transbank
+TRANSBANK_COMMERCE_CODE = "597055555532"
+TRANSBANK_API_KEY = '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C'
+TRANSBANK_ENVIRONMENT = "INTEGRACION"  # Cambia a "PRODUCCION" al pasar a producción
