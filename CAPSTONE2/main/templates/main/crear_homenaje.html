@@ -10,9 +10,37 @@
                     <p class="text-muted">Llena los detalles para conmemorar a tu ser querido.</p>
                 </div>
                 <div class="homenaje-form card shadow-lg p-4">
+                    <!-- Formulario principal para crear el homenaje -->
                     <form method="post" enctype="multipart/form-data" id="homenajeForm">
                         {% csrf_token %}
-                        {{ form.as_p }}
+
+                        <!-- Mostrar el resto del formulario de homenaje, excluyendo el campo 'invitados' -->
+                        {% for field in form %}
+                            {% if field.name != 'invitados' %}
+                                <div class="form-group">
+                                    {{ field.label_tag }}
+                                    {{ field }}
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <!-- Barra de búsqueda para invitados -->
+                        <div class="form-group">
+                            <label for="search">Buscar Invitados:</label>
+                            <form method="get" action="{% url 'crear_homenaje' %}" style="display: flex; align-items: center;">
+                                <input type="text" name="q" class="form-control" placeholder="Buscar usuario por nombre..." value="{{ query }}">
+                                <button type="submit" class="btn btn-primary ml-2">Buscar</button>
+                            </form>
+                        </div>
+
+                        <!-- Campo de invitados filtrado según la búsqueda -->
+                        <div class="form-group">
+                            <label>Invitados:</label>
+                            {{ form.invitados }}
+                        </div>
+
+                        <!-- Botón para crear el homenaje -->
                         <button type="submit" class="btn btn-primary btn-block btn-lg">
                             Crear Homenaje <i class="fas fa-arrow-right ml-2"></i>
                         </button>
@@ -39,6 +67,7 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block extra_js %}

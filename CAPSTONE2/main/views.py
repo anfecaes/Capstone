@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import openai
 import json
-from .models import Funeraria, Cementerio, ServiciosMascotas, Homenaje, Mascota
+from .models import Funeraria, Cementerio, ServiciosMascotas, Homenaje, Mascota, Usuario
 import base64
 from geopy.distance import great_circle
 from geopy.geocoders import Nominatim
@@ -79,7 +79,7 @@ def homepage(request):
                 return redirect('homepage')
         else:
             form = HomenajeForm()
-
+        
         # Renderizar la plantilla con todos los datos
         return render(request, 'main/index.html', {
             'funerarias': funerarias,
@@ -187,21 +187,27 @@ def login_view(request):
     return render(request, 'main/login.html', {'form': form})
 
 
-
 @login_required
 def crear_homenaje(request):
+    query = request.GET.get('q')  # Obtiene el término de búsqueda
+    if query:
+        usuarios = Usuario.objects.filter(nombre__icontains=query)
+    else:
+        usuarios = Usuario.objects.all()
+
     if request.method == 'POST':
         form = HomenajeForm(request.POST, request.FILES)
         if form.is_valid():
             homenaje = form.save(commit=False)
-            homenaje.autor = request.user  # Asociar el autor al usuario autenticado
+            homenaje.autor = request.user
             homenaje.save()
-            form.save_m2m()  # Guardar los muchos-a-muchos
-            # Redirigir a una página donde se muestre el enlace único
+            form.save_m2m()
             return redirect('homenaje_compartido', slug=homenaje.slug)
     else:
         form = HomenajeForm()
-    return render(request, 'main/crear_homenaje.html', {'form': form})
+        form.fields['invitados'].queryset = usuarios  # Configura el queryset de invitados
+
+    return render(request, 'main/crear_homenaje.html', {'form': form, 'query': query})
 
 @login_required
 def ver_homenaje(request, slug):
@@ -248,57 +254,7 @@ def ver_homenaje(request, slug):
         'condolencias': condolencias
     })
 
-# @login_required
-# def ver_homenaje(request, slug):
-#     homenaje = get_object_or_404(Homenaje, slug=slug)
 
-#     # Verificar permisos
-#     if request.user != homenaje.autor and request.user not in homenaje.invitados.all():
-#         return HttpResponseForbidden("No tienes permiso para acceder a este homenaje.")
-
-#     form = CondolenciaForm()
-
-#     if request.method == 'POST':
-#         print(f"Datos del POST: {request.POST}")
-
-#         # Manejo de reacciones
-#         if 'vela' in request.POST:
-#             homenaje.velas += 1
-#             homenaje.save()
-#         elif 'paloma' in request.POST:
-#             homenaje.palomas += 1
-#             homenaje.save()
-        
-#         # Manejo de condolencias
-#         elif 'condolencia' in request.POST:
-#             form = CondolenciaForm(request.POST, request.FILES)
-#             if form.is_valid():
-#                 condolencia = form.save(commit=False)
-#                 condolencia.homenaje = homenaje
-#                 condolencia.autor = request.user
-
-#                 # Asigna el video capturado automáticamente si está en los archivos
-#                 if 'video_capturado' in request.FILES:
-#                     condolencia.video_capturado = request.FILES['video_capturado']
-#                 if 'video_subido' in request.FILES:
-#                     condolencia.video_subido = request.FILES['video_subido']
-
-#                 condolencia.save()
-#                 print(f"Condolencia guardada: {condolencia}")
-
-#                 return redirect(homenaje.get_absolute_url())
-#             else:
-#                 print(f"Errores del formulario: {form.errors}")
-
-#     # Obtener todas las condolencias asociadas al homenaje para pasarlas al contexto
-#     condolencias = homenaje.condolencias.all()
-
-#     return render(request, 'main/ver_homenaje.html', {
-#         'homenaje': homenaje,
-#         'form': form,
-#         'condolencias': condolencias  # Aseguramos de pasar las condolencias al contexto
-#     })
-# Vista para mostrar el enlace que el creador puede compartir
 @login_required
 def homenaje_compartido(request, slug):
     # Obtener el homenaje correspondiente al slug

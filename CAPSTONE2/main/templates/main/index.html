@@ -182,8 +182,14 @@
                                                 <img src="data:image/png;base64,{{ fune.imagen_base64 }}" alt="{{ fune.nombre }}" class="product-item">
                                             {% else %}
                                                 <img src="{% static 'images/logo-funeraria-martinez.jpg' %}" alt="{{ fune.nombre }}" class="product-item">
+                                                
                                             {% endif %}
-                                            <button type="button" class="btn btn-primary add-to-cart" data-url="{{ fune.link }}">VER</button>
+                                                {% if fune.link %}
+                                                    <button type="button" class="btn btn-primary add-to-cart" data-url="{{ fune.link }}" onclick="checkLink(this)">VER</button>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-primary disabled">Enlace no disponible</button>
+                                                {% endif %}
+
                                         </figure>
                                         <figcaption>
                                             <h3>{{ fune.nombre }}</h3>
@@ -212,12 +218,14 @@
                                                 </form>
                                             {% endif %}
                                         </figcaption>
+                                        
                                     </div>
                                 </div>
                             {% empty %}
                                 <p>No hay funerarias registradas.</p>
                             {% endfor %}
                         </div>
+                        
                     </div>
 
                     <!-- Sección de Cementerios -->
@@ -232,7 +240,11 @@
                             {% else %}
                                 <img src="{% static 'images/logo-funeraria-martinez.jpg' %}" alt="{{ cemente.nombre }}" class="product-item">
                             {% endif %}
-                            <button type="button" class="btn btn-primary add-to-cart" data-url="{{ cemente.link }}">VER</button>
+                            {% if cemente.link %}
+                                <button type="button" class="btn btn-primary add-to-cart" data-url="{{ cemente.link }}" onclick="checkLink(this)">VER</button>
+                            {% else %}
+                                <button type="button" class="btn btn-primary disabled">Enlace no disponible</button>
+                            {% endif %}
                         </figure>
                         <figcaption>
                             <h3>{{ cemente.nombre }}</h3>
@@ -282,7 +294,11 @@
                             {% else %}
                                 <img src="{% static 'images/default-pet-service.jpg' %}" alt="{{ mascota.nombre }}" class="product-item">
                             {% endif %}
-                            <button type="button" class="btn btn-primary add-to-cart" data-url="{{ mascota.link }}">VER</button>
+                            {% if mascota.link %}
+                                <button type="button" class="btn btn-primary add-to-cart" data-url="{{ mascota.link }}" onclick="checkLink(this)">VER</button>
+                            {% else %}
+                                <button type="button" class="btn btn-primary disabled">Enlace no disponible</button>
+                            {% endif %}
                         </figure>
                         <figcaption>
                             <h3>{{ mascota.nombre }}</h3>
@@ -371,7 +387,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-2">
+                {% comment %} <div class="col-md-2">
                     <div class="footer-menu">
                         <h5>Nosotros</h5>
                         <ul class="menu-list">
@@ -416,7 +432,7 @@
                             <li><a href="#">Contactarnos</a></li>
                         </ul>
                     </div>
-                </div>
+                </div> {% endcomment %}
             </div>
         </div>
     </footer>
@@ -456,6 +472,8 @@
                 }
             });
         });
+
+        
     </script>
     <!-- Burbuja del chatbot -->
     <div class="chat-bubble" id="chatBubble">💬</div>

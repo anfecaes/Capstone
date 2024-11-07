@@ -14,7 +14,7 @@ class ServiciosMascotasAdminForm(forms.ModelForm):
 
     class Meta:
         model = ServiciosMascotas
-        fields = ['nombre', 'direccion', 'telefono', 'email', 'imagen_upload']
+        fields = ['nombre', 'direccion', 'telefono', 'email' ,'link','imagen_upload']
 
     def save(self, commit=True):
         instance = super(ServiciosMascotasAdminForm, self).save(commit=False)
@@ -56,7 +56,7 @@ class CementerioAdminForm(forms.ModelForm):
 
     class Meta:
         model = Cementerio
-        fields = ['nombre', 'direccion', 'telefono', 'imagen_upload']
+        fields = ['nombre', 'direccion', 'telefono', 'link', 'imagen_upload']
 
     def save(self, commit=True):
         instance = super(CementerioAdminForm, self).save(commit=False)
@@ -75,7 +75,7 @@ class CementerioAdminForm(forms.ModelForm):
 @admin.register(ServiciosMascotas)
 class ServiciosMascotasAdmin(admin.ModelAdmin):
     form = ServiciosMascotasAdminForm
-    list_display = ('id_servi_mascota', 'nombre', 'direccion', 'telefono', 'email', 'imagen_tag')
+    list_display = ('id_servi_mascota', 'nombre', 'direccion', 'telefono', 'email', 'link','imagen_tag')
     list_editable = ('nombre', 'direccion', 'telefono', 'email')  # Campos editables directamente desde la lista
     search_fields = ('nombre', 'direccion', 'telefono', 'email')
 
@@ -105,7 +105,7 @@ class FunerariaAdmin(admin.ModelAdmin):
 @admin.register(Cementerio)
 class CementerioAdmin(admin.ModelAdmin):
     form = CementerioAdminForm
-    list_display = ('id_cementerio', 'nombre', 'direccion', 'telefono', 'imagen_tag')
+    list_display = ('id_cementerio', 'nombre', 'direccion', 'telefono', 'link', 'imagen_tag')
     list_editable = ('nombre', 'direccion', 'telefono')  # Campos editables directamente desde la lista
     search_fields = ('nombre', 'direccion', 'telefono')
 

@@ -116,7 +116,7 @@ class Cementerio(models.Model):
     direccion = models.TextField(blank=True, null=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)
     imagen = models.BinaryField(blank=True, null=True)
-
+    link = models.CharField(max_length=255, blank=True, null=True)
     class Meta:
         managed = True
         db_table = 'cementerio'
@@ -207,6 +207,7 @@ class Funeraria(models.Model):
     def __str__(self):
         return self.nombre
 
+    
     def calificacion_promedio(self):
         calificaciones = self.calificaciones.all()  # Usar el related_name definido en el modelo Calificacion
         if calificaciones.exists():
@@ -264,34 +265,7 @@ class Condolencia(models.Model):
     def __str__(self):
         return f"{self.autor.username} - {self.mensaje[:30]}"
     
-# class Condolencia(models.Model):
-#     homenaje = models.ForeignKey(Homenaje, related_name='condolencias', on_delete=models.CASCADE)
-#     autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-#     mensaje = models.TextField()
-    
-#     # Campo para el video subido por el usuario
-#     video_subido = models.FileField(
-#         upload_to='videos_condolencias/subidos/', 
-#         blank=True, 
-#         null=True, 
-#         validators=[FileExtensionValidator(allowed_extensions=['mp4'])]
-#     )
 
-#     # Campo para el video capturado directamente desde la cámara
-#     video_capturado = models.FileField(
-#         upload_to='videos_condolencias/capturados/', 
-#         blank=True, 
-#         null=True, 
-#         validators=[FileExtensionValidator(allowed_extensions=['mp4'])]
-#     )
-
-#     fecha_publicacion = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return f"{self.autor.username} - {self.mensaje[:30]}"
-#     class Meta:
-#         managed = True
-#         db_table = 'main_condolencia'
 class ServiciosMascotas(models.Model):
     id_servi_mascota = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=255, blank=True, null=True)
@@ -299,7 +273,7 @@ class ServiciosMascotas(models.Model):
     telefono = models.CharField(max_length=20, blank=True, null=True)
     email = models.CharField(max_length=255, blank=True, null=True)
     imagen = models.BinaryField(blank=True, null=True)
-
+    link = models.CharField(max_length=255, blank=True, null=True)
     class Meta:
         managed = True
         db_table = 'servicios_mascotas'
