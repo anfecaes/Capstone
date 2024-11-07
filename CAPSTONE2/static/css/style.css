@@ -2578,6 +2578,8 @@ body {
   display: none;
   flex-direction: column;
   z-index: 1000;
+  height: 400px; /* Altura por defecto */
+  transition: height 0.3s ease; /* Transición suave */
 }
 
 /* Header de la ventana del chat */
@@ -2594,11 +2596,12 @@ body {
 /* Contenedor de mensajes */
 .chat-window .messages {
   padding: 10px;
-  height: 200px;
+  height: 300px; /* Altura inicial para dejar espacio para los botones */
   overflow-y: auto;
   border-bottom: 1px solid #ccc;
   background-color: #f9f9f9;
   font-size: 14px;
+  transition: height 0.3s ease; /* Transición suave */
 }
 
 /* Caja de entrada */
@@ -2670,6 +2673,14 @@ body {
   max-width: 80%;
   font-style: italic;
   color: #888; /* Color gris claro */
+}
+
+/* Contenedor de los botones Volver y Cancelar */
+.button-container {
+  display: none; /* Oculto por defecto */
+  justify-content: space-around;
+  padding: 10px;
+  background-color: #f1f1f1;
 }
 
 

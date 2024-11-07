@@ -476,17 +476,22 @@
         
     </script>
     <!-- Burbuja del chatbot -->
-    <div class="chat-bubble" id="chatBubble">💬</div>
+<div class="chat-bubble" id="chatBubble">💬 :speech_balloon:</div>
 
-    <!-- Ventana del chat -->
-    <div class="chat-window" id="chatWindow">
-        <div class="header">ASABOT</div>
-        <div class="messages" id="chatMessages"></div>
-        <div class="input-box">
-            <input type="text" id="userMessage" placeholder="Escribe tu mensaje...">
-            <button onclick="sendMessage()">Enviar</button>
-        </div>
+<!-- Ventana del chat -->
+<div class="chat-window" id="chatWindow" style="display: none;">
+    <div class="header">ASABOT</div>
+    <div class="messages" id="chatMessages"></div>
+    <div class="input-box">
+        <input type="text" id="userMessage" placeholder="Escribe tu mensaje...">
+        <button onclick="sendMessage()" id="sendButton">Enviar</button> <!-- Actualizado con función y ID -->
     </div>
+    <!-- Contenedor de botones adicionales -->
+    <div class="button-container">
+        <button id="cancel_button">Cancelar</button>
+        <button id="back_button">Volver</button>
+    </div>
+</div>
 
 </body>
 
