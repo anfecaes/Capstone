@@ -1,0 +1,6 @@
+insert tabla usuario
+INSERT INTO main_usuario (id, password, last_login, is_superuser, username, first_name, last_name, is_staff, is_active, date_joined, rut, telefono, edad, email) VALUES
+(4, 'pbkdf2_sha256$870000$EATx7gbSD3weu7dgoXQP2I$HM...', '2024-10-23 19:27:07.168302-03', FALSE, 'fgh', NULL, NULL, FALSE, TRUE, '2024-10-23 19:26:24.993774-03', '26786567f', '968281828', NULL, 'contacto@eternapet.cl'),
+(2, 'pbkdf2_sha256$870000$SuKKl9EjstQxzUwISmaBX6$fE...', '2024-11-04 19:56:47.524399-03', FALSE, 'kuro', NULL, NULL, FALSE, TRUE, '2024-10-12 20:20:21.904724-03', '26789567g', '945376478', NULL, 'kuro@user.com'),
+(3, 'pbkdf2_sha256$870000$YzfuGedI978rTHOnp5M2HF$mn...', '2024-11-06 12:42:28.188599-03', FALSE, 'juani', NULL, NULL, FALSE, TRUE, '2024-10-17 21:11:53.256268-03', '26789567-g', '971746568', NULL, 'contacto@juanimen.cl'),
+(1, 'pbkdf2_sha256$870000$HalOWHNXxecaEfGd7Sa40x$Wd...', '2024-11-06 12:53:27.940235-03', TRUE, 'cardo', NULL, NULL, TRUE, TRUE, '2024-10-12 20:06:44.873165-03', NULL, NULL, NULL, 'an.cardona@duocuc.cl');

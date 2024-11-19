@@ -1,0 +1,240 @@
+-- DROP TABLES IF THEY EXIST
+DROP TABLE IF EXISTS auth_group_permissions;
+DROP TABLE IF EXISTS auth_user_groups;
+DROP TABLE IF EXISTS auth_user_user_permissions;
+DROP TABLE IF EXISTS auth_permission;
+DROP TABLE IF EXISTS auth_group;
+DROP TABLE IF EXISTS django_admin_log;
+DROP TABLE IF EXISTS django_content_type;
+DROP TABLE IF EXISTS django_migrations;
+DROP TABLE IF EXISTS django_session;
+DROP TABLE IF EXISTS auth_user;
+DROP TABLE IF EXISTS main_usuario;
+DROP TABLE IF EXISTS cementerio;
+DROP TABLE IF EXISTS main_calificacion;
+DROP TABLE IF EXISTS funeraria;
+DROP TABLE IF EXISTS main_homenaje;
+DROP TABLE IF EXISTS main_condolencia;
+DROP TABLE IF EXISTS servicios_mascotas;
+DROP TABLE IF EXISTS tipo_servicio;
+DROP TABLE IF EXISTS servicio_adicional;
+DROP TABLE IF EXISTS ubicacion;
+DROP TABLE IF EXISTS beneficio;
+DROP TABLE IF EXISTS producto_adicional;
+DROP TABLE IF EXISTS impuesto_descuento;
+DROP TABLE IF EXISTS main_mascota;
+DROP TABLE IF EXISTS main_donacion;
+
+-- CREATE TABLES
+
+CREATE TABLE auth_group (
+    name VARCHAR(150) UNIQUE NOT NULL
+);
+
+CREATE TABLE auth_permission (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    content_type_id INTEGER NOT NULL,
+    codename VARCHAR(100) NOT NULL,
+    UNIQUE(content_type_id, codename)
+);
+
+CREATE TABLE auth_group_permissions (
+    id SERIAL PRIMARY KEY,
+    group_id INTEGER NOT NULL REFERENCES auth_group,
+    permission_id INTEGER NOT NULL REFERENCES auth_permission,
+    UNIQUE(group_id, permission_id)
+);
+
+CREATE TABLE auth_user (
+    id SERIAL PRIMARY KEY,
+    password VARCHAR(128) NOT NULL,
+    last_login TIMESTAMP NULL,
+    is_superuser BOOLEAN NOT NULL,
+    username VARCHAR(150) UNIQUE NOT NULL,
+    first_name VARCHAR(150) NOT NULL,
+    last_name VARCHAR(150) NOT NULL,
+    email VARCHAR(254) NOT NULL,
+    is_staff BOOLEAN NOT NULL,
+    is_active BOOLEAN NOT NULL,
+    date_joined TIMESTAMP NOT NULL
+);
+
+CREATE TABLE auth_user_groups (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES auth_user,
+    group_id INTEGER NOT NULL REFERENCES auth_group,
+    UNIQUE(user_id, group_id)
+);
+
+CREATE TABLE auth_user_user_permissions (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES auth_user,
+    permission_id INTEGER NOT NULL REFERENCES auth_permission,
+    UNIQUE(user_id, permission_id)
+);
+
+CREATE TABLE django_content_type (
+    id SERIAL PRIMARY KEY,
+    app_label VARCHAR(100) NOT NULL,
+    model VARCHAR(100) NOT NULL,
+    UNIQUE(app_label, model)
+);
+
+CREATE TABLE django_admin_log (
+    id SERIAL PRIMARY KEY,
+    action_time TIMESTAMP NOT NULL,
+    object_id TEXT NULL,
+    object_repr VARCHAR(200) NOT NULL,
+    action_flag SMALLINT NOT NULL,
+    change_message TEXT NOT NULL,
+    content_type_id INTEGER REFERENCES django_content_type,
+    user_id INTEGER NOT NULL REFERENCES auth_user
+);
+
+CREATE TABLE django_session (
+    session_key VARCHAR(40) PRIMARY KEY,
+    session_data TEXT NOT NULL,
+    expire_date TIMESTAMP NOT NULL
+);
+
+CREATE TABLE main_usuario (
+    id SERIAL PRIMARY KEY,
+    rut VARCHAR(12) UNIQUE NOT NULL,
+    telefono VARCHAR(15),
+    edad INTEGER NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    username VARCHAR(150) UNIQUE NOT NULL,
+    password VARCHAR(128) NOT NULL,
+    last_login TIMESTAMP NULL,
+    is_superuser BOOLEAN NOT NULL,
+    first_name VARCHAR(150) NOT NULL,
+    last_name VARCHAR(150) NOT NULL,
+    is_staff BOOLEAN NOT NULL,
+    is_active BOOLEAN NOT NULL,
+    date_joined TIMESTAMP NOT NULL
+);
+
+CREATE TABLE cementerio (
+    id_cementerio SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    direccion TEXT,
+    telefono VARCHAR(20),
+    imagen BYTEA,
+    link VARCHAR(255)
+);
+
+CREATE TABLE main_calificacion (
+    id SERIAL PRIMARY KEY,
+    usuario_id INTEGER NOT NULL REFERENCES usuario,
+    content_type_id INTEGER NOT NULL REFERENCES django_content_type,
+    object_id INTEGER NOT NULL,
+    puntuacion SMALLINT NOT NULL CHECK (puntuacion >= 1 AND puntuacion <= 5),
+    comentario TEXT,
+    fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE funeraria (
+    id_funeraria SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    direccion TEXT,
+    telefono VARCHAR(20),
+    email VARCHAR(255) UNIQUE,
+    imagen BYTEA,
+    link VARCHAR(255)
+);
+
+CREATE TABLE main_homenaje (
+    id SERIAL PRIMARY KEY,
+    autor_id INTEGER NOT NULL REFERENCES usuario,
+    titulo VARCHAR(255) NOT NULL,
+    mensaje TEXT NOT NULL,
+    fecha_publicacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    es_para_mascota BOOLEAN NOT NULL DEFAULT FALSE,
+    imagen BYTEA,
+    video BYTEA,
+    slug VARCHAR(255) UNIQUE,
+    velas INTEGER NOT NULL DEFAULT 0,
+    palomas INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE main_condolencia (
+    id SERIAL PRIMARY KEY,
+    homenaje_id INTEGER NOT NULL REFERENCES main_homenaje,
+    autor_id INTEGER NOT NULL REFERENCES usuario,
+    mensaje TEXT NOT NULL,
+    video_subido BYTEA,
+    video_capturado BYTEA,
+    fecha_publicacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE servicios_mascotas (
+    id_servi_mascota SERIAL PRIMARY KEY,
+    nombre VARCHAR(255),
+    direccion TEXT,
+    telefono VARCHAR(20),
+    email VARCHAR(255),
+    imagen BYTEA,
+    link VARCHAR(255)
+);
+
+CREATE TABLE tipo_servicio (
+    id SERIAL PRIMARY KEY,
+    tipo VARCHAR(50) NOT NULL,
+    precio_base INTEGER NOT NULL
+);
+
+CREATE TABLE servicio_adicional (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    precio INTEGER NOT NULL
+);
+
+CREATE TABLE ubicacion (
+    id SERIAL PRIMARY KEY,
+    region VARCHAR(100) NOT NULL,
+    factor_precio FLOAT NOT NULL
+);
+
+CREATE TABLE beneficio (
+    id SERIAL PRIMARY KEY,
+    tipo VARCHAR(100) NOT NULL,
+    monto INTEGER NOT NULL
+);
+
+CREATE TABLE producto_adicional (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    precio INTEGER NOT NULL
+);
+
+CREATE TABLE impuesto_descuento (
+    id SERIAL PRIMARY KEY,
+    descripcion VARCHAR(100) NOT NULL,
+    tipo VARCHAR(50) NOT NULL CHECK (tipo IN ('IVA', 'descuento')),
+    valor FLOAT NOT NULL
+);
+
+CREATE TABLE main_mascota (
+    id SERIAL PRIMARY KEY,
+    foto BYTEA,
+    descripcion TEXT NOT NULL,
+    edad INTEGER NOT NULL,
+    vacunas_al_dia VARCHAR(50) NOT NULL,
+    documento_vacunas BYTEA,
+    motivo TEXT NOT NULL,
+    nombre TEXT NOT NULL,
+    contacto TEXT NOT NULL,
+    fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE main_donacion (
+    id SERIAL PRIMARY KEY,
+    nombre_donante VARCHAR(255) NOT NULL,
+    email_donante VARCHAR(255) NOT NULL,
+    monto DECIMAL(10, 2) NOT NULL,
+    transaccion_id VARCHAR(255),
+    pagado BOOLEAN NOT NULL DEFAULT FALSE,
+    fecha_creacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
