@@ -1,0 +1,97 @@
+{% extends 'main/index.html' %}
+
+{% load static %} <!-- Asegúrate de cargar 'static' -->
+
+{% block content %}
+<section id="acceder-homenaje-section" class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="section-header text-center mb-4">
+                    <h1 class="section-title">Acceder al Homenaje</h1>
+                    <p class="text-muted">Introduce el enlace del homenaje para acceder</p>
+                </div>
+
+                <div class="acceder-form card shadow-lg p-4">
+                    <!-- Formulario para acceder al homenaje -->
+                    <form method="post" action="{% url 'acceder_homenaje' %}">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="link-homenaje">Enlace del Homenaje:</label>
+                            <input type="text" class="form-control" id="link-homenaje" name="link_homenaje" placeholder="Ingresa el enlace del homenaje" required>
+                        </div>
+                        <button type="submit" class="btn btn-accent btn-block">
+                            Acceder <i class="icon icon-ns-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Carrusel de imágenes -->
+<section id="homenaje-carousel" class="py-5">
+    <div id="carouselHomenaje" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{% static 'images/homenaje1.jpg' %}" class="d-block w-100" alt="Homenaje 1">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Homenaje a seres queridos</h5>
+                    <p>Recuerda y celebra a quienes más amas.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'images/homenaje2.jpg' %}" class="d-block w-100" alt="Homenaje 2">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Momentos inolvidables</h5>
+                    <p>Los momentos especiales duran para siempre en nuestro corazón.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'images/homenaje3.jpg' %}" class="d-block w-100" alt="Homenaje 3">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Un adiós con amor</h5>
+                    <p>Despide a tus seres queridos con un tributo único y especial.</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselHomenaje" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselHomenaje" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </button>
+    </div>
+</section>
+
+<style>
+    .acceder-form {
+        border-radius: 10px;
+        background-color: #f8f9fa;
+    }
+
+    .carousel-item img {
+        height: 400px;
+        object-fit: cover;
+    }
+
+    .carousel-caption h5 {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .carousel-caption p {
+        font-size: 1.2rem;
+    }
+
+    .section-header h2 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}

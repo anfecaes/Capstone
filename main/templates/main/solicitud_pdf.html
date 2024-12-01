@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Solicitud de Servicio Funerario</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px; /* Reducir márgenes */
+            color: #333;
+            font-size: 12px; /* Tamaño de fuente más pequeño */
+        }
+        h1 {
+            color: #0056b3;
+            font-size: 18px; /* Tamaño de título reducido */
+        }
+        h2 {
+            color: #007bff;
+            font-size: 16px; /* Tamaño de subtítulo reducido */
+            margin-top: 15px; /* Ajustar el margen */
+        }
+        .content {
+            margin: 10px 0; /* Reducir el margen interno */
+        }
+        p {
+            margin-bottom: 5px; /* Reducir el espacio entre párrafos */
+        }
+        ul {
+            margin: 5px 0; /* Reducir márgenes de listas */
+            padding-left: 15px; /* Mantener sangría */
+        }
+        footer {
+            text-align: center;
+            margin-top: 10px; /* Ajustar el margen del pie de página */
+            font-size: 0.8em; /* Tamaño de fuente más pequeño en el pie de página */
+            color: #666;
+        }
+        /* Añadir margen para evitar que el contenido sobresalga */
+        @page {
+            margin: 0.5cm; /* Reducir márgenes de página */
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Solicitud de Servicio</h1>
+        <p><strong>Nombre del cliente:</strong> {{ nombre_cliente }}</p>
+        <p><strong>RUT del cliente:</strong> {{ rut_cliente }}</p>
+        <p><strong>Certificado de defunción:</strong> {{ certificado_defuncion }}</p>
+
+        <h2>Deudas y Herencia</h2>
+        <p><strong>Responsabilidad de las Deudas:</strong></p>
+        <p>Las deudas del fallecido son transferidas a sus herederos legales. Esto significa que los familiares pueden ser responsables de pagar esas deudas si aceptan la herencia.</p>
+        
+        <p><strong>Opciones para los Herederos:</strong></p>
+        <ul>
+            <li><strong>Renuncia a la Herencia:</strong> Los herederos pueden optar por renunciar a la herencia, no asumiendo las deudas del fallecido.</li>
+            <li><strong>Aceptación con Beneficio de Inventario:</strong> Aceptan la herencia, limitando su responsabilidad a las deudas hasta el valor de los bienes heredados.</li>
+            <li><strong>Seguro de Desgravamen:</strong> Si el fallecido tenía deudas aseguradas, un seguro puede cubrirlas en caso de fallecimiento.</li>
+        </ul>
+
+        <h2>Herencia</h2>
+        <p>Los herederos deben realizar un proceso de "posesión efectiva" ante el Registro Civil. Documentación necesaria:</p>
+        <ul>
+            <li>Certificado de Defunción.</li>
+            <li>Copia de Cédula de Identidad de los herederos.</li>
+            <li>Certificado de Nacimiento o Matrimonio.</li>
+            <li>Inventario de Bienes.</li>
+        </ul>
+
+        <p><strong>Impuesto de Sucesiones:</strong> Los herederos pueden estar sujetos a un impuesto dependiendo del valor de los bienes heredados.</p>
+
+        <h2>Donación de Órganos</h2>
+        <p><strong>Estado de la Donación:</strong> {{ donacion }}</p>
+
+        <h2>Opción Elegida</h2>
+        <p><strong>Opción seleccionada:</strong> {{ opcion }}</p>
+
+        <p><strong>Nota Importante:</strong> Es importante actuar con rapidez, ya que el plazo máximo para enterrar o realizar la cremación es de 48 horas tras el fallecimiento.</p>
+    </div>
+    <footer>
+        <p>&copy; 2024 AsaPeace - Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,171 @@
+{% extends 'main/index.html' %}
+
+{% block content %}
+<section id="register-section" class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="section-header text-center mb-4">
+                    <h2 class="section-title">Registrarse</h2>
+                    <p class="text-muted">Crea una cuenta para acceder a todos nuestros servicios</p>
+                </div>
+                <div class="register-form card shadow-lg p-4">
+                    <!-- Mensajes de error del formulario -->
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <ul>
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <li><strong>{{ field }}:</strong> {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <!-- Formulario de registro -->
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            {{ form.username.label_tag }}
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="text-danger">
+                                    {{ form.username.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">Elige un nombre de usuario único.</small>
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form.rut.label_tag }}
+                            {{ form.rut }}
+                            {% if form.rut.errors %}
+                                <div class="text-danger">
+                                    {{ form.rut.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">Introduce tu RUT (Ej: 12345678-9).</small>
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form.telefono.label_tag }}
+                            {{ form.telefono }}
+                            {% if form.telefono.errors %}
+                                <div class="text-danger">
+                                    {{ form.telefono.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">Introduce tu número de teléfono.</small>
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form.email.label_tag }}
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger">
+                                    {{ form.email.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">Introduce tu dirección de correo electrónico.</small>
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form.password1.label_tag }}
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                                <div class="text-danger">
+                                    {{ form.password1.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">Introduce una contraseña segura.</small>
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ form.password2.label_tag }}
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <div class="text-danger">
+                                    {{ form.password2.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">Confirma tu contraseña.</small>
+                        </div>
+                        <button type="submit" class="btn btn-accent btn-block">
+                            Registrarse <i class="icon icon-ns-arrow-right"></i>
+                        </button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'login' %}" class="text-decoration-none text-muted">¿Ya tienes una cuenta? Iniciar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<style>
+    /* CSS para el formulario de registro */
+form {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    outline: none;
+}
+
+small.form-text {
+    color: #6c757d;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.text-center a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.text-center a:hover {
+    text-decoration: underline;
+}
+
+</style>
+{% endblock %}

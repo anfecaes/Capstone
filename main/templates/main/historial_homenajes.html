@@ -1,0 +1,47 @@
+{% extends 'main/index.html' %}
+
+{% block content %}
+
+<section id="historial-homenajes-section" class="py-5 bg-light">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Historial de Homenajes</h2>
+            <p class="text-muted">Revisa todos los homenajes que has creado.</p>
+        </div>
+        
+        {% if homenajes %}
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Título del Homenaje</th>
+                            <th scope="col">Fecha de Publicación</th>
+                            <th scope="col">Link Generado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for homenaje in homenajes %}
+                        <tr>
+                            <td><strong>{{ homenaje.titulo }}</strong></td>
+                            <td>{{ homenaje.fecha_publicacion|date:"d M, Y" }}</td>
+                            <td>
+                                <a href="{% url 'ver_homenaje' slug=homenaje.slug %}" class="btn btn-sm btn-outline-primary">
+                                    Ver Homenaje
+                                </a>
+                                <a href="{% url 'homenaje_compartido' slug=homenaje.slug %}" class="btn btn-sm btn-secondary ml-2">
+                                    Copiar Link
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                No has creado ningún homenaje todavía.
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

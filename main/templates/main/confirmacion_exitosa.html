@@ -1,0 +1,19 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block content %}
+<section class="donation-success py-5">
+    <div class="container text-center">
+        <div class="card shadow-lg p-5 rounded">
+            <h2 class="text-success">¡Gracias por tu donación!</h2>
+            <p class="lead">Tu contribución hace una gran diferencia.</p>
+            <hr>
+            <p><strong>Nombre:</strong> {{ donacion.nombre_donante }}</p>
+            <p><strong>Monto:</strong> ${{ donacion.monto }}</p>
+            <p><strong>Fecha:</strong> {{ donacion.fecha_creacion|date:"d M Y, H:i" }}</p>
+            <p class="mt-4">Gracias por apoyar nuestra causa.</p>
+            <a href="{% url 'iniciar_donacion' %}" class="btn btn-primary mt-3">Hacer otra donación</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

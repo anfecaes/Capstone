@@ -1,0 +1,37 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block content %}
+<section class="donation-form-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-lg p-4 rounded">
+                    <h1 class="text-center mb-4">Hacer una Donación</h1>
+                    <form method="POST" action="{% url 'iniciar_donacion' %}">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="nombre_donante" class="form-label">Nombre:</label>
+                            <input type="text" name="nombre_donante" class="form-control" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="email_donante" class="form-label">Email:</label>
+                            <input type="email" name="email_donante" class="form-control" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="monto" class="form-label">Monto:</label>
+                            <input type="number" name="monto" class="form-control" step="0.01" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Donar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
