@@ -1,0 +1,15 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+{% block content %}
+<section class="donation-failure py-5">
+    <div class="container text-center">
+        <div class="card shadow-lg p-5 rounded">
+            <h1 class="text-danger">Lo sentimos</h1>
+            <p class="lead text-muted">Hubo un problema al procesar tu donación.</p>
+            <p>Por favor, inténtalo nuevamente más tarde.</p>
+            <a href="{% url 'iniciar_donacion' %}" class="btn btn-secondary mt-3">Volver a intentar</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

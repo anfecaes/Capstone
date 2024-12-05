@@ -1,0 +1,662 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AsaPeace</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+    <!-- Estilos personalizados -->
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'icomoon/icomoon.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/vendor.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+    <!-- Scripts -->
+    <script src="{% static 'js/ubicacion.js' %}"></script>
+    <script src="{% static 'js/asabot.js' %}"></script>
+</head>
+
+<body>
+
+    <header id="header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="main-logo">
+                        <a href="{% url 'homepage' %}">
+                            <img src="{% static 'images/main-logo.png' %}" alt="logo">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-10">
+                    <nav id="navbar">
+                        <div class="main-menu stellarnav">
+                            <ul class="menu-list">
+                                {%if user.is_authenticated%}
+                                    <li class="menu-item user-info">
+                                        <span> Hola, <strong>{{ user.username }}</strong></span>  <!-- Nombre del usuario con ícono -->
+                                    </li>
+                                {%endif%}
+                                <li class="menu-item"><a href="{% url 'homepage' %}">INICIO</a></li>
+                                
+                                {% if user.is_authenticated %}
+                                
+                                    <li class="menu-item"><a href="{% url 'crear_homenaje' %}">CREAR HOMENAJE</a></li>
+                                    <li class="menu-item"><a href="{% url 'historial_homenajes' %}">MI HISTORIAL</a></li>
+                                    <li class="menu-item"><a href="{% url 'cotizacion' %}">COTIZA</a></li>
+                                    <li class="menu-item"><a href="{% url 'mascotas' %}" class="nav-link">MASCOTAS</a></li>
+                                    <li class="menu-item"><a href="{% url 'iniciar_donacion' %}" class="nav-link">DONACIONES</a></li>
+                                    
+                                    {% if homenajes %}
+                                        <li class="menu-item dropdown">
+                                            <a class="dropdown-toggle" href="#" role="button" id="dropdownInvitaciones" data-bs-toggle="dropdown" aria-expanded="false">
+                                                INVITACIONES
+                                            </a>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownInvitaciones">
+                                                {% for homenaje in homenajes %}
+                                                    <li>
+                                                        <a class="dropdown-item" href="{% url 'homenaje_compartido' slug=homenaje.slug %}">
+                                                            {{ homenaje.titulo }}
+                                                        </a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                    
+                                {% endif %}
+
+
+                            
+                                
+                                <li class="menu-item"><a href="#popular-books" class="nav-link">SERVICIOS</a></li>
+                                {% comment %} <li class="menu-item"><a href="#popular-books" class="nav-link">MASCOTAS</a></li> {% endcomment %}
+                                <li class="menu-item"><a href="#download-app" class="nav-link">SOBRE NOSOTROS</a></li>
+                                
+                                {% if user.is_authenticated %}
+                                    <li class="menu-item">
+                                        <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-link nav-link logout-link">
+                                                <i class="icon icon-logout"></i> CERRAR SESIÓN
+                                            </button>
+                                        </form>
+                                    </li>
+                                {% else %}
+                                    <li class="menu-item"><a href="{% url 'registro' %}" class="nav-link">REGÍSTRATE</a></li>
+                                    <li class="menu-item"><a href="{% url 'login' %}" class="nav-link">INICIAR SESIÓN</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sección dinámica que será reemplazada por templates hijos -->
+    <main>
+        {% block content %}
+        <!-- Aquí va el contenido específico de cada página hija -->
+        <!-- Aquí va el contenido específico de cada página hija -->
+        <!-- Aquí va el contenido específico de cada página hija -->
+        
+        
+        <!-- Aquí va el contenido específico de cada página hija -->  
+        
+        
+        <!-- Aquí va el contenido específico de cada página hija -->  
+        <!-- Aquí va el contenido específico de cada página hija -->
+        
+        
+        <!-- Aquí va el contenido específico de cada página hija -->  
+        
+        
+        <!-- Sección del mapa y ubicación solo para usuarios autenticados -->
+        {% if user.is_authenticated %}
+        <section id="best-selling" class="leaf-pattern-overlay">
+            <h3>Mapa de Google Maps centrado en Santiago de Chile</h3>
+            <div id="map"></div>
+        
+            <!-- Incluir el script de Google Maps con las bibliotecas necesarias y async defer -->
+            <script
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBtEbi8XYtYhKQhmst6cvY7Tr7wq58X7g&libraries=places"
+            async defer
+            ></script>
+        
+            <!-- Incluir el script mapa.js desde la carpeta estática -->
+            <script src="{% static 'js/mapa.js' %}"></script>
+        </section>
+  
+  
+
+                <!-- Incluir Leaflet CSS y JS en el head -->
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+                <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+                <script>
+                    // Inicializar la función de geolocalización al cargar la página
+                    window.onload = function() {
+                        obtenerUbicacion();
+                    };
+                </script>
+        {% endif %}
+        
+
+        <section id="popular-books" class="bookshelf py-5 my-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+        
+                        <div class="section-header align-center">
+                            <h2 class="section-title">SERVICIOS</h2>
+                        </div>
+        
+                        <ul class="tabs">
+                            <li data-tab-target="#all-genre" class="active tab">Funerarias</li>
+                            <li data-tab-target="#business" class="tab">Cementerios</li>
+                            <li data-tab-target="#pets" class="tab">Servicios para Mascotas</li>
+                            <li data-tab-target="#virtual" class="tab">Videollamadas</li> <!-- Sección para videollamadas -->
+                        </ul>
+        
+                        <div class="tab-content">
+                            <div id="all-genre" data-tab-content class="active">
+                                <div class="row">
+                                    <!-- Mostrar siempre la información de las funerarias -->
+                                    {% for fune in funerarias %}
+                                        <div class="col-md-3">
+                                            <div class="product-item">
+                                                <figure class="product-style">
+                                                    {% if fune.imagen_base64 %}
+                                                        <img src="data:image/png;base64,{{ fune.imagen_base64 }}" alt="{{ fune.nombre }}" class="product-item">
+                                                    {% else %}
+                                                        <img src="{% static 'images/logo-funeraria-martinez.jpg' %}" alt="{{ fune.nombre }}" class="product-item">
+                                                    {% endif %}
+                                                    <button type="button" class="btn btn-primary add-to-cart" data-url="{{ fune.link }}">VER</button>
+                                                </figure>
+                                                <figcaption>
+                                                    <h3>{{ fune.nombre }}</h3>
+                                                    <span>{{ fune.direccion }}</span>
+                                                    <div class="item-price">{{ fune.telefono }}</div>
+                                                    <div class="item-price">{{ fune.email }}</div>
+                                                </figcaption>
+                                            </div>
+                                        </div>
+                                    {% empty %}
+                                        <p>No hay funerarias registradas.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+        
+                            <!-- Sección de Cementerios -->
+                            <div id="business" data-tab-content>
+                                <div class="row">
+                                    {% for cemente in cementerios %}
+                                        <div class="col-md-3">
+                                            <div class="product-item">
+                                                <figure class="product-style">
+                                                    {% if cemente.imagen_base64 %}
+                                                        <img src="data:image/png;base64,{{ cemente.imagen_base64 }}" alt="{{ cemente.nombre }}" class="product-item">
+                                                    {% else %}
+                                                        <img src="{% static 'images/logo-funeraria-martinez.jpg' %}" alt="{{ cemente.nombre }}" class="product-item">
+                                                    {% endif %}
+                                                    <button type="button" class="btn btn-primary add-to-cart" data-url="{{ cemente.link }}">VER</button>
+                                                </figure>
+                                                <figcaption>
+                                                    <h3>{{ cemente.nombre }}</h3>
+                                                    <span>{{ cemente.direccion }}</span>
+                                                    <div class="item-price">{{ cemente.telefono }}</div>
+                                                    <div class="item-price">{{ cemente.email }}</div>
+                                                </figcaption>
+                                            </div>
+                                        </div>
+                                    {% empty %}
+                                        <p>No hay cementerios registrados.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+        
+                            <!-- Sección de Servicios para Mascotas -->
+                            <div id="pets" data-tab-content>
+                                <div class="row">
+                                    {% for mascota in mascotas %}
+                                        <div class="col-md-3">
+                                            <div class="product-item">
+                                                <figure class="product-style">
+                                                    {% if mascota.imagen_base64 %}
+                                                        <img src="data:image/png;base64,{{ mascota.imagen_base64 }}" alt="{{ mascota.nombre }}" class="product-item">
+                                                    {% else %}
+                                                        <img src="{% static 'images/default-pet-service.jpg' %}" alt="{{ mascota.nombre }}" class="product-item">
+                                                    {% endif %}
+                                                    <button type="button" class="btn btn-primary add-to-cart" data-url="{{ mascota.link }}">VER</button>
+                                                </figure>
+                                                <figcaption>
+                                                    <h3>{{ mascota.nombre }}</h3>
+                                                    <span>{{ mascota.descripcion }}</span>
+                                                    <div class="item-price">{{ mascota.telefono }}</div>
+                                                    <div class="item-price">{{ mascota.email }}</div>
+                                                </figcaption>
+                                            </div>
+                                        </div>
+                                    {% empty %}
+                                        <p>No hay servicios para mascotas registrados.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+        
+                            {% if user.is_authenticated %}
+                            <div id="virtual" data-tab-content>
+                                <div class="container">
+                                    <h1>¡Crea o únere a una videollamada!</h1>
+                                    <p>En ASAPEACE sabemos lo complicado que es asistir a los entierros, velorios o despedidas que ocurren en zonas alejadas, por eso creamos esta sección.</p>
+
+                                    <!-- Botón para crear videollamada con código aleatorio -->
+                                    <button onclick="createCall()">Crear videollamada</button>
+                                    <br>
+
+                                    <!-- Caja de entrada para unirse a videollamada -->
+                                    <input type="text" id="roomCode" placeholder="Introduce el código de la sala" />
+                                    <button onclick="joinCall()">Unirse a videollamada</button>
+                                    <br><br>
+
+                                    <h2>Programar Videollamada</h2>
+                                    <form id="scheduleForm">
+                                        <!-- Nombre aleatorio para la videollamada (se genera automáticamente) -->
+                                        <label for="meetingName">Nombre de la videollamada:</label>
+                                        <input type="text" id="meetingName" readonly /><br><br>
+
+                                        <label for="meetingDate">Fecha y hora:</label>
+                                        <input type="datetime-local" id="meetingDate" required /><br><br>
+
+                                        <button type="submit">Programar</button>
+                                    </form>
+
+                                    <h3>Enlace de la videollamada programada:</h3>
+                                    <p id="meetingLink"></p>
+
+                                    <h3>Calendario de Videollamadas Programadas</h3>
+                                    <div id="calendar"></div>
+                                </div>
+                            </div>
+                            {% else %}
+                                <p>Por favor, inicie sesión para acceder a esta funcionalidad.</p>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+<style>
+    /* CSS para la sección de videollamadas */
+#virtual {
+    background-color: #f5f5f5;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#virtual h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: #007bff;
+}
+
+#virtual p {
+    font-size: 1.1em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#virtual button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+#virtual button:hover {
+    background-color: #0056b3;
+}
+
+#virtual input[type="text"],
+#virtual input[type="datetime-local"] {
+    padding: 10px;
+    width: 80%;
+    margin: 10px auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+#virtual input[type="text"]:focus,
+#virtual input[type="datetime-local"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    outline: none;
+}
+
+#virtual label {
+    font-weight: bold;
+    color: #333;
+    display: block;
+    margin: 15px 0 5px;
+}
+
+#virtual #meetingLink {
+    font-size: 1em;
+    color: #007bff;
+    word-break: break-word;
+}
+
+#calendar {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+</style>
+
+        <script>
+            // Función para generar un código aleatorio sin espacios
+            function generateRoomCode() {
+                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                let roomCode = '';
+                for (let i = 0; i < 6; i++) {
+                    roomCode += characters.charAt(Math.floor(Math.random() * characters.length));
+                }
+                return roomCode.replace(/\s/g, ''); // Asegura que no haya espacios
+            }
+            
+            // Función para crear una videollamada con un código aleatorio
+            function createCall() {
+                const roomCode = generateRoomCode();
+                const url = `https://meet.jit.si/${roomCode}`;
+                window.location.href = url;  // Redirige a la videollamada
+            }
+            
+            // Función para unirse a una videollamada con el código ingresado
+            function joinCall() {
+                const roomCode = document.getElementById('roomCode').value;
+                if (roomCode) {
+                    const url = `https://meet.jit.si/${roomCode}`;
+                    window.location.href = url;  // Redirige a la videollamada
+                } else {
+                    alert("Por favor, ingresa un código de sala.");
+                }
+            }
+            
+            // Función para programar una videollamada
+            document.getElementById("scheduleForm").addEventListener("submit", function(event) {
+                event.preventDefault(); // Evita que el formulario se envíe de manera tradicional
+            
+                // Generar un nombre aleatorio para la videollamada, igual que el código
+                const meetingName = generateRoomCode();
+            
+                // Asignar el nombre generado al campo de nombre
+                document.getElementById("meetingName").value = meetingName;
+            
+                const meetingDate = document.getElementById("meetingDate").value;
+            
+                // Validar la fecha y hora ingresada
+                const meetingTime = new Date(meetingDate);
+                if (isNaN(meetingTime)) {
+                    alert('Por favor, ingresa una fecha y hora válida.');
+                    return;
+                }
+            
+                // Crear un código de sala único basado en el nombre de la videollamada
+                const roomCode = meetingName;
+            
+                // Crear el enlace de la videollamada programada
+                const meetingLink = `https://meet.jit.si/${roomCode}`;
+                
+                // Mostrar el enlace de la videollamada
+                document.getElementById("meetingLink").textContent = `Enlace a la videollamada programada: ${meetingLink}`;
+            
+                // Guardar la videollamada programada en el localStorage
+                const scheduledCalls = JSON.parse(localStorage.getItem('scheduledCalls')) || [];
+                scheduledCalls.push({ roomCode, meetingDate });
+                localStorage.setItem('scheduledCalls', JSON.stringify(scheduledCalls));
+            
+                // Mostrar un mensaje de confirmación (opcional)
+                alert(`Videollamada programada: ${meetingLink}`);
+            
+                // Actualizar el calendario
+                updateCalendar();
+            });
+            
+            // Función para actualizar el calendario con las videollamadas programadas
+            function updateCalendar() {
+                const scheduledCalls = JSON.parse(localStorage.getItem('scheduledCalls')) || [];
+                const calendarDiv = document.getElementById('calendar');
+                calendarDiv.innerHTML = '';
+            
+                if (scheduledCalls.length === 0) {
+                    calendarDiv.innerHTML = '<p>No hay videollamadas programadas.</p>';
+                } else {
+                    scheduledCalls.forEach(call => {
+                        const callDate = new Date(call.meetingDate);
+                        const formattedDate = `${callDate.toLocaleDateString()} ${callDate.toLocaleTimeString()}`;
+                        const callElement = document.createElement('div');
+                        callElement.innerHTML = `<strong>${call.roomCode}</strong> - ${formattedDate} <a href="https://meet.jit.si/${call.roomCode}" target="_blank">Unirse</a>`;
+                        calendarDiv.appendChild(callElement);
+                    });
+                }
+            }
+            
+            // Cargar las videollamadas programadas al cargar la página
+            document.addEventListener('DOMContentLoaded', updateCalendar);
+            </script>
+        
+
+        {% endblock %} 
+        
+    </main>
+
+	<section id="download-app" class="leaf-pattern-overlay">
+		<div class="corner-pattern-overlay"></div>
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-8">
+					<div class="row">
+
+						<div class="col-md-5">
+							<figure>
+								<img src="{% static 'images\sobre_nosotros.jpg' %}" alt="Imagen que nos represente" class="single-image">
+							</figure>
+						</div>
+
+						<div class="col-md-7">
+							<div class="app-info">
+								<h2 class="section-title divider">SOBRE NOSOTROS</h2>
+								<p>Somos un portal web dedicado a ofrecer un marketplace de servicios funerarios, facilitando la conexión entre usuarios y funerarias. Nuestro objetivo es simplificar y acompañar a nuestros clientes en momentos difíciles. Contamos con un chatbot especializado para resolver inquietudes y guiar en los trámites necesarios. Además, ofrecemos un apartado dedicado a servicios para mascotas, brindando soluciones integrales para todas las necesidades.</p>
+								<div class="google-app">
+									<img src="{% static 'images/funeraria-logo.png' %}" alt="google play">
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+    <footer id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="footer-item">
+                        <div class="company-brand">
+                            <img src="{% static 'images/main-logo.png' %}" alt="logo" class="footer-logo">
+                            <p>Estamos aquí para acompañarte en cada paso, brindando apoyo y respeto en los momentos más difíciles.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="footer-menu">
+                        <h5>Nosotros</h5>
+                        <ul class="menu-list">
+                            <li><a href="#">Nuestra Visión</a></li>
+                            <li><a href="#">Artículos</a></li>
+                            <li><a href="#">Compañías</a></li>
+                            <li><a href="#">Servicios</a></li>
+                            <li><a href="#">Donativos</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="footer-menu">
+                        <h5>Descubre</h5>
+                        <ul class="menu-list">
+                            <li><a href="#">Inicio</a></li>
+                            <li><a href="#">Funerarias</a></li>
+                            <li><a href="#">Cementerios</a></li>
+                            <li><a href="#">Búsqueda</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="footer-menu">
+                        <h5>Mi Cuenta</h5>
+                        <ul class="menu-list">
+                            <li><a href="{% url 'login' %}">Ingresar</a></li>
+                            <li><a href="#">Ver</a></li>
+                            <li><a href="#">Realizar Orden</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="footer-menu">
+                        <h5>Ayuda</h5>
+                        <ul class="menu-list">
+                            <li><a href="#">Ayuda</a></li>
+                            <li><a href="#">Reportar un problema</a></li>
+                            <li><a href="#">Contactarnos</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="footer-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="copyright">
+                        <p>© 2024 todos los derechos son reservados.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+    <!-- Scripts -->
+    <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+        
+    {% comment %} <script src="{% static 'js/plugins.js' %}"></script> {% endcomment %}
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        // Captura el evento del botón y redirige al link guardado
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function () {
+                const url = this.getAttribute('data-url');  // Obtener el link del atributo data-url
+                if (url) {
+                    window.open(url, '_blank');  // Abrir el enlace en una nueva pestaña
+                } else {
+                    alert('No hay un enlace disponible para esta funeraria.');
+                }
+            });
+        });
+    </script>
+<!-- Burbuja del chatbot -->
+<div class="chat-bubble" id="chatBubble">💬</div>
+
+<!-- Ventana del chat -->
+<div class="chat-window" id="chatWindow" style="display: none;">
+    <div class="header">ASABOT</div>
+    <div class="messages" id="chatMessages"></div>
+    <div class="input-box">
+        <input type="text" id="userMessage" placeholder="Escribe tu mensaje...">
+        <button id="sendButton">Enviar</button> <!-- Actualizado con ID -->
+    </div>
+    <div class="button-container">
+		<button id="cancel_button">Cancelar</button>
+		<button id="back_button">Volver</button>
+    </div>
+</div>
+
+
+</body>
+
+</html>
+
+
+{% comment %} /* calificaciones */ {% endcomment %}
+<style>
+    .rating {
+        direction: rtl;
+        display: inline-flex;
+        font-size: 24px;
+        justify-content: center;
+    }
+    .rating input {
+        display: none;
+    }
+    .rating label {
+        color: #ddd;
+        cursor: pointer;
+        margin: 0 5px;
+    }
+    .rating input:checked ~ label,
+    .rating input:hover ~ label {
+        color: #FFD700;
+    }
+    .rating input:hover ~ label {
+        color: #FFD700;
+    }
+    .rating label:hover,
+    .rating label:hover ~ label {
+        color: #FFD700;
+    }
+</style>

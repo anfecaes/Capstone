@@ -1,0 +1,48 @@
+{% extends 'main/index.html' %}
+
+{% block content %}
+<section class="invitacion-homenaje-section py-5">
+    <div class="container">
+        <div class="section-header text-center mb-4">
+            <h2 class="section-title">Invitación al Homenaje</h2>
+            <p class="text-muted">Has sido invitado a ver el homenaje: <strong>{{ homenaje.titulo }}</strong></p>
+        </div>
+
+        <div class="invitacion-content text-center">
+            {% if homenaje.imagen %}
+                <img src="{{ homenaje.imagen.url }}" class="img-fluid rounded mb-3" alt="Imagen del Homenaje" style="max-width: 300px;">
+            {% endif %}
+
+            <p class="text-muted mb-4">{{ homenaje.mensaje|truncatewords:30 }}</p>
+
+            <a href="{% url 'ver_homenaje' slug=homenaje.slug %}" class="btn btn-primary btn-lg">
+                Ver Homenaje Completo
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+<style>
+    .invitacion-homenaje-section {
+        background-color: #f8f9fa;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .invitacion-content img {
+        max-height: 300px;
+        object-fit: cover;
+    }
+
+    .invitacion-content p {
+        font-size: 1.2rem;
+    }
+
+    .btn-lg {
+        padding: 10px 20px;
+        font-size: 1.2rem;
+        border-radius: 5px;
+    }
+</style>

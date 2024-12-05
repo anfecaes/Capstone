@@ -1,0 +1,102 @@
+
+{% load static %}
+
+{% block content %}
+
+<header>
+    <h1>Lista de Mascotas Disponibles para Adopción</h1>
+    <nav>
+        <ul>
+            <li class="menu-item"><a href="{% url 'mascotas' %}">INICIO</a></li>
+            <li><a href="{% url 'agregar_mascota' %}" class="nav-link">AGREGAR MASCOTAS</a></li>
+            <li><a href="{% url 'listar_mascotas' %}" class="nav-link">LISTAR MASCOTAS</a></li>
+            
+        </ul>
+    </nav>
+</header>
+<div class="mascotas-container">
+    {% for mascota in mascotas %}
+        <div class="mascota-card">
+            <img src="{{ mascota.foto.url }}" alt="Foto de {{ mascota.descripcion }}" class="mascota-foto">
+            <h2>{{ mascota.nombre }}</h2>  <!-- Mostramos el nombre de la mascota -->
+            <p><strong>Descripción:</strong> {{ mascota.descripcion }}</p>
+            <p><strong>Edad:</strong> {{ mascota.edad }} años humanos</p>
+            <p><strong>Vacunas al día:</strong> {{ mascota.vacunas_al_dia }}</p>
+            {% if mascota.documento_vacunas %}
+                <p><strong>Documento de Vacunas:</strong></p>
+                <img src="{{ mascota.documento_vacunas.url }}" alt="Documento de Vacunas" class="documento-vacunas">
+            {% endif %}
+            <p><strong>Motivo para la adopción:</strong> {{ mascota.motivo }}</p>
+            <p><strong>Contacto:</strong> {{ mascota.contacto }}</p>  <!-- Mostramos el contacto -->
+            <p><strong>Fecha de publicación:</strong> {{ mascota.fecha|date:"d/m/Y H:i" }}</p> <!-- Mostramos la fecha y hora -->
+        </div>
+    {% endfor %}
+</div>
+
+<style>
+    header {
+        background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
+        color: white;
+        padding: 10px 0;
+        text-align: center;
+        z-index: 2; /* Asegurarse de que esté por encima del video */
+        position: relative; /* Para el z-index */
+    }
+    nav ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+    }
+    nav ul li {
+        margin: 0 15px;
+    }
+    nav ul li a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    nav ul li a.active {
+        border-bottom: 2px solid white;
+    }
+    body {
+        background-repeat: repeat;
+        background-image: url("{% static 'Fondo/Fondo_Mascotas.jpg' %}"); /* Reemplaza con la ruta de tu imagen */
+        animation: moveBackground 20s linear infinite;
+        background-size: 7pc;
+        font-family: Arial, sans-serif;
+        color: #333;
+    }
+
+    @keyframes moveBackground {
+        0% {
+            background-position: 0% 0%; /* Posición inicial */
+        }
+        100% {
+            background-position: 100% 0%; /* Posición final */
+        }
+    }
+
+    .mascotas-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+    .mascota-card {
+        border: 5px solid #bf907e;
+        border-radius: 15px;
+        padding: 10px;
+        max-width: 300px;
+        background: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        background-image: linear-gradient(270deg, #debfab, #bf907e);
+    }
+    .mascota-foto, .documento-vacunas {
+        max-width: 100%;
+        height: auto;
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}
