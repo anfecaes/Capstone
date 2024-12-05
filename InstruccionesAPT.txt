@@ -1,0 +1,39 @@
+Para poder hacer uso de el proyecto sin errores contemple los siguientes pasos:
+
+ASEGURAR DE TENER LA VERSION DE PYTHON 3.11.9
+abrir la consola en la carpeta del proyecto donde está el manage.py y el requirements.txt
+
+escribir en la consola: pip install -r requirements.txt
+
+1: Descargar la versión 17 de postgres.
+(despues de agregar la api key del chatbot y tener la bd bien conectada cambiando la contraseña, port, nombre usuario, nombre base de datos y demás en el settings py de el proyecto)
+2: Cargar backup llamado asapeace en postgres sql.
+3: En caso de que el backup no funcione ejecutar los script para la creación de tablas y inyección de datos.
+4: para crear super usuarios ejecutar comando python manage.py createsuperuser.
+
+Si el proyecto cuenta con algunos problemas. borre las migraciones sin borrar el init y intente realizar las migraciones nuevamente con python manage.py makemigrations y migrate.
+
+
+Api key para el chatbot se tiene que ubicar en el views específicamente en openai.api_key =:
+
+
+
+Datos de prueba Transbank:
+4051885600446623 
+rut 11.111.111-1
+clave 123
+
+Transbank en settings:
+# Ajustes de Transbank
+TRANSBANK_COMMERCE_CODE = "597055555532"
+TRANSBANK_API_KEY = '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C'
+TRANSBANK_ENVIRONMENT = "INTEGRACION"  # Cambia a "PRODUCCION" al pasar a producción
+
+Para crear un nuevo usuario tiene que ser con una contraseña que tenga caracteres en mayúsculas, minúsculas y números.
+
+Para loguear un nuevo usuario:
+newuser =usuario
+Nue2024-prueba =contraseña
+
+
+ejecutar el manage.py: python manage.py runserver
